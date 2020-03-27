@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Created with IntelliJ IDEA.
@@ -54,6 +55,7 @@ public class IndexController extends BaseController {
                                   @RequestParam (required = false) String remeber_me,
                                   HttpServletRequest request,
                                   HttpServletResponse response){
+        HttpSession session = request.getSession();
         Integer error_count = cache.get("login_error_count");
         if(null != error_count && error_count >=3){
             return RestResponseBo.fail("您输入的密码已经错误超过3次，请10分钟后尝试");
