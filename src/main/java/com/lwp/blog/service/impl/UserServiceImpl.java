@@ -58,10 +58,10 @@ public class UserServiceImpl implements UserService {
         criteria.andUsernameEqualTo(username);
         long count = userVoDao.countByExample(example);
         if(count < 1){
-            throw new TipException("不存在该用户");
+            throw new TipException("用户名或密码错误");
         }
         String pwd = TaleUtils.MD5encode(username + password);
-        criteria.andUsernameEqualTo(pwd);
+        criteria.andPasswordEqualTo(pwd);
         List<UserVo> userVos = userVoDao.selectByExample(example);
         if(userVos.size() != 1){
             throw new TipException("用户名或密码错误");

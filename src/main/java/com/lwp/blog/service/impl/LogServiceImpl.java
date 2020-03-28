@@ -3,6 +3,7 @@ package com.lwp.blog.service.impl;
 import com.lwp.blog.dao.Login_logVoDao;
 import com.lwp.blog.entity.Vo.Login_logVo;
 import com.lwp.blog.service.LogService;
+import com.lwp.blog.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -26,11 +27,16 @@ public class LogServiceImpl implements LogService {
     @Override
     public void insertLoginLog(Login_logVo login_logVo) {
         if(login_logVo != null){
-            Long date =  new Date().getTime();
-            login_logVo.setLoginTime(date);
-            int d = dao.insertLog(login_logVo);
-            System.out.println(d);
-            LOGGER.info(String.valueOf(d));
+            if(StringUtil.isNull(login_logVo.getLoginTime())) {
+                Long date = new Date().getTime();
+                login_logVo.setLoginTime(date);
+            }
+            try {
+                dao.insertLog(login_logVo);
+            }catch (Exception e){
+                LOGGER.info(e.getMessage());
+            }
+
         }
     }
 }

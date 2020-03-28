@@ -17,6 +17,18 @@ public class Login_logVo {
     private String loginResultDetail;
     private String loginUrl;
 
+    public Login_logVo(){
+
+    }
+
+    public Login_logVo(String userName,String loginResult,String loginResultDetail,String loginUrl){
+        this.userName = userName;
+        this.loginResult = loginResult;
+        this.loginResultDetail = loginResultDetail;
+        this.loginUrl = loginUrl;
+        this.loginTime = new Date().getTime();
+    }
+
     public Integer getId() {
         return id;
     }
