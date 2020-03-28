@@ -2,7 +2,9 @@ package com.lwp.blog.controller.admin;
 
 import com.lwp.blog.controller.BaseController;
 import com.lwp.blog.entity.Bo.RestResponseBo;
+import com.lwp.blog.entity.Vo.Login_logVo;
 import com.lwp.blog.entity.Vo.UserVo;
+import com.lwp.blog.service.LogService;
 import com.lwp.blog.service.UserService;
 import com.lwp.blog.utils.TaleUtils;
 import com.lwp.blog.utils.TipException;
@@ -36,6 +38,8 @@ public class IndexController extends BaseController {
 
     @Resource
     private UserService userService;
+    @Resource
+    private LogService logService;
 
     @GetMapping(value = {"","/index"})
     public String index(HttpServletResponse response){
@@ -57,6 +61,11 @@ public class IndexController extends BaseController {
                                   HttpServletResponse response){
         HttpSession session = request.getSession();
         Integer error_count = cache.get("login_error_count");
+        Login_logVo login_logVo = new Login_logVo();
+        login_logVo.setUserName(username);
+        login_logVo.setLoginUrl("1");
+        login_logVo.setLoginResult("0");
+        logService.insertLoginLog(login_logVo);
         if(null != error_count && error_count >=3){
             return RestResponseBo.fail("您输入的密码已经错误超过3次，请10分钟后尝试");
 

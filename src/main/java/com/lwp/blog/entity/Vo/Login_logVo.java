@@ -12,7 +12,7 @@ import java.util.Date;
 public class Login_logVo {
     private Integer id;
     private String userName;
-    private Integer loginTime;
+    private Long loginTime;
     private String loginResult;
     private String loginResultDetail;
     private String loginUrl;
@@ -33,11 +33,11 @@ public class Login_logVo {
         this.userName = userName;
     }
 
-    public Integer getLoginTime() {
+    public Long getLoginTime() {
         return loginTime;
     }
 
-    public void setLoginTime(Integer loginTime) {
+    public void setLoginTime(Long loginTime) {
         this.loginTime = loginTime;
     }
 

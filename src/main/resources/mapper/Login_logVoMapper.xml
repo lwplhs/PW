@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lwp.blog.dao.Login_logVoDao">
+    <resultMap id="BaseResult" type="com.lwp.blog.entity.Vo.Login_logVo">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="userName" jdbcType="VARCHAR" property="userName"/>
+        <result column="loginTime" jdbcType="BIGINT" property="userTime"/>
+        <result column="loginResult" jdbcType="VARCHAR" property="loginResult"/>
+        <result column="loginResultDetail" jdbcType="VARCHAR" property="loginResultDetail"/>
+        <result column="loginUrl" jdbcType="VARCHAR" property="loginUrl"/>
+    </resultMap>
+    <insert id="insertLog" parameterType="com.lwp.blog.entity.Vo.Login_logVo" useGeneratedKeys="true" keyProperty="id">
+        insert into login_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userName != null">
+                userName,
+            </if>
+            <if test="loginTime != null">
+                loginTime,
+            </if>
+            <if test="loginResult != null">
+                loginResult,
+            </if>
+            <if test="loginResultDetail != null">
+                loginResultDetail,
+            </if>
+            <if test="loginUrl != null">
+                loginUrl,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="loginTime != null">
+                #{loginTime,jdbcType=BIGINT},
+            </if>
+            <if test="loginResult != null">
+                #{loginResult,jdbcType=VARCHAR},
+            </if>
+            <if test="loginResultDetail != null">
+                #{loginResultDetail,jdbcType=VARCHAR},
+            </if>
+            <if test="loginUrl != null">
+                #{loginUrl,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>
