@@ -41,7 +41,7 @@ public class IndexController extends BaseController {
 
     @GetMapping(value = {"","/index"})
     public String index(HttpServletResponse response){
-        return this.render("admin/admin_d/index");
+        return this.render("admin/index");
     }
 
 

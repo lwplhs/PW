@@ -16,7 +16,11 @@ public abstract class BaseController {
      * @return
      */
     public String render(String viewName){
-        return THEME + "/" + viewName;
+        if(viewName.startsWith("/")) {
+            return THEME + viewName;
+        }else {
+            return THEME+ "/" + viewName;
+        }
     }
 
     public BaseController title(HttpServletRequest request, String title){
