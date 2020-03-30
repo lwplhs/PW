@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="footer-content">
+    <footer class="footer text-right">
+        2020 © <a th:href="@{https://github.com/lwplhs}" target="_blank">My WebSite</a><div class=""></div>
+    </footer>
+</div>
+<div th:fragment="footer_main">
+    <!--<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>-->
+    <script type="text/javascript" th:src="@{/static/admin/n_n/jquery/1.9.1/jquery.min.js}"></script>
+    <!--<script type="text/javascript" src="static/h-ui/js/H-ui.min.js"></script>-->
+    <script type="text/javascript" th:src="@{/static/admin/n_n/h-ui/js/H-ui.min.js}"></script>
+</div>
+<div th:fragment="footer_index">
+    <script type="text/javascript" th:src="@{/static/admin/n_n/jquery/1.9.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/admin/n_n/layer/2.4/layer.js}"></script>
+    <script type="text/javascript" th:src="@{/static/admin/n_n/h-ui/js/H-ui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/admin/n_n/h-ui.admin/js/H-ui.admin.js}"></script>
+    <script type="text/javascript" th:src="@{/static/admin/n_n/jquery.contextmenu/jquery.contextmenu.r2.js}"></script>
+</div>
+</html>

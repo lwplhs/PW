@@ -44,6 +44,10 @@ public class IndexController extends BaseController {
         return this.render("admin/index");
     }
 
+    @GetMapping(value = "/main")
+    public String getMainHtml(HttpServletResponse response){
+        return this.render("admin/main");
+    }
 
     @GetMapping(value = "login")
     public String login(){
