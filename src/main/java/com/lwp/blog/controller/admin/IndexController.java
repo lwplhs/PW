@@ -43,6 +43,11 @@ public class IndexController extends BaseController {
     public String index(HttpServletResponse response){
         return this.render("admin/index");
     }
+    @GetMapping(value={"/getPage/{name}", "/getPage/{name}.html"})
+    public String getHtml(HttpServletResponse response,@PathVariable String name){
+
+        return this.render("admin/"+name);
+    }
 
     @GetMapping(value = "/main")
     public String getMainHtml(HttpServletResponse response){
