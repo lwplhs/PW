@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 
 /**
  * 自定义拦截器
@@ -39,7 +40,9 @@ public class BaseInterceptor implements HandlerInterceptor {
         String contextPath = request.getContextPath();
         LOGGER.info(contextPath);
         //请求拦截处理
-
+        if(uri.startsWith(contextPath+"/404")){
+            response.sendRedirect(request.getContextPath() +"/getPage/404.html");
+        }
         UserVo user = TaleUtils.getLoginUser(request);
         if(null == user){
             Integer uid = TaleUtils.getCookieUid(request);
@@ -49,7 +52,11 @@ public class BaseInterceptor implements HandlerInterceptor {
             }
         }
         if(uri.startsWith(contextPath + "/admin") && !uri.startsWith(contextPath +"/admin/login") && null == user){
-            response.sendRedirect(request.getContextPath() +"/admin/login");
+
+            //response.sendRedirect(request.getContextPath() +"/admin/login");
+            String url = request.getContextPath() +"/admin/login";
+            PrintWriter out = response.getWriter(); ;
+            this.toLogin(out,url);
             return false;
         }
         //设置get请求的token
@@ -61,6 +68,21 @@ public class BaseInterceptor implements HandlerInterceptor {
         }
         return true;
 
+    }
+
+    private void toLogin(PrintWriter out,String url){
+        out.print("<html>");
+        out.print("<head>");
+        out.print("<title>Page</title>");
+        out.print("<script   language= 'javascript'>  ");
+        out.print(" function openwin(){   ");
+        out.print("     top.location.href=\""+url+"\";");
+        out.print(" } ");
+        out.print("</script>");
+        out.print("</head>");
+        out.print("<body onLoad='openwin()'>");
+        out.print("</body>");
+        out.print("</html>");
     }
 
     @Override
