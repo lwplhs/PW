@@ -118,6 +118,12 @@ function creatIframe(href,titleName){
 				'closeall': function(t) {
 					$("#min_title_list li i").trigger("click");
 				},
+				'refresh': function (t) {
+					var $t = $(t);
+					var index = $("#min_title_list li").index($t);
+					var ele = $("#iframe_box .show_iframe").eq(index).children("iframe");
+					ele.attr('src', ele.attr('src'));;
+				}
 			}
 		});
 	}else {
@@ -145,6 +151,20 @@ function creatIframe(href,titleName){
 }
 
 
+function isSave() {
+	try {
+		var aCloseIndex=$(this).parents("li").index();
+		var h = $('#iframe_box').find('.show_iframe').eq(aCloseIndex).children("iframe").prop('contentWindow').document;
+		var s = $(h).find('#issave');
+		var issave = s.val();
+		if("1" == issave){
+			return true;
+		}
+	}catch (e) {
+		console.log(e);
+	}
+	return false;
+}
 
 /*关闭iframe*/
 function removeIframe(){
@@ -271,11 +291,23 @@ $(function(){
 		iframe_box.find(".show_iframe").hide().eq(bStopIndex).show();
 	});
 	$(document).on("click","#min_title_list li i",function(){
-		var aCloseIndex=$(this).parents("li").index();
-		$(this).parent().remove();
-		$('#iframe_box').find('.show_iframe').eq(aCloseIndex).remove();	
-		num==0?num=0:num--;
-		tabNavallwidth();
+		if(isSave()){
+			layer.confirm("尚未保存，是否关闭",function (index) {
+				var aCloseIndex=$(this).parents("li").index();
+				$(this).parent().remove();
+				$('#iframe_box').find('.show_iframe').eq(aCloseIndex).remove();
+				num==0?num=0:num--;
+				tabNavallwidth();
+				layer.close(index);
+			});
+		}else {
+			var aCloseIndex=$(this).parents("li").index();
+			$(this).parent().remove();
+			$('#iframe_box').find('.show_iframe').eq(aCloseIndex).remove();
+			num==0?num=0:num--;
+			tabNavallwidth();
+		}
+
 	});
 	$(document).on("dblclick","#min_title_list li",function(){
 		var aCloseIndex=$(this).index();

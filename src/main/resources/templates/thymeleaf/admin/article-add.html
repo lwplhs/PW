@@ -3,6 +3,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:with="title='后台管理',active='home'">
 <header th:replace="/admin/header::headerFragment(${title},${active})"></header>
 <body>
+<input th:hidden="hidden" th:value="1" th:id="issave"/>
 <article class="page-container">
 	<form class="form form-horizontal" id="form-article-add">
 		<div class="row cl">
@@ -136,6 +137,13 @@
 <div th:replace="/admin/footer::footer-content"></div>
 <!--请在下方写此页面业务相关的脚本-->
 <div th:replace="/admin/footer::footer_article-add"></div>
+<script type="text/javascript">
+	window.onbeforeunload = function()
+	{
+		console.log("1111111111111111111111");
+		return false;
+	}
+</script>
 <script type="text/javascript">
 $(function(){
 	$('.skin-minimal input').iCheck({

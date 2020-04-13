@@ -55,6 +55,8 @@ public class BaseInterceptor implements HandlerInterceptor {
 
             //response.sendRedirect(request.getContextPath() +"/admin/login");
             String url = request.getContextPath() +"/admin/login";
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("text/html; charset=utf-8");
             PrintWriter out = response.getWriter(); ;
             this.toLogin(out,url);
             return false;
@@ -73,7 +75,7 @@ public class BaseInterceptor implements HandlerInterceptor {
     private void toLogin(PrintWriter out,String url){
         out.print("<html>");
         out.print("<head>");
-        out.print("<title>Page</title>");
+        out.print("<title>跳转中</title>");
         out.print("<script   language= 'javascript'>  ");
         out.print(" function openwin(){   ");
         out.print("     top.location.href=\""+url+"\";");

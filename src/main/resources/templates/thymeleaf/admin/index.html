@@ -58,7 +58,7 @@
             <dd>
                 <ul>
                     <li><a data-href="/admin/getPage/article-list.html" data-title="文章管理" href="javascript:void(0)">文章管理</a></li>
-                    <li><a onclick="edit_type()" data-title="新增" href="javascript:;">文章发布</a></li>
+                    <li><a data-href="/admin/getPage/edit-type.html" data-title="新增" href="javascript:;">文章发布</a></li>
                     <li><a data-href="article-list.html" data-title="文章管理" href="javascript:void(0)">文章管理</a></li>
                 </ul>
             </dd>
@@ -206,6 +206,7 @@
 
 <div class="contextMenu" id="Huiadminmenu">
     <ul>
+        <li id="refresh">刷新当前</li>
         <li id="closethis">关闭当前 </li>
         <li id="closeall">关闭全部 </li>
     </ul>
@@ -230,7 +231,25 @@
                 },
             }
         });*/
-
+        $("#min_title_list li").contextMenu('Huiadminmenu', {
+            bindings: {
+                'closethis': function(t) {
+                    var $t = $(t);
+                    if($t.find("i")){
+                        $t.find("i").trigger("click");
+                    }
+                },
+                'closeall': function(t) {
+                    $("#min_title_list li i").trigger("click");
+                },
+                'refresh': function (t) {
+                    var $t = $(t);
+                    var index = $("#min_title_list li").index($t);
+                    var ele = $("#iframe_box .show_iframe").eq(index).children("iframe");
+                    ele.attr('src', ele.attr('src'));;
+                }
+            }
+        });
 
         $("body").Huitab({
             tabBar:".navbar-wrapper .navbar-levelone",
