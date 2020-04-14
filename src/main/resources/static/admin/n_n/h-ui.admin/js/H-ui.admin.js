@@ -293,11 +293,7 @@ $(function(){
 	$(document).on("click","#min_title_list li i",function(){
 		if(isSave()){
 			layer.confirm("尚未保存，是否关闭",function (index) {
-				var aCloseIndex=$(this).parents("li").index();
-				$(this).parent().remove();
-				$('#iframe_box').find('.show_iframe').eq(aCloseIndex).remove();
-				num==0?num=0:num--;
-				tabNavallwidth();
+				removeIframe();
 				layer.close(index);
 			});
 		}else {
@@ -313,12 +309,19 @@ $(function(){
 		var aCloseIndex=$(this).index();
 		var iframe_box=$("#iframe_box");
 		if(aCloseIndex>0){
-			$(this).remove();
-			$('#iframe_box').find('.show_iframe').eq(aCloseIndex).remove();	
-			num==0?num=0:num--;
-			$("#min_title_list li").removeClass("active").eq(aCloseIndex-1).addClass("active");
-			iframe_box.find(".show_iframe").hide().eq(aCloseIndex-1).show();
-			tabNavallwidth();
+			if(isSave()){
+				layer.confirm("尚未保存，是否关闭",function (index) {
+					removeIframe();
+					layer.close(index);
+				});
+			}else {
+				$(this).remove();
+				$('#iframe_box').find('.show_iframe').eq(aCloseIndex).remove();
+				num==0?num=0:num--;
+				$("#min_title_list li").removeClass("active").eq(aCloseIndex-1).addClass("active");
+				iframe_box.find(".show_iframe").hide().eq(aCloseIndex-1).show();
+				tabNavallwidth();
+			}
 		}else{
 			return false;
 		}
