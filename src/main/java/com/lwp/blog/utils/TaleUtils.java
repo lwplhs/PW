@@ -10,6 +10,7 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.util.ClassUtils;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
@@ -420,5 +421,12 @@ public class TaleUtils {
         path = path.substring(0, lastIndex);
         File file = new File("");
         return file.getAbsolutePath() + "/";
+    }
+
+    public static String getUEditorPath(){
+        String path = System.getProperty("user.dir");
+        path = path.replaceAll("\\\\","/");
+        path = "file:"+path;
+        return path;
     }
 }

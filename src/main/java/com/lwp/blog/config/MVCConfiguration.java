@@ -23,7 +23,7 @@ public class MVCConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(baseInterceptor).excludePathPatterns("/static/**");
+        registry.addInterceptor(baseInterceptor).excludePathPatterns("/static/**").excludePathPatterns("/media/**");
     }
 
     /**
@@ -33,6 +33,7 @@ public class MVCConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/media/**").addResourceLocations(TaleUtils.getUEditorPath()+"/media/");
         registry.addResourceHandler("/upload/**").addResourceLocations(TaleUtils.getUploadFilePath()+"upload/");
     }
 }
