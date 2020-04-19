@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.stream.IntStream;
 
 @Controller
 public class IndexController extends BaseController{
@@ -22,5 +23,8 @@ public class IndexController extends BaseController{
     public String getHtml(HttpServletResponse response, @PathVariable String name){
 
         return this.render(name);
+    }
+    public static void main(String[] args){
+        IntStream.of().parallel().min().getAsInt();
     }
 }
