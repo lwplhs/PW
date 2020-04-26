@@ -3,9 +3,13 @@ package com.lwp.blog.controller;
 import com.lwp.blog.utils.MapCache;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-public abstract class BaseController {
+public abstract class BaseController{
     public static String THEME = "";
+
+    private HttpServletRequest request;
+    private HttpServletResponse response;
 
     protected MapCache cache = MapCache.single();
 
