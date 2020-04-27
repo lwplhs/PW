@@ -165,7 +165,7 @@ public final class Commons {
      * @param slug
      * @return
      */
-    public static String permalink(Integer cid, String slug) {
+    public static String permalink(String cid, String slug) {
         return site_url("/article/" + (StringUtils.isNotBlank(slug) ? slug : cid.toString()));
     }
 
@@ -270,8 +270,8 @@ public final class Commons {
      * @return
      */
     public static String show_thumb(ContentVo contents) {
-        int cid = contents.getCid();
-        int size = cid % 20;
+        String cid = contents.getCid();
+        int size = cid.length() % 20;
         size = size == 0 ? 1 : size;
         return "/user/img/rand/" + size + ".jpg";
     }

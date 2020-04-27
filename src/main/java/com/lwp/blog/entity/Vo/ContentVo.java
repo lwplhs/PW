@@ -13,7 +13,7 @@ public class ContentVo implements Serializable {
     /**
      * post表主键
      */
-    private Integer cid;
+    private String cid;
 
     /**
      * 内容标题
@@ -92,11 +92,11 @@ public class ContentVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Integer getCid() {
+    public String getCid() {
         return cid;
     }
 
-    public void setCid(Integer cid) {
+    public void setCid(String cid) {
         this.cid = cid;
     }
 

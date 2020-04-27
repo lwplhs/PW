@@ -20,6 +20,12 @@ public abstract class UUID {
 
     private static final char[] _UU32 = "0123456789abcdefghijklmnopqrstuv".toCharArray();
 
+
+    public static String createID(){
+        String uuid =  UUIDGenerator.generate();
+        return uuid;
+    }
+
     /**
      *
      * @return 64进制表示紧凑格式的UUID

@@ -1,6 +1,7 @@
 package com.lwp.blog.config;
 
 import com.lwp.blog.interceptor.BaseInterceptor;
+import com.lwp.blog.interceptor.PageInterceptor;
 import com.lwp.blog.utils.TaleUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -13,6 +14,9 @@ public class MVCConfiguration implements WebMvcConfigurer {
 
     @Resource
     private BaseInterceptor baseInterceptor;
+
+    @Resource
+    private PageInterceptor pageInterceptor;
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
 
@@ -24,6 +28,7 @@ public class MVCConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(baseInterceptor).excludePathPatterns("/static/**").excludePathPatterns("/media/**");
+        registry.addInterceptor(pageInterceptor).excludePathPatterns("/static/**").excludePathPatterns("/media/**");
     }
 
     /**

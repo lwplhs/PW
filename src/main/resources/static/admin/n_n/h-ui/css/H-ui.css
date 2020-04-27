@@ -4068,9 +4068,9 @@ a.label:hover, a.label:focus, a.badge:hover, a.badge:focus{color: #fff;text-deco
     <a rel="nofollow" target="_blank" href="http://www.miitbeian.gov.cn/">京ICP备10000000号</a><br>
     未经允许，禁止转载、抄袭、镜像</p>
   </div>
-</footer>
+</footer>solid #E8E8E8
 */
-.footer{border-top:1px solid #E8E8E8; padding:15px 0;font-family:tahoma,Arial;font-size:12px;color:#999;line-height:22px;text-align:center}
+.footer{border-top:20px; padding:15px 0;font-family:tahoma,Arial;font-size:12px;color:#999;line-height:22px;text-align:center}
 .footer a,.footer a:hover{color:#999}
 
 /*4.24 星星评价
