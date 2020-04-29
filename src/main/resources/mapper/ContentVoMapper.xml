@@ -21,6 +21,10 @@
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.lwp.blog.entity.Vo.ContentVo">
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
+  <select id="listContentVo" resultMap="BaseResultMap">
+        select * from t_contents
+  </select>
+
   <sql id="Example_Where_Clause">
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">

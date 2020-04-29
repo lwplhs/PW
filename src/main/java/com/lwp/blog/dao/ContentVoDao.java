@@ -17,6 +17,9 @@ import java.util.List;
  */
 @Component
 public interface ContentVoDao {
+
+    List<ContentVo> listContentVo();
+
     long countByExample(ContentVoExample example);
 
     int deleteByExample(ContentVoExample example);

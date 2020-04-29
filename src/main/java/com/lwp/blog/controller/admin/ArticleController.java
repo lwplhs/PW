@@ -1,5 +1,7 @@
 package com.lwp.blog.controller.admin;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.lwp.blog.controller.BaseController;
 import com.lwp.blog.entity.Vo.ContentVo;
 import com.lwp.blog.service.ArticleService;
@@ -29,16 +31,32 @@ public class ArticleController extends BaseController {
     @Resource
     private ArticleService articleService;
 
+    @GetMapping(value = "/article-list")
+    public String getArticle(Model model,
+                            @RequestParam(value="pageNum",defaultValue = "1") int pageNum,
+                            @RequestParam(value = "limit",defaultValue = "10") int limit){
+        Page<ContentVo> page = PageHelper.startPage(pageNum,limit);
+        List<ContentVo> list = articleService.listArticle();
+
+        model.addAttribute("total",page.getTotal());
+        model.addAttribute("article",list);
+        return this.render("/admin/article-list");
+    }
+
     @PostMapping(value = "/saveArticle")
     @ResponseBody
     public String saveArticle(@ModelAttribute ContentVo contentVo){
         articleService.insertArticle(contentVo);
-        return "wwww";
+        return "成功";
     }
-
     @PostMapping(value = "/list")
-    public String listArticle(Model model){
+    public String listArticle(Model model,
+                              @RequestParam(value="pageNum",defaultValue = "1") int pageNum,
+                              @RequestParam(value = "limit",defaultValue = "10") int limit){
+        Page<ContentVo> page = PageHelper.startPage(pageNum,limit);
         List<ContentVo> list = articleService.listArticle();
+
+        model.addAttribute("total",page.getTotal());
         model.addAttribute("article",list);
         return this.render("/admin/article-list::article_type");
     }

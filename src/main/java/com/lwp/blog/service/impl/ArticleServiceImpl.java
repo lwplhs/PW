@@ -38,8 +38,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<ContentVo> listArticle() {
-        ContentVoExample contentVoExample = new ContentVoExample();
-        List<ContentVo> list = contentVoDao.selectByExample(contentVoExample);
+        /*ContentVoExample contentVoExample = new ContentVoExample();*/
+        List<ContentVo> list = contentVoDao.listContentVo();
         return list;
     }
 }
