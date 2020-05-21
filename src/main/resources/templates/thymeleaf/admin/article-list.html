@@ -87,6 +87,7 @@ var page = 1;
 var limit = 7;
 var total;
 function loadData() {
+    NProgress.start();
 	var url = "/admin/list";
 	$.ajax({
 		url: url,
@@ -97,6 +98,7 @@ function loadData() {
 		},
 		success: function (data) {
 			$(".article_type").html(data);
+            NProgress.done();
 		}
 	});
 }

@@ -1,4 +1,4 @@
-package com.lwp.blog.controller;
+package com.lwp.blog.controller.wx;
 
 import com.lwp.blog.controller.admin.IndexController;
 import com.lwp.blog.utils.TipException;
@@ -37,5 +37,19 @@ public class WXController {
         map.put("list",list);
         return map;
 
+    }
+    @GetMapping("getPic")
+    @ResponseBody
+    public Map<String,Object> getIndexPic(){
+        JSONObject jsonObject = new JSONObject();
+
+        List list = new ArrayList();
+        list.add("http://u2575k5964.wicp.vip/media/ueditor/upload/image/20200503/1588494587434065729.png");
+        list.add("http://u2575k5964.wicp.vip/media/ueditor/upload/image/20200503/1588494587434065729.png");
+        list.add("http://u2575k5964.wicp.vip/media/ueditor/upload/image/20200503/1588494587434065729.png");
+        list.add("http://u2575k5964.wicp.vip/media/ueditor/upload/image/20200503/1588494587434065729.png");
+        Map map = new HashMap();
+        map.put("imgUrls",list);
+        return map;
     }
 }

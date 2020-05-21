@@ -55,7 +55,6 @@ public class ArticleController extends BaseController {
                               @RequestParam(value = "limit",defaultValue = "10") int limit){
         Page<ContentVo> page = PageHelper.startPage(pageNum,limit);
         List<ContentVo> list = articleService.listArticle();
-
         model.addAttribute("total",page.getTotal());
         model.addAttribute("article",list);
         return this.render("/admin/article-list::article_type");

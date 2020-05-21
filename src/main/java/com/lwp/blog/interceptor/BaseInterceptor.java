@@ -1,5 +1,6 @@
 package com.lwp.blog.interceptor;
 
+import com.alibaba.fastjson.JSONObject;
 import com.lwp.blog.entity.Vo.UserVo;
 import com.lwp.blog.service.UserService;
 import com.lwp.blog.service.impl.UserServiceImpl;
@@ -52,12 +53,11 @@ public class BaseInterceptor implements HandlerInterceptor {
             }
         }
         if(uri.startsWith(contextPath + "/admin") && !uri.startsWith(contextPath +"/admin/login") && null == user){
-
             //response.sendRedirect(request.getContextPath() +"/admin/login");
             String url = request.getContextPath() +"/admin/login";
             response.setCharacterEncoding("utf-8");
             response.setContentType("text/html; charset=utf-8");
-            PrintWriter out = response.getWriter(); ;
+            PrintWriter out = response.getWriter();
             this.toLogin(out,url);
             return false;
         }
@@ -71,20 +71,25 @@ public class BaseInterceptor implements HandlerInterceptor {
         return true;
 
     }
-
+    public boolean isAjaxRequest(HttpServletRequest request){
+        String header = request.getHeader("X-Requested-With");
+        boolean isAjax = "XMLHttpRequest".equals(header) ? true:false;
+        return isAjax;
+    }
     private void toLogin(PrintWriter out,String url){
-        out.print("<html>");
+/*        out.print("<html>");
         out.print("<head>");
-        out.print("<title>跳转中</title>");
+        out.print("<title>跳转中</title>");*/
         out.print("<script   language= 'javascript'>  ");
-        out.print(" function openwin(){   ");
+        out.print("top.location.href=\""+url+"\";");
+/*        out.print(" function openwin(){   ");
         out.print("     top.location.href=\""+url+"\";");
-        out.print(" } ");
+        out.print(" } ");*/
         out.print("</script>");
-        out.print("</head>");
+/*        out.print("</head>");s
         out.print("<body onLoad='openwin()'>");
         out.print("</body>");
-        out.print("</html>");
+        out.print("</html>");*/
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.lwp.blog.utils;
 
+import com.lwp.blog.config.SysConfig;
 import com.lwp.blog.entity.Vo.UserVo;
 import org.apache.commons.lang3.StringUtils;
 import org.commonmark.Extension;
@@ -9,6 +10,8 @@ import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.util.ClassUtils;
 
@@ -23,9 +26,7 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.Normalizer;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +35,7 @@ import java.util.regex.Pattern;
  */
 public class TaleUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaleUtils.class);
+
     /**
      * 一个月
      */
@@ -423,10 +425,87 @@ public class TaleUtils {
         return file.getAbsolutePath() + "/";
     }
 
+    /**
+     * 获取 Ueditor 路径
+     * @return
+     */
     public static String getUEditorPath(){
         String path = System.getProperty("user.dir");
         path = path.replaceAll("\\\\","/");
         path = "file:"+path;
         return path;
+    }
+
+
+
+    /**
+     * 获取 轮播图 保存位置
+     * @param suffix 后缀
+     * @return
+     */
+    public static Map getCarouselPath(String suffix){
+        Map map = new HashMap();
+        String content = "";
+        try {
+            content = SysConfig.getParamer("carousel_path");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(StringUtil.isNull(content)){
+            content = "/media/Carousel/upload/image";
+        }
+        String path = System.getProperty("user.dir");
+        String url = content;
+        path = path.replaceAll("\\\\","/");
+
+
+        url = addSeparator(0,"/",url);
+        url = addSeparator(1,"/",url);
+
+        String date = StringUtil.getDate(new Date(),"yyyyMMdd");
+        url = url + date;
+
+        url = addSeparator(1,"/",url);
+
+        String name = UUID.UU32();
+        url = url + name;
+
+        if(!suffix.startsWith(".")){
+            url = url+".";
+        }
+        url = url + suffix;
+        if(path.endsWith("/")){
+            path = path.substring(0,path.length()-2);
+        }
+        path = path + url;
+        map.put("path",path);
+        map.put("url",url);
+        map.put("name",name);
+        return map;
+    }
+
+    /**
+     * 给字符串头和尾增加分隔符
+     * @param index 0 头 1 尾
+     * @param separator 分隔符
+     * @param arg 字符串
+     * @return
+     */
+    private static String addSeparator(int index,String separator,String arg){
+        switch (index){
+            case 0:
+                if(!arg.startsWith(separator)){
+                    arg = separator+arg;
+                }
+                break;
+            case 1:
+                if(!arg.endsWith(separator)){
+                    arg = arg + separator;
+                }
+                break;
+            default:
+                break;
+        }
+        return arg;
     }
 }

@@ -3,6 +3,8 @@ package com.lwp.blog.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class StringUtil {
@@ -213,6 +215,16 @@ public class StringUtil {
         } catch (Exception var6) {
             return "null";
         }
+    }
+
+    /**
+     * 获取时间的指定格式
+     * @return
+     */
+    public static String getDate(Date date,String format){
+        DateFormat df = new SimpleDateFormat(format);
+        String dateName = df.format(date);
+        return dateName;
     }
 
     public static String NullToEmpty(String str) {
