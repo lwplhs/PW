@@ -33,6 +33,8 @@ public class WXCarouselController {
 
     private static String RootUrl="http://192.168.31.40:8888";
 
+    @Autowired
+    private SysConfig sysConfig;
 
     @Resource
     private CarouselService carouselService;
@@ -41,7 +43,7 @@ public class WXCarouselController {
     @ResponseBody
     public Map<String,Object> getCarousels(){
         JSONObject jsonObject = new JSONObject();
-        String path = SysConfig.getParamer("personal_url");
+        String path = sysConfig.getPersonal_url();
         if(!StringUtil.isNull(path)){
             RootUrl = path;
         }

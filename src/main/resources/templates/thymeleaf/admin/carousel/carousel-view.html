@@ -58,7 +58,7 @@
             </div>
         </div>
         <input type="hidden" id="path" name="path" th:value="${Carousel.path}">
-        <input type="hidden" id="attachment_id" name="attachment_id" th:value="${Carousel.attachment_id}">
+        <input type="hidden" id="attachmentId" name="attachmentId" th:value="${Carousel.attachmentId}">
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>图片上传：</label>
             <div class="formControls col-xs-8 col-sm-9">
@@ -80,27 +80,11 @@
                 </div>
             </div>
         </div>
-<!--        <div class="row cl">
-            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
-                <button onClick="carousel_save_submit();" class="btn btn-primary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存</button>
-                &lt;!&ndash;<button onClick="article_save();" class="btn btn-secondary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存草稿</button>&ndash;&gt;
-                <button onClick="removeIframe()" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
-            </div>
-        </div>-->
     </form>
 </div>
 
 
 <div th:replace="/admin/footer::footer-content"></div>
 <div th:replace="/admin/footer::footer_carousel-view"></div>
-
-<!--请在下方写此页面业务相关的脚本-->
-<!--<script type="text/javascript">
-function article_save(){
-	alert("刷新父级的时候会自动关闭弹层。")
-	window.parent.location.reload();
-}
-
-</script>-->
 </body>
 </html>

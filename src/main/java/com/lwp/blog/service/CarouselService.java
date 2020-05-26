@@ -17,13 +17,11 @@ import java.util.Map;
 public interface CarouselService {
 
 
-    String insertCarousel(CarouselVo carouselVo,UserVo userVo);
+    String saveCarousel(CarouselVo carouselVo, UserVo userVo);
 
     List<CarouselVo> getListCarousel();
 
     List<CarouselVo> getListCarouselByStatus();
-
-    Map UploadCarousel(MultipartFile files, UserVo userVo);
 
     CarouselVo getCarouselById(String id);
 

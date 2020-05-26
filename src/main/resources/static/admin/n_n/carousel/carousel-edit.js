@@ -6,7 +6,7 @@ function carousel_save_submit(){
     $.ajax({
         type:"POST",
         data:jsondata,
-        url:"/admin/saveCarousel",
+        url:"/admin/carousel/updateCarousel",
         success: function(result){
             var data = JSON.parse(result);
             console.log(data.code)
@@ -218,14 +218,14 @@ $(function(){
             swf: '/static/admin/n_n/webuploader/0.1.5/Uploader.swf',
             chunked: false,
             chunkSize: 512 * 1024,
-            server: '/admin/uploadCarousel',
+            server: '/admin/webUpload/upload?origin=1',
             // runtimeOrder: 'flash',
 
-            // accept: {
-            //     title: 'Images',
-            //     extensions: 'gif,jpg,jpeg,bmp,png',
-            //     mimeTypes: 'image/*'
-            // },
+            accept: {
+                title:'Images',
+                extensions:'gif,jpg,jpeg,bmp,png',
+                mimeTypes:'image/*'
+            },
 
             // 禁掉全局的拖拽功能。这样不会出现图片拖进页面的时候，把图片打开。
             disableGlobalDnd: true,
@@ -328,7 +328,7 @@ $(function(){
                         img = $('<img src="'+src+'">');
                         $wrap.empty().append( img );
                     } else {
-                        $.ajax('/admin/uploadCarousel', {
+                        $.ajax('/admin/webUpload/upload?origin=1', {
                             method: 'POST',
                             data: src,
                             dataType:'json'
@@ -599,13 +599,16 @@ $(function(){
         uploader.on("error", function (handler) {
             switch (handler) {
                 case "Q_EXCEED_NUM_LIMIT":
-                    $.L.msgWarning("只能上传一张图片！");
+                    //$.L.msgWarning("只能上传一张图片！");
+                    layer.msg("只能上传一张图片!");
                     break;
                 case "F_EXCEED_SIZE":
-                    $.L.msgWarning("图片大小不能超过1M！");
+                    //$.L.msgWarning("图片大小不能超过1M！");
+                    layer.msg("图片太大！")
                     break;
                 case "Q_TYPE_DENIED":
-                    $.L.msgWarning("不支持的图片类型！");
+                    //$.L.msgWarning("不支持的图片类型！");
+                    layer.msg("不支持的图片类型!")
                     break;
             }
         });
@@ -616,17 +619,12 @@ $(function(){
             var data = $.parseJSON(response._raw);
             //console.log(data);
             if(data.code == "100000"){
-                $("#attachment_id").val(data.aid);
+                $("#attachmentId").val(data.aid);
                 $("#path").val(data.url);
                 layer.msg(data.msg);
             }else{
                 layer.alert(data.msg);
             }
-            /*			console.log(data);
-                        console.log(data.code);
-                        console.log(data.msg);
-                        console.log(data.aid);
-                        console.log(data.url);*/
         });
 
         $upload.on('click', function() {
@@ -685,6 +683,7 @@ $(function(){
                 var pos=curWwwPath.indexOf(pathName);
                 //获取主机地址，如： http://localhost:8090
                 var localhostPaht=curWwwPath.substring(0,pos);
+
                 var path = $("#path").val();
                 localhostPaht = localhostPaht+path;
                 //console.log(localhostPaht);
@@ -699,3 +698,4 @@ $(function(){
     });
 
 })( jQuery );
+

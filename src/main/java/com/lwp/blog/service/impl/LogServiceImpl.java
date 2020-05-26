@@ -1,7 +1,7 @@
 package com.lwp.blog.service.impl;
 
-import com.lwp.blog.dao.Login_logVoDao;
-import com.lwp.blog.entity.Vo.Login_logVo;
+import com.lwp.blog.dao.LoginLogDao;
+import com.lwp.blog.entity.Vo.LoginLogVo;
 import com.lwp.blog.service.LogService;
 import com.lwp.blog.utils.StringUtil;
 import org.slf4j.Logger;
@@ -23,9 +23,9 @@ public class LogServiceImpl implements LogService {
     private static final Logger LOGGER = LoggerFactory.getLogger(com.lwp.blog.service.UserService.class);
 
     @Resource
-    private Login_logVoDao dao;
+    private LoginLogDao dao;
     @Override
-    public void insertLoginLog(Login_logVo login_logVo) {
+    public void insertLoginLog(LoginLogVo login_logVo) {
         if(login_logVo != null){
             if(StringUtil.isNull(login_logVo.getLoginTime())) {
                 Long date = new Date().getTime();

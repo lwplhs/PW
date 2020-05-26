@@ -3,11 +3,11 @@
 <mapper namespace="com.lwp.blog.dao.AttachmentDao">
     <resultMap id="BaseResultMap" type="com.lwp.blog.entity.Vo.AttachmentVo">
         <id column="id" jdbcType="VARCHAR" property="id"/>
-        <result column="save_name" jdbcType="VARCHAR" property="save_name"/>
-        <result column="old_name" jdbcType="VARCHAR" property="old_name"/>
-        <result column="save_path" jdbcType="VARCHAR" property="save_path"/>
-        <result column="url_path" jdbcType="VARCHAR" property="url_path"/>
-        <result column="user_id" jdbcType="VARCHAR" property="user_id"/>
+        <result column="save_name" jdbcType="VARCHAR" property="saveName"/>
+        <result column="old_name" jdbcType="VARCHAR" property="oldName"/>
+        <result column="save_path" jdbcType="VARCHAR" property="savePath"/>
+        <result column="url_path" jdbcType="VARCHAR" property="urlPath"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
         <result column="time" jdbcType="TIMESTAMP" property="time"/>
         <result column="type" jdbcType="VARCHAR" property="type"/>
         <result column="suffix" jdbcType="VARCHAR" property="suffix"/>
@@ -21,19 +21,19 @@
             <if test="id != null">
                 id,
             </if>
-            <if test="save_name != null">
+            <if test="saveName != null">
                 save_name,
             </if>
-            <if test="old_name != null">
+            <if test="oldName != null">
                 old_name,
             </if>
-            <if test="save_path != null">
+            <if test="savePath != null">
                 save_path,
             </if>
-            <if test="url_path != null">
+            <if test="urlPath != null">
                 url_path,
             </if>
-            <if test="user_id != null">
+            <if test="userId != null">
                 user_id,
             </if>
             <if test="time != null">
@@ -59,20 +59,20 @@
             <if test="id != null">
                 #{id,jdbcType=VARCHAR},
             </if>
-            <if test="save_name != null">
-                #{save_name,jdbcType=VARCHAR},
+            <if test="saveName != null">
+                #{saveName,jdbcType=VARCHAR},
             </if>
-            <if test="old_name != null">
-                #{old_name,jdbcType=VARCHAR},
+            <if test="oldName != null">
+                #{oldName,jdbcType=VARCHAR},
             </if>
-            <if test="save_path != null">
-                #{save_path,jdbcType=VARCHAR},
+            <if test="savePath != null">
+                #{savePath,jdbcType=VARCHAR},
             </if>
-            <if test="url_path != null">
-                #{url_path,jdbcType=VARCHAR},
+            <if test="urlPath != null">
+                #{urlPath,jdbcType=VARCHAR},
             </if>
-            <if test="user_id != null">
-                #{user_id,jdbcType=VARCHAR},
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
             </if>
             <if test="time != null">
                 #{time,jdbcType=TIMESTAMP},
@@ -96,5 +96,8 @@
     </insert>
     <select id="getListAttachment" resultMap="BaseResultMap">
         select * from attachment
+    </select>
+    <select id="getPathById" parameterType="java.lang.String" resultType="java.lang.String">
+        select url_path from attachment where id=#{id,jdbcType=VARCHAR}
     </select>
 </mapper>

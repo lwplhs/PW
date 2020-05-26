@@ -21,7 +21,7 @@
 	</div>
 	<!--<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a class="btn btn-primary radius" data-title="添加资讯" data-href="article-add.html" onclick="Hui_admin_tab(this)" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加资讯</a></span> <span class="r">共有数据：<strong th:text="${total}"></strong> 条</span> </div>
 -->	<div class="article_type" th:fragment="article_type">
-		<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a class="btn btn-primary radius" data-title="添加文章" data-href="/admin/getPage/edit-type.html" onclick="Hui_admin_tab(this)" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加文章</a></span> <span class="r">共有数据：<strong th:text="${total}"></strong> 条</span> </div>
+		<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a class="btn btn-primary radius" data-title="添加文章" data-href="/admin/article/edit-type" onclick="Hui_admin_tab(this)" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加文章</a></span> <span class="r">共有数据：<strong th:text="${total}"></strong> 条</span> </div>
 		<div class="mt-20">
 		<input th:hidden="true" id="total" th:value="${total}" />
 		<table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
@@ -88,7 +88,7 @@ var limit = 7;
 var total;
 function loadData() {
     NProgress.start();
-	var url = "/admin/list";
+	var url = "/admin/article/list";
 	$.ajax({
 		url: url,
 		type: 'POST',

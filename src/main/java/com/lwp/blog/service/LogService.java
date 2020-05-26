@@ -1,6 +1,6 @@
 package com.lwp.blog.service;
 
-import com.lwp.blog.entity.Vo.Login_logVo;
+import com.lwp.blog.entity.Vo.LoginLogVo;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,5 +14,5 @@ public interface LogService {
      * 增加登录日志
      * @param login_logVo
      */
-    void insertLoginLog(Login_logVo login_logVo);
+    void insertLoginLog(LoginLogVo login_logVo);
 }

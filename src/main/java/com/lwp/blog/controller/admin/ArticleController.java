@@ -24,7 +24,7 @@ import java.util.UUID;
  */
 
 @Controller("adminArticleController")
-@RequestMapping("/admin")
+@RequestMapping("/admin/article")
 public class ArticleController extends BaseController {
     private static final Logger LOGGER = LoggerFactory.getLogger(IndexController.class);
 
@@ -40,7 +40,7 @@ public class ArticleController extends BaseController {
 
         model.addAttribute("total",page.getTotal());
         model.addAttribute("article",list);
-        return this.render("/admin/article-list");
+        return this.render("/admin/article/article-list");
     }
 
     @PostMapping(value = "/saveArticle")
@@ -57,7 +57,21 @@ public class ArticleController extends BaseController {
         List<ContentVo> list = articleService.listArticle();
         model.addAttribute("total",page.getTotal());
         model.addAttribute("article",list);
-        return this.render("/admin/article-list::article_type");
+        return this.render("/admin/article/article-list::article_type");
+    }
+
+    /**
+     *
+     * @return
+     */
+    @RequestMapping(value = "/edit-type")
+    public String toPageEditType(){
+        return this.render("/admin/article/edit-type.html");
+    }
+
+    @RequestMapping(value = "article-add")
+    public String toPageArticleAdd(){
+        return this.render("/admin/article/article-add.html");
     }
 
 }

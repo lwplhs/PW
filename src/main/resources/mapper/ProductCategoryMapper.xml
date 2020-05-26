@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lwp.blog.dao.ProductCategoryDao">
+    <resultMap id="BaseResultMap" type="com.lwp.blog.entity.Vo.ProductCategoryVo">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"></result>
+        <result column="parent_id" jdbcType="VARCHAR" property="parentId"></result>
+        <result column="level" jdbcType="VARCHAR" property="level"/>
+        <result column="attachment_id" jdbcType="VARCHAR" property="attachmentId"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="is_delete" jdbcType="VARCHAR" property="isDelete"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user_id" jdbcType="VARCHAR" property="createUserId"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId"/>
+    </resultMap>
+    <insert id="insertProductCategory" parameterType="com.lwp.blog.entity.Vo.ProductCategoryVo" keyProperty="id" useGeneratedKeys="true">
+        insert into product_category
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    id,
+                </if>
+                <if test="name != null">
+                    name,
+                </if>
+                <if test="parentId != null">
+                    parent_id,
+                </if>
+                <if test="level != null">
+                    level,
+                </if>
+                <if test="attachmentId != null">
+                    attachment_id,
+                </if>
+                <if test="status != null">
+                    status,
+                </if>
+                <if test="isDelete != null">
+                    is_delete,
+                </if>
+                <if test="remark != null">
+                    remark,
+                </if>
+                <if test="createTime != null">
+                    create_time,
+                </if>
+                <if test="createUserId != null">
+                    create_user_id,
+                </if>
+                <if test="updateTime != null">
+                    update_time,
+                </if>
+                <if test="updateUserId != null">
+                    update_user_id,
+                </if>
+            </trim>
+            <trim prefix="value (" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    #{id,jdbcType=VARCHAR},
+                </if>
+                <if test="name != null">
+                    #{name,jdbcType=VARCHAR},
+                </if>
+                <if test="parentId != null">
+                    #{parentId,jdbcType=VARCHAR},
+                </if>
+                <if test="level != null">
+                    #{level,jdbcType=VARCHAR},
+                </if>
+                <if test="attachmentId != null">
+                    #{attachmentId,jdbcType=VARCHAR},
+                </if>
+                <if test="status != null">
+                    #{status,jdbcType=VARCHAR},
+                </if>
+                <if test="isDelete != null">
+                    #{isDelete,jdbcType=VARCHAR},
+                </if>
+                <if test="remark != null">
+                    #{remark,jdbcType=VARCHAR},
+                </if>
+                <if test="createTime != null">
+                    #{createTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="createUserId != null">
+                    #{createUserId,jdbcType=VARCHAR},
+                </if>
+                <if test="updateTime != null">
+                     #{updateTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="updateUserId != null">
+                    #{updateUserId,jdbcType=VARCHAR},
+                </if>
+            </trim>
+    </insert>
+
+    <update id="updateProductCategory" parameterType="com.lwp.blog.entity.Vo.ProductCategoryVo">
+        update product_category
+            <set>
+                <if test="name != null">
+                    name = #{name,jdbcType=VARCHAR},
+                </if>
+                <if test="parentId != null">
+                    parent_id = #{parentId,jdbcType=VARCHAR},
+                </if>
+                <if test="level != null">
+                    level = #{level,jdbcType=VARCHAR},
+                </if>
+                 <if test="attachmentId != null">
+                     attachment_id = #{attachmentId,jdbcType=VARCHAR},
+                 </if>
+                 <if test="status != null">
+                     status = #{status,jdbcType=VARCHAR},
+                 </if>
+                 <if test="isDelete != null">
+                     is_delete = #{isDelete,jdbcType=VARCHAR},
+                 </if>
+                 <if test="remark != null">
+                     remark = #{remark,jdbcType=VARCHAR},
+                 </if>
+                 <if test="createTime != null">
+                     create_time = #{createTime,jdbcType=TIMESTAMP},
+                 </if>
+                 <if test="createUserId != null">
+                     create_user_id = #{createUserId,jdbcType=VARCHAR},
+                 </if>
+                 <if test="updateTime != null">
+                     update_time = #{updateTime,jdbcType=TIMESTAMP},
+                 </if>
+                 <if test="updateUserId != null">
+                     update_user_time = #{updateUserTime,jdbcType=VARCHAR},
+                 </if>
+            </set>
+            where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateProductCategoryWithStatus" parameterType="java.util.Map">
+        update product_category set status =(case when status = '1' then '0' else '1' end),update_time=#{updateTime,jdbcType=TIMESTAMP},update_user_id=#{updateUserId,jdbcType=VARCHAR} where id in
+            <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+                #{id,jdbcType=VARCHAR}
+            </foreach>
+    </update>
+
+    <update id="updateProductCategoryWithDelete" parameterType="java.util.Map">
+        update product_category set is_delete='1',update_time=#{updateTime,jdbcType=TIMESTAMP},update_user_id=#{updateUserId,jdbcType=VARCHAR} where id in
+            <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+                #{id,jdbcType=VARCHAR}
+            </foreach>
+    </update>
+
+    <select id="getProductCategoryListByNotDelete" resultMap="BaseResultMap">
+        select * from product_category where is_delete is null or is_delete != 1
+    </select>
+
+    <select id="getProductCategoryById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from product_category where id=#{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getCategoryLevelById" parameterType="java.lang.String" resultType="java.lang.String">
+        select level from product_category where id=#{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getCategoryParentName" parameterType="java.lang.String" resultType="java.lang.String">
+        select name from product_category where id=#{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getCountByName" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from product_category where name=#{name,jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -8,16 +8,19 @@
         <result column="path" jdbcType="VARCHAR" property="path"/>
         <result column="url"  jdbcType="VARCHAR" property="url"/>
         <result column="status" jdbcType="VARCHAR" property="status"/>
-        <result column="is_delete" jdbcType="VARCHAR" property="is_delete"/>
+        <result column="is_delete" jdbcType="VARCHAR" property="isDelete"/>
         <result column="type" jdbcType="VARCHAR" property="type"/>
         <result column="sid" jdbcType="VARCHAR" property="sid"/>
-        <result column="create_time" jdbcType="TIMESTAMP" property="create_time"/>
-        <result column="update_time" jdbcType="TIMESTAMP" property="update_time"/>
-        <result column="create_user_id" jdbcType="VARCHAR" property="create_user_id"/>
-        <result column="update_user_id" jdbcType="VARCHAR" property="update_user_id"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_user_id" jdbcType="VARCHAR" property="createUserId"/>
+        <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId"/>
         <result column="sort" jdbcType="VARCHAR" property="sort"/>
-        <result column="attachment_id" jdbcType="VARCHAR" property="attachment_id"/>
+        <result column="attachment_id" jdbcType="VARCHAR" property="attachmentId"/>
     </resultMap>
+    <sql id="selectResultList">
+        id,name,detail,(select a.url_path from attachment a where a.id = c.attachment_id) path,url,status,is_delete,type,sid,sort,attachment_id
+    </sql>
     <insert id="insertCarousel" parameterType="com.lwp.blog.entity.Vo.CarouselVo" useGeneratedKeys="true" keyProperty="id">
         insert into carousel
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -39,7 +42,7 @@
             <if test="status != null">
                 status,
             </if>
-            <if test="is_delete != null">
+            <if test="isDelete != null">
                 is_delete,
             </if>
             <if test="type != null">
@@ -48,22 +51,22 @@
             <if test="sid != null">
                 sid,
             </if>
-            <if test="create_time != null">
+            <if test="createTime != null">
                 create_time,
             </if>
-            <if test="update_time != null">
+            <if test="updateTime != null">
                 update_time,
             </if>
-            <if test="create_user_id != null">
+            <if test="createUserId != null">
                 create_user_id,
             </if>
-            <if test="update_user_id != null">
+            <if test="updateUserId != null">
                 update_user_id,
             </if>
             <if test="sort != null">
                 sort,
             </if>
-            <if test="attachment_id != null">
+            <if test="attachmentId != null">
                 attachment_id,
             </if>
         </trim>
@@ -86,8 +89,8 @@
             <if test="status != null">
                 #{status,jdbcType=VARCHAR},
             </if>
-            <if test="is_delete != null">
-                #{is_delete,jdbcType=VARCHAR},
+            <if test="isDelete != null">
+                #{isDelete,jdbcType=VARCHAR},
             </if>
             <if test="type != null">
                 #{type,jdbcType=VARCHAR},
@@ -95,23 +98,23 @@
             <if test="sid != null">
                 #{sid,jdbcType=VARCHAR},
             </if>
-            <if test="create_time != null">
-                #{create_time,jdbcType=VARCHAR},
+            <if test="createTime != null">
+                #{createTime,jdbcType=VARCHAR},
             </if>
-            <if test="update_time != null">
-                #{update_time,jdbcType=VARCHAR},
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=VARCHAR},
             </if>
-            <if test="create_user_id != null">
-                #{create_user_id,jdbcType=VARCHAR},
+            <if test="createUserId != null">
+                #{createUserId,jdbcType=VARCHAR},
             </if>
-            <if test="update_user_id != null">
-                #{update_user_id,jdbcType=VARCHAR},
+            <if test="updateUserId != null">
+                #{updateUserId,jdbcType=VARCHAR},
             </if>
             <if test="sort != null">
                 #{sort,jdbcType=VARCHAR},
             </if>
-            <if test="attachment_id != null">
-                #{attachment_id,jdbcType=VARCHAR},
+            <if test="attachmentId != null">
+                #{attachmentId,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -133,8 +136,8 @@
             <if test="status != null">
                 status = #{status,jdbcType=VARCHAR},
             </if>
-            <if test="is_delete != null">
-                is_delete = #{is_delete,jdbcType=VARCHAR},
+            <if test="isDelete != null">
+                is_delete = #{isDelete,jdbcType=VARCHAR},
             </if>
             <if test="type != null">
                 type = #{type,jdbcType=VARCHAR},
@@ -142,47 +145,50 @@
             <if test="sid != null">
                 sid = #{sid,jdbcType=VARCHAR},
             </if>
-            <if test="update_time != null">
-                update_time = #{update_time,jdbcType=TIMESTAMP},
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="update_user_id != null">
-                update_user_id = #{update_user_id,jdbcType=VARCHAR},
+            <if test="updateUserId != null">
+                update_user_id = #{updateUserId,jdbcType=VARCHAR},
             </if>
             <if test="sort != null">
                 sort = #{sort,jdbcType=VARCHAR},
             </if>
-            <if test="attachment_id != null">
-                attachment_id = #{attachment_id,jdbcType=VARCHAR},
+            <if test="attachmentId != null">
+                attachment_id = #{attachmentId,jdbcType=VARCHAR},
             </if>
         </set>
         where id = #{id,jdbcType=VARCHAR}
     </update>
     <select id="getListCarousel" resultMap="BaseResultMap">
-/*        select * from carousel where is_delete !='1' or is_delete is null
-*/
-        select *,CASE status WHEN '1' THEN 0 ELSE 1 END flag
-            from carousel
+        select
+            <include refid="selectResultList"/> ,CASE status WHEN '1' THEN 0 ELSE 1 END flag
+            from carousel c
             where is_delete !='1' or is_delete is null ORDER BY FLAG,update_time desc
     </select>
     <select id="getMaxSort" resultType="INTEGER">
         select IFNULL(max(sort),0)+1 from carousel where is_delete is null or is_delete != '1'
     </select>
     <select id="getListCarouselByStatus" resultMap="BaseResultMap">
-        select * from carousel where status='1' and (is_delete !='1' or is_delete is null) order by sort
+        select 
+        <include refid="selectResultList"/> 
+        from carousel c where status='1' and (is_delete !='1' or is_delete is null) order by sort
     </select>
     <select id="getCarouselById" resultMap="BaseResultMap" parameterType="java.lang.String">
-        select * from carousel where id = #{id,jdbcType=VARCHAR}
+        select 
+         <include refid="selectResultList"></include>
+         from carousel c where id = #{id,jdbcType=VARCHAR}
     </select>
 
     <update id="updateCarouselWithStatus" parameterType="java.util.Map">
-        update carousel set status =(case when status = '1' then '0' else '1' end),update_time=#{update_time,jdbcType=TIMESTAMP},update_user_id=#{update_user_id,jdbcType=VARCHAR} where id in
+        update carousel set status =(case when status = '1' then '0' else '1' end),update_time=#{updateTime,jdbcType=TIMESTAMP},update_user_id=#{updateUserId,jdbcType=VARCHAR} where id in
             <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
                 #{id,jdbcType=VARCHAR}
             </foreach>
     </update>
 
-    <update id="updateCarouseWithDelete" parameterType="java.util.Map">``
-        update carousel set is_delete='1',update_time=#{update_time,jdbcType=TIMESTAMP},update_user_id=#{update_user_id,jdbcType=VARCHAR} where id in
+    <update id="updateCarouseWithDelete" parameterType="java.util.Map">
+        update carousel set is_delete='1',update_time=#{updateTime,jdbcType=TIMESTAMP},update_user_id=#{updateUserId,jdbcType=VARCHAR} where id in
             <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
                 #{id,jdbcType=VARCHAR}
             </foreach>

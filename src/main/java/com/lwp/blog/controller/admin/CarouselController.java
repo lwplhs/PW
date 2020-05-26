@@ -8,25 +8,21 @@ import com.lwp.blog.entity.Vo.CarouselVo;
 import com.lwp.blog.entity.Vo.ContentVo;
 import com.lwp.blog.entity.Vo.UserVo;
 import com.lwp.blog.service.CarouselService;
-import com.lwp.blog.utils.StringUtil;
 import com.lwp.blog.utils.TaleUtils;
-import org.apache.commons.io.FileUtils;
+import com.lwp.blog.utils.invalid.carousel.CarouselValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.File;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,36 +32,12 @@ import java.util.Map;
  * @Description:
  */
 @Controller("carouselController")
-@RequestMapping(value = "/admin")
+@RequestMapping(value = "/admin/carousel")
 public class CarouselController extends BaseController {
     private static final Logger LOGGER = LoggerFactory.getLogger(CarouselController.class);
 
     @Resource
     private CarouselService carouselService;
-
-
-    /**
-     * webupload上传图片方法
-     * @param files MultipartFile
-     * @param request
-     * @param response
-     * @return
-     */
-    @PostMapping(value = "uploadCarousel")
-    @ResponseBody
-    public String UploadCarousel(@RequestParam("file") MultipartFile files,
-                                 HttpServletRequest request,
-                                 HttpServletResponse response){
-        JSONObject json=new JSONObject();
-        response.setCharacterEncoding("utf-8");
-        LOGGER.info("-------------------开始调用上传文件upload接口-------------------");
-        UserVo userVo = TaleUtils.getLoginUser(request);
-        Map map = carouselService.UploadCarousel(files,userVo);
-        LOGGER.info("-------------------结束调用上传文件upload接口-------------------");
-        json = (JSONObject) JSONObject.toJSON(map);
-        return json.toString();
-    }
-
 
     /**
      * 添加首页轮播图
@@ -90,10 +62,40 @@ public class CarouselController extends BaseController {
             return jsonObject.toString();
         }
         LOGGER.info("-------------------参数校验成功------------------");
-        LOGGER.info("-------------------开始新增首页轮播图------------------");
+        LOGGER.info("-------------------开始保存首页轮播图------------------");
         UserVo userVo = TaleUtils.getLoginUser(request);
-        String result = carouselService.insertCarousel(carouselVo,userVo);
-        LOGGER.info("-------------------结束新增首页轮播图------------------");
+        String result = carouselService.saveCarousel(carouselVo,userVo);
+        LOGGER.info("-------------------结束保存首页轮播图------------------");
+        return result;
+    }
+
+    /**
+     * 更新首页轮播图
+     * @param request
+     * @param response
+     * @param carouselVo
+     * @param bindingResult
+     * @return
+     */
+    @PostMapping(value = "updateCarousel")
+    @ResponseBody
+    public String UpdateCarousel(HttpServletRequest request,
+                               HttpServletResponse response,
+                               @Validated(CarouselValidation.GroupCarouselEdit.class) @ModelAttribute CarouselVo carouselVo,
+                               BindingResult bindingResult){
+        JSONObject jsonObject = new JSONObject();
+        if(bindingResult.hasErrors()){
+            String msg = bindingResult.getFieldError().getDefaultMessage();
+            jsonObject.put("code","111111");
+            jsonObject.put("msg",msg);
+            LOGGER.info(msg);
+            return jsonObject.toString();
+        }
+        LOGGER.info("-------------------参数校验成功------------------");
+        LOGGER.info("-------------------开始更新首页轮播图------------------");
+        UserVo userVo = TaleUtils.getLoginUser(request);
+        String result = carouselService.saveCarousel(carouselVo,userVo);
+        LOGGER.info("-------------------结束更新首页轮播图------------------");
         return result;
     }
 
@@ -105,7 +107,7 @@ public class CarouselController extends BaseController {
      * @return
      */
     @GetMapping(value = "/carousel-list")
-    public String toPagePicture_list(Model model,
+    public String toPagePictureList(Model model,
                                      @RequestParam(value="pageNum", defaultValue = "1") int pageNum,
                                      @RequestParam(value = "limit",defaultValue = "10") int limit){
 
@@ -114,31 +116,44 @@ public class CarouselController extends BaseController {
 
         model.addAttribute("picList",list);
         model.addAttribute("total",page.getTotal());
-        return this.render("/admin/carousel-list");
-    }
-
-    @GetMapping(value = "/carousel-view")
-    public String toPageCarousel_view(Model model,
-                                      @RequestParam(value = "id",defaultValue = "") String id){
-        CarouselVo carouselVo = carouselService.getCarouselById(id);
-        model.addAttribute("Carousel",carouselVo);
-        return this.render("/admin/carousel-view");
+        return this.render("/admin/carousel/carousel-list");
     }
 
     /**
-     * 跳转到编辑页面 -根据id查询数据填充
+     * 查看页面
+     * @param model
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/carousel-view")
+    public String toPageCarouselView(Model model,
+                                      @RequestParam(value = "id",defaultValue = "") String id){
+        CarouselVo carouselVo = carouselService.getCarouselById(id);
+        model.addAttribute("Carousel",carouselVo);
+        return this.render("/admin/carousel/carousel-view");
+    }
+
+    /**
+     * 跳转到新增页面
+     * @return
+     */
+    @GetMapping(value = "/carousel-add")
+    public String toPageCarouselAdd(){
+        return this.render("/admin/carousel/carousel-add");
+    }
+    /**
+     * 跳转到更新页面 -根据id查询数据填充
      * @param model
      * @param id
      * @return
      */
     @GetMapping(value = "/carousel-edit")
-    public String toPageCarousel_edit(Model model,
-                                      @RequestParam(value = "id",defaultValue = "") String id){
+    public String toPageCarouselEdit(Model model,
+                                     @RequestParam(value = "id",defaultValue = "") String id){
         CarouselVo carouselVo = carouselService.getCarouselById(id);
         model.addAttribute("Carousel",carouselVo);
-        return this.render("/admin/carousel-add");
+        return this.render("/admin/carousel/carousel-edit");
     }
-
     /**
      * 根据分页 获取轮播图数据
      * @param model
@@ -157,7 +172,7 @@ public class CarouselController extends BaseController {
         model.addAttribute("picList",list);
         model.addAttribute("total",page.getTotal());
 
-        return this.render("/admin/carousel-list::list");
+        return this.render("/admin/carousel/carousel-list::list");
     }
 
     /**
@@ -166,7 +181,7 @@ public class CarouselController extends BaseController {
      * @param type 1 状态status
      * @return
      */
-    @PostMapping(value = "/carousel/updateCarouse")
+    @PostMapping(value = "/updateCarouselStatus")
     @ResponseBody
     public String updateCarouse(@RequestParam(value = "ids") String ids,
                                 @RequestParam(value = "type") String type,

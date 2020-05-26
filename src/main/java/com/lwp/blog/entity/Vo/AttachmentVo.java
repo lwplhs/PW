@@ -11,11 +11,11 @@ import java.util.Date;
  */
 public class AttachmentVo {
     private String id;
-    private String save_name;
-    private String old_name;
-    private String save_path;
-    private String url_path;
-    private String user_id;
+    private String saveName;
+    private String oldName;
+    private String savePath;
+    private String urlPath;
+    private String userId;
     private Date time;
     private String type;
     private String suffix;
@@ -31,44 +31,44 @@ public class AttachmentVo {
         this.id = id;
     }
 
-    public String getSave_name() {
-        return save_name;
+    public String getSaveName() {
+        return saveName;
     }
 
-    public void setSave_name(String save_name) {
-        this.save_name = save_name;
+    public void setSaveName(String saveName) {
+        this.saveName = saveName;
     }
 
-    public String getOld_name() {
-        return old_name;
+    public String getOldName() {
+        return oldName;
     }
 
-    public void setOld_name(String old_name) {
-        this.old_name = old_name;
+    public void setOldName(String oldName) {
+        this.oldName = oldName;
     }
 
-    public String getSave_path() {
-        return save_path;
+    public String getSavePath() {
+        return savePath;
     }
 
-    public void setSave_path(String save_path) {
-        this.save_path = save_path;
+    public void setSavePath(String savePath) {
+        this.savePath = savePath;
     }
 
-    public String getUrl_path() {
-        return url_path;
+    public String getUrlPath() {
+        return urlPath;
     }
 
-    public void setUrl_path(String url_path) {
-        this.url_path = url_path;
+    public void setUrlPath(String urlPath) {
+        this.urlPath = urlPath;
     }
 
-    public String getUser_id() {
-        return user_id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public Date getTime() {

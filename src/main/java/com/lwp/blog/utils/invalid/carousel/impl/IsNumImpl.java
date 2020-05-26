@@ -1,12 +1,11 @@
-package com.lwp.blog.utils.invalid.impl;
+package com.lwp.blog.utils.invalid.carousel.impl;
 
 import com.lwp.blog.utils.StringUtil;
 import com.lwp.blog.utils.Tools;
-import com.lwp.blog.utils.invalid.IsNum;
+import com.lwp.blog.utils.invalid.carousel.IsNum;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.lang.annotation.Annotation;
 
 /**
  * Created with IntelliJ IDEA.

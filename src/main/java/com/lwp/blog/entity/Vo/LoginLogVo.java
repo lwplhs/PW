@@ -9,7 +9,7 @@ import java.util.Date;
  * @Date: 2020/03/27/16:39
  * @Description:
  */
-public class Login_logVo {
+public class LoginLogVo {
     private Integer id;
     private String userName;
     private Long loginTime;
@@ -17,11 +17,11 @@ public class Login_logVo {
     private String loginResultDetail;
     private String loginUrl;
 
-    public Login_logVo(){
+    public LoginLogVo(){
 
     }
 
-    public Login_logVo(String userName,String loginResult,String loginResultDetail,String loginUrl){
+    public LoginLogVo(String userName, String loginResult, String loginResultDetail, String loginUrl){
         this.userName = userName;
         this.loginResult = loginResult;
         this.loginResultDetail = loginResultDetail;

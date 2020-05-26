@@ -1,7 +1,7 @@
 package com.lwp.blog.dao;
 
 import com.lwp.blog.entity.Users;
-import com.lwp.blog.entity.Vo.Login_logVo;
+import com.lwp.blog.entity.Vo.LoginLogVo;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component;
  * @Description:
  */
 @Component
-public interface Login_logVoDao {
+public interface LoginLogDao {
     void insertUser(Users user);
 
 
-    int insertLog(Login_logVo login_logVo);
+    int insertLog(LoginLogVo login_logVo);
 
-    Login_logVo selectAllLog();
+    LoginLogVo selectAllLog();
 
     int selectCountFalse();
 }

@@ -1,57 +1,3 @@
-<!--carousel-add页面业务相关的自定义脚本-->
-function carousel_save_submit(){
-    var jsondata = $("#form-carousel-add").serialize();
-    console.log(jsondata);
-    $.ajax({
-        type:"POST",
-        data:jsondata,
-        url:"/admin/saveCarousel",
-        success: function(result){
-            var data = JSON.parse(result);
-            if(result.code=='100000'){
-                layer.msg(data.msg);
-            }else {
-                layer.alert(data.msg);
-            }
-        }
-
-    });
-}
-
-
-
-$(function(){
-    //下拉框初始化
-    if($("#type option:selected").val()=='0'){
-        $("#shop").show();
-        $("#customize").hide();
-    }else {
-        $("#shop").hide();
-        $("#customize").show();
-    }
-
-
-    /**
-     * 下拉框选择
-     *
-     * */
-    $("#type").change(function () {
-        if($("#type option:selected").val()=='0'){
-            $("#shop").show();
-            $("#customize").hide();
-        }else {
-            $("#shop").hide();
-            $("#customize").show();
-        }
-    });
-
-    $('.skin-minimal input').iCheck({
-        checkboxClass: 'icheckbox-blue',
-        radioClass: 'iradio-blue',
-        increaseArea: '20%'
-    });
-});
-
 (function( $ ){
     // 当domReady的时候开始初始化
     $(function() {
@@ -208,14 +154,14 @@ $(function(){
             swf: '/static/admin/n_n/webuploader/0.1.5/Uploader.swf',
             chunked: false,
             chunkSize: 512 * 1024,
-            server: '/admin/uploadCarousel',
+            server: '/admin/webUpload/upload?origin=1',
             // runtimeOrder: 'flash',
 
-            // accept: {
-            //     title: 'Images',
-            //     extensions: 'gif,jpg,jpeg,bmp,png',
-            //     mimeTypes: 'image/*'
-            // },
+            accept: {
+                title:'Images',
+                extensions:'gif,jpg,jpeg,bmp,png',
+                mimeTypes:'image/*'
+            },
 
             // 禁掉全局的拖拽功能。这样不会出现图片拖进页面的时候，把图片打开。
             disableGlobalDnd: true,
@@ -244,7 +190,7 @@ $(function(){
         });
 
         uploader.on('dialogOpen', function() {
-            console.log('here');
+            //console.log('here');
         });
 
         // uploader.on('filesQueued', function() {
@@ -258,10 +204,10 @@ $(function(){
         // });
 
         // 添加“添加文件”的按钮，
-/*        uploader.addButton({
+        uploader.addButton({
             id: '#filePicker2',
             label: '重新选择'
-        });*/
+        });
 
         uploader.on('ready', function() {
             window.uploader = uploader;
@@ -275,11 +221,10 @@ $(function(){
                 '<p class="progress"><span></span></p>' +
                 '</li>' ),
 
-                $btns ="";
-                    /*$('<div class="file-panel">' +
+                $btns = $('<div class="file-panel">' +
                     '<span class="cancel">删除</span>' +
                     '<span class="rotateRight">向右旋转</span>' +
-                    '<span class="rotateLeft">向左旋转</span></div>').appendTo( $li ),*/
+                    '<span class="rotateLeft">向左旋转</span></div>').appendTo( $li ),
                 $prgress = $li.find('p.progress span'),
                 $wrap = $li.find( 'p.imgWrap' ),
                 $info = $('<p class="error"></p>'),
@@ -319,7 +264,7 @@ $(function(){
                         img = $('<img src="'+src+'">');
                         $wrap.empty().append( img );
                     } else {
-                        $.ajax('/admin/uploadCarousel', {
+                        $.ajax('/admin/webUpload/upload?origin=1', {
                             method: 'POST',
                             data: src,
                             dataType:'json'
@@ -348,7 +293,7 @@ $(function(){
 
                 // 成功
                 if ( cur === 'error' || cur === 'invalid' ) {
-                    console.log( file.statusText );
+                    //console.log( file.statusText );
                     showError( file.statusText );
                     percentages[ file.id ][ 1 ] = 1;
                 } else if ( cur === 'interrupt' ) {
@@ -365,15 +310,15 @@ $(function(){
                 $li.removeClass( 'state-' + prev ).addClass( 'state-' + cur );
             });
 
-/*            $li.on( 'mouseenter', function() {
+            $li.on( 'mouseenter', function() {
                 $btns.stop().animate({height: 30});
             });
 
             $li.on( 'mouseleave', function() {
                 $btns.stop().animate({height: 0});
-            });*/
+            });
 
-            /*$btns.on( 'click', 'span', function() {
+            $btns.on( 'click', 'span', function() {
                 var index = $(this).index(),
                     deg;
 
@@ -405,7 +350,7 @@ $(function(){
                 }
 
 
-            });*/
+            });
 
             $li.appendTo( $queue );
         }
@@ -453,9 +398,9 @@ $(function(){
 
             } else {
                 stats = uploader.getStats();
-/*                text = '共' + fileCount + '张（' +
+                text = '共' + fileCount + '张（' +
                     WebUploader.formatSize( fileSize )  +
-                    '），已上传' + stats.successNum + '张';*/
+                    '），已上传' + stats.successNum + '张';
 
                 if ( stats.uploadFailNum ) {
                     text += '，失败' + stats.uploadFailNum + '张';
@@ -590,13 +535,16 @@ $(function(){
         uploader.on("error", function (handler) {
             switch (handler) {
                 case "Q_EXCEED_NUM_LIMIT":
-                    $.L.msgWarning("只能上传一张图片！");
+                    //$.L.msgWarning("只能上传一张图片！");
+                    layer.msg("只能上传一张图片!");
                     break;
                 case "F_EXCEED_SIZE":
-                    $.L.msgWarning("图片大小不能超过1M！");
+                    //$.L.msgWarning("图片大小不能超过1M！");
+                    layer.msg("图片太大！")
                     break;
                 case "Q_TYPE_DENIED":
-                    $.L.msgWarning("不支持的图片类型！");
+                    //$.L.msgWarning("不支持的图片类型！");
+                    layer.msg("不支持的图片类型!")
                     break;
             }
         });
@@ -605,18 +553,14 @@ $(function(){
                 };*/
         uploader.on('uploadSuccess', function(file,response) {
             var data = $.parseJSON(response._raw);
-            console.log(data);
+            //console.log(data);
             if(data.code == "100000"){
-                $("#attachment_id").val(data.aid);
+                $("#attachmentId").val(data.aid);
+                $("#path").val(data.url);
                 layer.msg(data.msg);
             }else{
                 layer.alert(data.msg);
             }
-            /*			console.log(data);
-                        console.log(data.code);
-                        console.log(data.msg);
-                        console.log(data.aid);
-                        console.log(data.url);*/
         });
 
         $upload.on('click', function() {
@@ -643,48 +587,6 @@ $(function(){
 
         $upload.addClass( 'state-' + state );
         updateTotalProgress();
-        //编辑页面初始化
-        var getFileBlob = function (url, cb) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", url);
-            xhr.responseType = "blob";
-            xhr.addEventListener('load', function() {
-                cb(xhr.response);
-            });
-            xhr.send();
-        };
-
-        var blobToFile = function (blob, name) {
-            blob.lastModifiedDate = new Date();
-            blob.name = name;
-            return blob;
-        };
-
-        var getFileObject = function(filePathOrUrl, cb) {
-            getFileBlob(filePathOrUrl, function (blob) {
-                cb(blobToFile(blob, 'test.jpg'));
-            });
-        };
-        setTimeout(function(){
-            var id = $("#id").val();
-            if(id ){
-                //获取当前网址，如： http://localhost:8090/jobservice/service/meun.jsp
-                var curWwwPath=window.document.location.href;
-                //获取主机地址之后的目录，如： jobservice/service/menu.jsp
-                var pathName=window.document.location.pathname;
-                var pos=curWwwPath.indexOf(pathName);
-                //获取主机地址，如： http://localhost:8090
-                var localhostPaht=curWwwPath.substring(0,pos);
-                var path = $("#path").val();
-                localhostPaht = localhostPaht+path;
-                console.log(localhostPaht);
-                getFileObject(localhostPaht, function (fileObject) {
-                    var wuFile = new WebUploader.Lib.File(WebUploader.guid('rt_'),fileObject);
-                    var file = new WebUploader.File(wuFile);
-                    uploader.onFileQueued(file);
-                });
-            }
-        }, 100);
     });
 
 })( jQuery );

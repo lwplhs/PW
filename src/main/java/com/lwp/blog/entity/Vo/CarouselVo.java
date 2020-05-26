@@ -1,10 +1,9 @@
 package com.lwp.blog.entity.Vo;
 
-import com.lwp.blog.utils.invalid.IsNum;
+import com.lwp.blog.utils.invalid.carousel.CarouselValidation;
+import com.lwp.blog.utils.invalid.carousel.IsNum;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 /**
@@ -15,6 +14,7 @@ import java.util.Date;
  * @Description:
  */
 public class CarouselVo {
+    @NotBlank(groups = {CarouselValidation.GroupCarouselEdit.class},message = "该轮播图不存在，请刷新页面重试")
     private String id;
 
     @NotBlank(message = "轮播图名称不能为空")
@@ -25,25 +25,25 @@ public class CarouselVo {
     private String path;
     private String url;
     private String status;
-    private String is_delete;
+    private String isDelete;
     private String type;
     private String sid;
-    private Date create_time;
-    private Date update_time;
-    private String create_user_id;
-    private String update_user_id;
+    private Date createTime;
+    private Date updateTime;
+    private String createUserId;
+    private String updateUserId;
 
     @IsNum(message = "排序值不填或者必须为大于0的数字")
     private String sort;
     @NotBlank(message = "轮播图片不能为空")
-    private String attachment_id;
+    private String attachmentId;
 
-    public String getAttachment_id() {
-        return attachment_id;
+    public String getAttachmentId() {
+        return attachmentId;
     }
 
-    public void setAttachment_id(String attachment_id) {
-        this.attachment_id = attachment_id;
+    public void setAttachmentId(String attachmentId) {
+        this.attachmentId = attachmentId;
     }
 
     public String getSort() {
@@ -102,12 +102,12 @@ public class CarouselVo {
         this.status = status;
     }
 
-    public String getIs_delete() {
-        return is_delete;
+    public String getIsDelete() {
+        return isDelete;
     }
 
-    public void setIs_delete(String is_delete) {
-        this.is_delete = is_delete;
+    public void setIsDelete(String isDelete) {
+        this.isDelete = isDelete;
     }
 
     public String getType() {
@@ -126,35 +126,35 @@ public class CarouselVo {
         this.sid = sid;
     }
 
-    public Date getCreate_time() {
-        return create_time;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreate_time(Date create_time) {
-        this.create_time = create_time;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Date getUpdate_time() {
-        return update_time;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUpdate_time(Date update_time) {
-        this.update_time = update_time;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
-    public String getCreate_user_id() {
-        return create_user_id;
+    public String getCreateUserId() {
+        return createUserId;
     }
 
-    public void setCreate_user_id(String create_user_id) {
-        this.create_user_id = create_user_id;
+    public void setCreateUserId(String createUserId) {
+        this.createUserId = createUserId;
     }
 
-    public String getUpdate_user_id() {
-        return update_user_id;
+    public String getUpdateUserId() {
+        return updateUserId;
     }
 
-    public void setUpdate_user_id(String update_user_id) {
-        this.update_user_id = update_user_id;
+    public void setUpdateUserId(String updateUserId) {
+        this.updateUserId = updateUserId;
     }
 }

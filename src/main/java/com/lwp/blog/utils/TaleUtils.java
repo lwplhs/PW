@@ -11,9 +11,8 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.util.ClassUtils;
+import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
@@ -27,14 +26,23 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.Normalizer;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * 工具类
  */
+@Component
 public class TaleUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaleUtils.class);
+
+    private static SysConfig sysConfig;
+
+    @Autowired
+    public void setSysConfig(SysConfig sysConfig){
+        TaleUtils.sysConfig = sysConfig;
+    }
 
     /**
      * 一个月
@@ -447,7 +455,7 @@ public class TaleUtils {
         Map map = new HashMap();
         String content = "";
         try {
-            content = SysConfig.getParamer("carousel_path");
+            content = sysConfig.getUpload_path();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -508,4 +516,45 @@ public class TaleUtils {
         }
         return arg;
     }
+
+    /**
+     * 将List<Object>转化为JSON数据
+     * Object必须有重写toString方法
+     * @param list
+     */
+    public static String listTOJSON(List list){
+        StringBuffer stringBuffer=new StringBuffer();
+        stringBuffer.append("[");
+
+        for(int i=0;i<list.size();i++){
+            Object obj=list.get(i);
+            String tostr=obj.toString();
+            tostr=tostr.substring(tostr.indexOf("{"));
+            tostr=tostr.replace("=",":");
+            stringBuffer.append(tostr);
+            stringBuffer.append(",");
+        }
+        if(stringBuffer.toString().endsWith(",")) {
+            stringBuffer.replace(stringBuffer.length() - 1, stringBuffer.length(), "]");
+        }
+        else {
+            stringBuffer.append("]");
+        }
+        return stringBuffer.toString();
+    }
+
+
+    public static String getUploadErrorPicPath(){
+        String path = "";
+        try {
+            path = sysConfig.getUpload_error_path();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(StringUtil.isNull(path)){
+            path="/static/admin/images/error.jpg";
+        }
+        return path;
+    }
+
 }

@@ -1,57 +1,3 @@
-<!--carousel-add页面业务相关的自定义脚本-->
-function carousel_save_submit(){
-    var jsondata = $("#form-carousel-add").serialize();
-    console.log(jsondata);
-    $.ajax({
-        type:"POST",
-        data:jsondata,
-        url:"/admin/saveCarousel",
-        success: function(result){
-            var data = JSON.parse(result);
-            if(result.code=='100000'){
-                layer.msg(data.msg);
-            }else {
-                layer.alert(data.msg);
-            }
-        }
-
-    });
-}
-
-
-
-$(function(){
-    //下拉框初始化
-    if($("#type option:selected").val()=='0'){
-        $("#shop").show();
-        $("#customize").hide();
-    }else {
-        $("#shop").hide();
-        $("#customize").show();
-    }
-
-
-    /**
-     * 下拉框选择
-     *
-     * */
-    $("#type").change(function () {
-        if($("#type option:selected").val()=='0'){
-            $("#shop").show();
-            $("#customize").hide();
-        }else {
-            $("#shop").hide();
-            $("#customize").show();
-        }
-    });
-
-    $('.skin-minimal input').iCheck({
-        checkboxClass: 'icheckbox-blue',
-        radioClass: 'iradio-blue',
-        increaseArea: '20%'
-    });
-});
-
 (function( $ ){
     // 当domReady的时候开始初始化
     $(function() {
@@ -258,10 +204,10 @@ $(function(){
         // });
 
         // 添加“添加文件”的按钮，
-/*        uploader.addButton({
-            id: '#filePicker2',
-            label: '重新选择'
-        });*/
+        /*        uploader.addButton({
+                    id: '#filePicker2',
+                    label: '重新选择'
+                });*/
 
         uploader.on('ready', function() {
             window.uploader = uploader;
@@ -276,11 +222,11 @@ $(function(){
                 '</li>' ),
 
                 $btns ="";
-                    /*$('<div class="file-panel">' +
-                    '<span class="cancel">删除</span>' +
-                    '<span class="rotateRight">向右旋转</span>' +
-                    '<span class="rotateLeft">向左旋转</span></div>').appendTo( $li ),*/
-                $prgress = $li.find('p.progress span'),
+            /*$('<div class="file-panel">' +
+            '<span class="cancel">删除</span>' +
+            '<span class="rotateRight">向右旋转</span>' +
+            '<span class="rotateLeft">向左旋转</span></div>').appendTo( $li ),*/
+            $prgress = $li.find('p.progress span'),
                 $wrap = $li.find( 'p.imgWrap' ),
                 $info = $('<p class="error"></p>'),
 
@@ -365,13 +311,13 @@ $(function(){
                 $li.removeClass( 'state-' + prev ).addClass( 'state-' + cur );
             });
 
-/*            $li.on( 'mouseenter', function() {
-                $btns.stop().animate({height: 30});
-            });
+            /*            $li.on( 'mouseenter', function() {
+                            $btns.stop().animate({height: 30});
+                        });
 
-            $li.on( 'mouseleave', function() {
-                $btns.stop().animate({height: 0});
-            });*/
+                        $li.on( 'mouseleave', function() {
+                            $btns.stop().animate({height: 0});
+                        });*/
 
             /*$btns.on( 'click', 'span', function() {
                 var index = $(this).index(),
@@ -453,9 +399,9 @@ $(function(){
 
             } else {
                 stats = uploader.getStats();
-/*                text = '共' + fileCount + '张（' +
-                    WebUploader.formatSize( fileSize )  +
-                    '），已上传' + stats.successNum + '张';*/
+                /*                text = '共' + fileCount + '张（' +
+                                    WebUploader.formatSize( fileSize )  +
+                                    '），已上传' + stats.successNum + '张';*/
 
                 if ( stats.uploadFailNum ) {
                     text += '，失败' + stats.uploadFailNum + '张';
