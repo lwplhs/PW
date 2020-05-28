@@ -2,6 +2,7 @@ package com.lwp.blog.service;
 
 import com.lwp.blog.entity.Vo.ProductCategoryVo;
 import com.lwp.blog.entity.Vo.UserVo;
+import org.apache.catalina.User;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public interface ProductCategoryService {
      * 修改状态
      * type 1:是否启用 2：删除
      */
-    String updateProductCategoryWithType(String type);
+    Boolean updateProductCategoryWithType(String type, String id, UserVo userVo);
 
 
     /**

@@ -612,8 +612,8 @@
             });
         };
         setTimeout(function(){
-            var id = $("#id").val();
-            if(id ){
+            var path = $("#path").val();
+            if(path){
                 //获取当前网址，如： http://localhost:8090/jobservice/service/meun.jsp
                 var curWwwPath=window.document.location.href;
                 //获取主机地址之后的目录，如： jobservice/service/menu.jsp
@@ -621,7 +621,6 @@
                 var pos=curWwwPath.indexOf(pathName);
                 //获取主机地址，如： http://localhost:8090
                 var localhostPaht=curWwwPath.substring(0,pos);
-                var path = $("#path").val();
                 localhostPaht = localhostPaht+path;
                 console.log(localhostPaht);
                 getFileObject(localhostPaht, function (fileObject) {

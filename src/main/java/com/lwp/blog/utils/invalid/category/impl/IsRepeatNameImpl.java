@@ -28,11 +28,16 @@ public class IsRepeatNameImpl implements ConstraintValidator<IsRepeatName,String
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
         if(!StringUtil.isNull(s)){
-            int num = productCategoryDao.getCountByName(s);
+            int num = productCategoryDao.getCountByName(s,null);
             if(num > 0){
                 return false;
             }
+            return true;
+        }else {
+            constraintValidatorContext.disableDefaultConstraintViolation();
+            constraintValidatorContext.buildConstraintViolationWithTemplate("商品分类名称不能为空").addConstraintViolation();
+            return false;
         }
-        return true;
+
     }
 }

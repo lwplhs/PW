@@ -2,6 +2,7 @@ package com.lwp.blog.entity.Vo;
 
 import com.lwp.blog.utils.invalid.category.IsRepeatName;
 import com.lwp.blog.utils.invalid.category.CategoryValidationGroups;
+import com.lwp.blog.utils.invalid.category.IsRepeatNmaeWithUpdate;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
@@ -13,11 +14,13 @@ import java.util.Date;
  * @Date: 2020/05/22/9:22
  * @Description:
  */
+@IsRepeatNmaeWithUpdate(vId = "id",vName = "name",groups = {CategoryValidationGroups.GroupCategoryEdit.class},message = "商品分类名称已存在")
 public class ProductCategoryVo {
     private String id;
 
-    @NotBlank(groups = {CategoryValidationGroups.GroupCategoryAdd.class},message = "商品分类名称不能为空")
+
     @IsRepeatName(groups = {CategoryValidationGroups.GroupCategoryAdd.class},message = "商品分类名称已存在")
+    @NotBlank(groups = {CategoryValidationGroups.GroupCategoryCommon.class},message = "商品分类名称不能为空")
     private String name;
 
     @NotBlank(groups = {CategoryValidationGroups.GroupCategoryCommon.class},message = "父类不能为空")

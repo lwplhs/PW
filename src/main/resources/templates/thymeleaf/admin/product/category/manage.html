@@ -39,7 +39,7 @@
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span class="c-gray en">&gt;</span> 产品分类 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div style="font-size: 20px; padding-left: 20px;padding-top: 20px"><a class="btn btn-primary radius" onclick="category_add('0','添加一级类别','/admin/productCategory/productCategory-add')" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加一级类别</a></div>
-<input id="categoryList" name="categoryList"  hidden="hidden" th:value="${categoryList}" />
+<!--<input id="categoryList" name="categoryList"  hidden="hidden" th:value="${categoryList}" />-->
 <input id="menuId" name="menuId" hidden="hidden">
 <table class="table">
 	<tr>
@@ -55,6 +55,7 @@
 		<a href="javascript:;" onclick="menu_view()"><li id="view" hidden="hidden" class="pub">查看</li></a>
 		<a href="javascript:;" onclick="menu_edit()"><li id="edit" hidden="hidden" class="pub">修改</li></a>
 		<a href="javascript:;" onclick="menu_delete()"><li id="delete" hidden="hidden" class="delete">删除</li></a>
+		<a href="javascript:;" onclick="menu_update()"><li id="update" hidden="hidden" class="delete">启用/停用</li></a>
 	</ul>
 </div>
 <div th:replace="/admin/footer::footer-content"></div>

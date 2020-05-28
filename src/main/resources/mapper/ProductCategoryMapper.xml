@@ -129,7 +129,7 @@
                      update_time = #{updateTime,jdbcType=TIMESTAMP},
                  </if>
                  <if test="updateUserId != null">
-                     update_user_time = #{updateUserTime,jdbcType=VARCHAR},
+                     update_user_id = #{updateUserId,jdbcType=VARCHAR},
                  </if>
             </set>
             where id = #{id,jdbcType=VARCHAR}
@@ -166,6 +166,22 @@
     </select>
 
     <select id="getCountByName" parameterType="java.lang.String" resultType="java.lang.Integer">
-        select count(*) from product_category where name=#{name,jdbcType=VARCHAR}
+        select count(*) from product_category where name=#{name,jdbcType=VARCHAR} and is_delete != '1'
+        <if test="id != null ">
+            and id != #{id,jdbcType=VARCHAR}
+        </if>
     </select>
+
+    <update id="updateProductCategoryWithStatusById" parameterType="java.lang.String">
+        update product_category set status=#{status,jdbcType=VARCHAR} where id=#{id,jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateProductCategoryWithDeleteById" parameterType="java.lang.String">
+        update product_category set is_delete=#{isDelete,jdbcType=VARCHAR} where id=#{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getProductCategoryListByParentId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from product_category where parent_id=#{parentId,jdbcType=VARCHAR}
+    </select>
+
 </mapper>

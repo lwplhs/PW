@@ -88,7 +88,7 @@
         $.ajax({
             type:"POST",
             data:jsondata,
-            url:"/admin/productCategory/saveCategory",
+            url:"/admin/productCategory/updateCategory",
             success: function(result){
                 console.log(result)
                 var data = JSON.parse(result);

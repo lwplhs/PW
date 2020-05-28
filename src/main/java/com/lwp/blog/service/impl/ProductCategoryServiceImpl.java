@@ -105,9 +105,132 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return temp;
     }
 
+    /**
+     * 根据id，type 修改 商品分类的状态
+     * @param type 1 启用/停用 2 删除
+     * @param id
+     * @return
+     */
     @Override
-    public String updateProductCategoryWithType(String type) {
-        return null;
+    public Boolean updateProductCategoryWithType(String type,String id,UserVo userVo) {
+        Boolean bool = false;
+        if(type != null){
+            switch (type){
+                case "1":
+                    bool = this.updateStatus(id,userVo);
+                    break;
+                case "2":
+                    bool = this.updateDelete(id,userVo);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return bool;
+    }
+
+
+    /**
+     * 修改状态 启用/未启用 将该分类目录下的状态统一
+     * @param ids
+     * @param userVo
+     * @return
+     */
+    private Boolean updateStatus(String ids,UserVo userVo){
+        List<String> temp = this.toList(ids);
+        if(!StringUtil.isNull(temp)){
+            Map<String,Object> map = new HashMap<>();
+            map.put("ids",temp);
+            map.put("updateTime",new Date());
+            map.put("updateUserId",userVo.getUid());
+            int count = productCategoryDao.updateProductCategoryWithStatus(map);
+            if(count > 0){
+                for(int i = 0; i < temp.size();i++){
+                    String id = temp.get(i);
+                    this.updateLeaf(id,"1");
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 根据父id 修改下面的状态
+     * @param id
+     * @param type 1 状态  2 删除
+     */
+    private void updateLeaf(String id,String type){
+        ProductCategoryVo vo = productCategoryDao.getProductCategoryById(id);
+        switch (type){
+            case "1":
+
+                String status = vo.getStatus();
+                List<ProductCategoryVo> list = productCategoryDao.getProductCategoryListByParentId(id);
+                if(!StringUtil.isNull(list)){
+                    for(int i = 0;i < list.size();i++){
+                        ProductCategoryVo productCategoryVo = list.get(i);
+                        String subId = productCategoryVo.getId();
+                        productCategoryDao.updateProductCategoryWithStatusById(subId,status);
+                        this.updateLeaf(subId,"1");
+                    }
+                }
+                break;
+            case "2":
+                String isDelete = vo.getIsDelete();
+                List<ProductCategoryVo> list1 = productCategoryDao.getProductCategoryListByParentId(id);
+                if(!StringUtil.isNull(list1)){
+                    for(int i=0;i<list1.size();i++){
+                        ProductCategoryVo productCategoryVo = list1.get(i);
+                        String subId = productCategoryVo.getId();
+                        productCategoryDao.updateProductCategoryWithDeleteById(subId,isDelete);
+                        this.updateLeaf(subId,"2");
+                    }
+                }
+                break;
+        }
+    }
+
+    /**
+     * 更新删除状态，将商品类别删除
+     * @param ids
+     * @return
+     */
+    private boolean updateDelete(String ids,UserVo userVo){
+        List<String> temp = this.toList(ids);
+        if(!StringUtil.isNull(temp)){
+            Map<String,Object> map = new HashMap<>();
+            map.put("ids",temp);
+            map.put("updateTime",new Date());
+            map.put("updateUserId",userVo.getUid());
+            int count = productCategoryDao.updateProductCategoryWithDelete(map);
+            if(count > 0){
+                for(int i = 0; i < temp.size();i++){
+                    String id = temp.get(i);
+                    this.updateLeaf(id,"2");
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 将 ids 转化成list
+     * @param ids
+     * @return
+     */
+    private List<String> toList(String ids){
+        List<String> list = new ArrayList();
+        String[] args = ids.split(",");
+        if(null != args && args.length > 0){
+            for(int i = 0;i < args.length;i++){
+                list.add(args[i]);
+            }
+        }
+        return list;
     }
 
     /**

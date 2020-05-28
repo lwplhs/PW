@@ -67,7 +67,7 @@ var setting = {
 
         onClick : null,//节点被点击的事件回调函数
 
-        onCollapse:null,//节点被折叠的事件回调函数
+        onCollapse:onCollapse,//节点被折叠的事件回调函数
 
         onDrag:null,//节点被拖拽的事件回调函数
 
@@ -75,7 +75,7 @@ var setting = {
 
         onDrop:null,//节点拖拽操作结束的事件回调函数
 
-        onExpand : null ,//节点被展开的事件回调函数
+        onExpand : onExpand ,//节点被展开的事件回调函数
 
         onMouseDown:null,//zTree上鼠标按键按下后的时间回调事件
 
@@ -228,27 +228,59 @@ var setting = {
 }
 
 
-/**
- * 数据
- * @type {*[]}
- */
-var array = [{ id:1, pId:0, name:"一级分类", open:true},
-    { id:2, pId:2, name:"一级分类"},
-    { id:11, pId:1, name:"二级分类"},
-    { id:111, pId:11, name:"三级分类"},
-    { id:112, pId:11, name:"三级分类"},
-    { id:113, pId:11, name:"三级分类"},
-    { id:114, pId:11, name:"三级分类"},
-    { id:115, pId:11, name:"三级分类"},
-    { id:12, pId:1, name:"二级分类 1-2"},
-    { id:121, pId:12, name:"三级分类 1-2-1"},
-    { id:122, pId:12, name:"三级分类 1-2-2"}];
+function onExpand(event, treeId, treeNode) {
+    var cookie = $.cookie("z_tree" + window.location);
+    var z_tree = new Array();
+    if (cookie) {
+        z_tree = JSON.parse(cookie);
+    }
+    if ($.inArray(treeNode.id, z_tree) < 0) {
+        z_tree.push(treeNode.id);
+    }
+    $.cookie("z_tree" + window.location, JSON.stringify(z_tree))
+}
+
+function onCollapse(event, treeId, treeNode) {
+    var cookie = $.cookie("z_tree" + window.location);
+    var z_tree = new Array();
+    if (cookie) {
+        z_tree = JSON.parse(cookie);
+    }
+    var index = $.inArray(treeNode.id, z_tree);
+    z_tree.splice(index, 1);
+    for (var i = 0; i < treeNode.children.length; i++) {
+        index = $.inArray(treeNode.children[i].id, z_tree);
+        if (index > -1) z_tree.splice(index, 1);
+    }
+    $.cookie("z_tree" + window.location, JSON.stringify(z_tree));
+}
+
 /**
  * 初始化
  */
 $(document).ready(function() {
-    array = JSON.parse($("#categoryList").val());
-    zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, array); //初始化树
+    //var array = JSON.parse($("#categoryList").val());
+    //zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, array); //初始化树
+
+    $.ajax({
+        type: "POST",
+        url: "/admin/productCategory/getData",
+        success: function (data) {
+            if (data && data.length != 0) {
+                data = JSON.parse(data);
+                $.fn.zTree.init($("#treeDemo"), setting, data);
+                var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+                var cookie = $.cookie("z_tree" + window.location);
+                if (cookie) {
+                    z_tree = JSON.parse(cookie);
+                    for (var i = 0; i < z_tree.length; i++) {
+                        var node = treeObj.getNodeByParam('id', z_tree[i]);
+                        treeObj.expandNode(node, true, false);
+                    }
+                }
+            }
+        }
+    });
     //zTreeObj.expandAll(true);    //true 节点全部展开、false节点收缩
 });
 
@@ -292,9 +324,9 @@ function OnRightClick(event,treeId,treeNode) {
         var pid = treeNode.pId;
         menuId.val(id);
         if(treeNode.level == 0){
-            var list=["#add","#view","#edit","#delete"];
+            var list=["#add","#view","#edit","#delete","#update"];
         }else {
-            var list=["#view","#edit","#delete"];
+            var list=["#view","#edit","#delete","#update"];
         }
 
         showRMenu(list, event.clientX, event.clientY);
@@ -339,6 +371,9 @@ function menu_add(){
     hideRMenu();
 }
 
+/**
+ * 右键编辑
+ */
 function menu_edit() {
     var id = menuId.val();
     layer.open({
@@ -355,6 +390,10 @@ function menu_edit() {
     });
     hideRMenu();
 }
+
+/**
+ * 菜单 查询
+ */
 function menu_view() {
     var id = menuId.val();
     layer.open({
@@ -366,8 +405,94 @@ function menu_view() {
         title: "查看商品类别",
         content:"/admin/productCategory/productCategory-view?id="+id,
         end: function () {
-            window.location.href = window.location.href;
+            //window.location.href = window.location.href;
         }
     });
+    hideRMenu();
+}
+
+/**
+ * 删除
+ * */
+function updateDelete(id) {
+    $.ajax({
+        type:"POST",
+        url:"/admin/productCategory/updateProductCategoryStatusById",
+        data:{
+            "id":id,
+            "type":"2"
+        },
+        success:function (data) {
+            data = JSON.parse(data);
+            layer.msg(data.msg);
+            if(data.code == '100000'){
+                setTimeout(function () {
+                    window.location.href = window.location.href;
+                },100);
+            }
+        }
+    });
+}
+function menu_delete() {
+    var id = menuId.val();
+    if(!StringUtils.isEmpty(id)){
+        layer.confirm("是否将所选择的类别删除",{
+            btn:['确定','取消'],
+            btn1:function (index, layero) {
+                layer.close(index);
+                updateDelete(id);
+            },
+            btn2:function (index, layero) {
+                layer.close(index);
+            }
+        });
+    }else {
+        layer.msg("请选择需要删除的内容");
+    }
+    hideRMenu();
+}
+
+/**
+ * 启用/停用
+ * */
+function updateStatus(ids) {
+    $.ajax({
+        type:"POST",
+        url:"/admin/productCategory/updateProductCategoryStatusById",
+        data:{
+            "id":ids,
+            "type":"1"
+        },
+        success:function (data) {
+            data = JSON.parse(data);
+            layer.msg(data.msg);
+            if(data.code == '100000'){
+                setTimeout(function () {
+                    window.location.href = window.location.href;
+                },100);
+            }
+        }
+    });
+}
+
+/**
+ * 菜单 启用/停用
+ */
+function menu_update(){
+    var id = menuId.val();
+    if(!StringUtils.isEmpty(id)){
+        layer.confirm("是否将所选择的类别启用/停用",{
+            btn:['确定','取消'],
+            btn1:function (index, layero) {
+                layer.close(index);
+                updateStatus(id);
+            },
+            btn2:function (index, layero) {
+                layer.close(index);
+            }
+        });
+    }else {
+        layer.msg("请选择需要修改的内容");
+    }
     hideRMenu();
 }
