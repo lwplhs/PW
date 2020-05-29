@@ -149,6 +149,10 @@
             </foreach>
     </update>
 
+    <update id="updateCategoryNameById">
+        update product_category set name=#{name,jdbcType=VARCHAR},update_user_id=#{updateUserId,jdbcType=VARCHAR},update_time=#{updateTime,jdbcType=TIMESTAMP} where id=#{id,jdbcType=VARCHAR}
+    </update>
+
     <select id="getProductCategoryListByNotDelete" resultMap="BaseResultMap">
         select * from product_category where is_delete is null or is_delete != 1
     </select>
@@ -183,5 +187,4 @@
     <select id="getProductCategoryListByParentId" parameterType="java.lang.String" resultMap="BaseResultMap">
         select * from product_category where parent_id=#{parentId,jdbcType=VARCHAR}
     </select>
-
 </mapper>

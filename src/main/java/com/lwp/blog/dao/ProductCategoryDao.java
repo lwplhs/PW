@@ -3,6 +3,7 @@ package com.lwp.blog.dao;
 import com.lwp.blog.entity.Vo.ProductCategoryVo;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -87,6 +88,9 @@ public interface ProductCategoryDao {
      * @return
      */
     int getCountByName(String name,String id);
+
+
+    int updateCategoryNameById(String name, String id, String updateUserId, Date updateTime);
 
 
 }

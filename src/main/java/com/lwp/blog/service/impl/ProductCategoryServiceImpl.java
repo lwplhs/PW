@@ -305,6 +305,15 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return path;
     }
 
+    @Override
+    public Boolean updateProductCategoryNameById(String id, String name, UserVo userVo) {
+        String updateUserId = userVo.getUid().toString();
+        Date date = new Date();
+        int num = productCategoryDao.updateCategoryNameById(name,id,updateUserId,date);
+
+        return num > 0?true:false;
+    }
+
     /**
      * 获取当前id的级别
      */

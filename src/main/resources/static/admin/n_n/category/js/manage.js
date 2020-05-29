@@ -39,11 +39,11 @@ var setting = {
 
         beforeDBClick : null, //zTree上鼠标双击之前的事件回调函数,并且根据返回值确定触发onDBClick事件回调函数
 
-        beforeDrag : null , //节点被拖拽之前的时间回调函数,并且根据返回值确定是否允许开启拖拽操作
+        beforeDrag : beforeDrag , //节点被拖拽之前的时间回调函数,并且根据返回值确定是否允许开启拖拽操作
 
         beforeDragOpen : null , //拖拽节点移动到折叠状态的父节点后,即将自动展开该父节点之前的事件回调函数,并且根据返回值确定是否允许自动展开操作
 
-        beforeDrop : null ,//节点拖拽操作结束之前的时间回调函数,并且根据返回值确定是否允许此拖拽操作
+        beforeDrop : beforeDrop ,//节点拖拽操作结束之前的时间回调函数,并且根据返回值确定是否允许此拖拽操作
 
         beforeEditName:null,//节点编辑按钮的click事件,并且根据返回值确定是否允许进入名称编辑 状态
 
@@ -55,7 +55,7 @@ var setting = {
 
         beforeRemove:null,//节点被删除之前的事件回调函数,并且根据返回值确定是否允许删除操作
 
-        beforeRename:null,//节点编辑名称结束（input失去焦点或按下Enter键）之后,更新节点名称数据之前的事件回调函数,并且根据返回值确定是否允许更改名称的操作
+        beforeRename:beforeRename,//节点编辑名称结束（input失去焦点或按下Enter键）之后,更新节点名称数据之前的事件回调函数,并且根据返回值确定是否允许更改名称的操作
 
         beforeRightClick:null,//zTree上鼠标右键点击之前的事件回调函数,并且根据返回值确定触发onRightClick事件回调函数
 
@@ -73,7 +73,7 @@ var setting = {
 
         onDragMove : null,//节点被拖拽过程中移动的事件回调函数
 
-        onDrop:null,//节点拖拽操作结束的事件回调函数
+        onDrop:onDrop,//节点拖拽操作结束的事件回调函数
 
         onExpand : onExpand ,//节点被展开的事件回调函数
 
@@ -159,7 +159,7 @@ var setting = {
 
             autoExpandTrigger:true,//拖拽时父节点自动展开是否触发onExpand事件回调函数
 
-            isCopy:true, //拖拽是否允许复制节点
+            isCopy:false, //拖拽是否允许复制节点
 
             isMove:true, //拖拽是否允许移动节点
 
@@ -183,13 +183,13 @@ var setting = {
 
         editnameSelectAll :false,//节点编辑名称input初次显示时,设置TXT内容是否为全选状态
 
-        enable:false, //设置ztree是否处于编辑状态
+        enable:true, //设置ztree是否处于编辑状态
 
         removeTitle:"remove",// 删除按钮的title辅助信息
 
         renameTitle:"rename" , //编辑名称按钮的title辅助信息
 
-        showRemoveBtn:true,//设置是否显示删除按钮
+        showRemoveBtn:false,//设置是否显示删除按钮
 
         showRenameBtn:true,//设置是否显示编辑名称按钮
 
@@ -226,8 +226,98 @@ var setting = {
     }
 
 }
+var className = "dark";
+
+//在拖拽之前
+function beforeDrag(treeId, treeNodes) {
+    for (var i=0,l=treeNodes.length; i<l; i++) {
+        if (treeNodes[i].drag === false) {
+            return false;
+        }
+    }
+    return true;
+}
+//用于捕获节点拖拽操作结束之前的事件回调函数，并且根据返回值确定是否允许此拖拽操作
+//默认值 null
+function beforeDrop(treeId, treeNodes, targetNode, moveType) {
+    return targetNode ? targetNode.drop !== false : true;
+}
+//用于捕获节点拖拽操作结束的事件回调函数  默认值： null
+function onDrop(event, treeId, treeNodes, targetNode,moveType) {
+    //拖拽成功时，修改被拖拽节点的pid
+    console.log(event)
+    console.log(treeId +'11111')
+    console.log(treeNodes )
+    console.log(treeNodes[0].parentCode)
+    console.log(targetNode)
+    console.log(moveType)
+    $.ajax({
+        type:'post',
+        url: '',
+        dataType: "text",
+        async: false,
+        success: function (data) {
+        },
+        error: function (msg) {
+        }
+    });
+}
+//重命名之前执行的函数
+function beforeRename(treeId, treeNode, newName, isCancel) {
+    className = (className === "dark" ? "":"dark");
+    //showLog((isCancel ? "<span style='color:red'>":"") + "[ beforeRename ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.orgName + (isCancel ? "</span>":""));
+    if (newName.length == 0) {
+        setTimeout(function() {
+            var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+            zTree.cancelEditName();
+            layer.msg("节点名称不能为空");
+        }, 0);
+        return false;
+    }else if(treeNode.name.eq(newName)){
+        return false;
+    }
+    return true;
+}
+//重命名是执行的函数
+function onRename(e, treeId, treeNode, isCancel) {
+    console.log(e);
+    console.log(isCancel);
+    console.log(treeNode);
+    console.log(treeId);
+/*    $.ajax({
+        type:'POST',
+        url:'/admin/productCategory/updateNameById',
+        data:{
+          id:id,
+          name:name
+        },
+    });*/
+    layer.msg("sucess");
+}
 
 
+var newCount = 1;
+//添加
+function addHoverDom(treeId, treeNode) {
+    var sObj = $("#" + treeNode.tId + "_span");
+    if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+    var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+        + "' title='add node' onfocus='this.blur();'></span>";
+    sObj.after(addStr);
+    var btn = $("#addBtn_"+treeNode.tId);
+    if (btn) btn.bind("click", function(){
+        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+        zTree.addNodes(treeNode, {id:(100 + newCount), pId:treeNode.id, orgName:"new node" + (newCount++)});
+        return false;
+    });
+};
+
+/**
+ * cookie缓存
+ * @param event
+ * @param treeId
+ * @param treeNode
+ */
 function onExpand(event, treeId, treeNode) {
     var cookie = $.cookie("z_tree" + window.location);
     var z_tree = new Array();

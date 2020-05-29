@@ -57,4 +57,6 @@ public interface ProductCategoryService {
      * 根据 附件id获取附件路径
      */
     String getAttachmentPathById(String aId);
+
+    Boolean updateProductCategoryNameById(String id,String name,UserVo userVo);
 }

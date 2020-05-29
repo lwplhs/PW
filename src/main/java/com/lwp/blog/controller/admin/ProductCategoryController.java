@@ -23,6 +23,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -203,6 +204,26 @@ public class ProductCategoryController extends BaseController {
         LOGGER.info("-------------------修改商品分类状态------------------");
         UserVo userVo = TaleUtils.getLoginUser(request);
         Boolean bool = productCategoryService.updateProductCategoryWithType(type,id,userVo);
+        JSONObject jsonObject = new JSONObject();
+        if(bool){
+            jsonObject.put("code","100000");
+            jsonObject.put("msg","更新成功");
+        }else {
+            jsonObject.put("code","111111");
+            jsonObject.put("msg","更新失败，请刷新数据！");
+        }
+        return jsonObject.toString();
+    }
+
+
+    @PostMapping(value = "updateNameById")
+    @ResponseBody
+    public String updateProductCategoryNameById(@RequestParam(value = "id") @NotBlank(message = "请刷新页面重试") String id,
+                                                @RequestParam(value = "name") @NotBlank(message = "名称不能为空") String name,
+                                                HttpServletRequest request){
+        UserVo userVo = TaleUtils.getLoginUser(request);
+        Boolean bool = productCategoryService.updateProductCategoryNameById(id,name,userVo);
+
         JSONObject jsonObject = new JSONObject();
         if(bool){
             jsonObject.put("code","100000");
