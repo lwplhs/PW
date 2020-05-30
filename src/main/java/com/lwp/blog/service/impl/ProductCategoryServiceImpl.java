@@ -46,6 +46,14 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
                 productCategoryVo.setCreateTime(new Date());
                 productCategoryVo.setUpdateTime(new Date());
                 productCategoryVo.setIsDelete("0");
+                if(StringUtil.isNull(productCategoryVo.getLevel())){
+                    //获取当前层级
+                    String parentId = productCategoryVo.getParentId();
+                    if(!StringUtil.isNull(parentId)){
+                        String level = this.getLevelById(parentId);
+                        productCategoryVo.setLevel(String.valueOf(Integer.parseInt(level)+1));
+                    }
+                }
                 productCategoryVo.setCreateUserId(userVo.getUid().toString());
                 productCategoryVo.setUpdateUserId(userVo.getUid().toString());
                 num = productCategoryDao.insertProductCategory(productCategoryVo);
@@ -59,6 +67,12 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             } else {
                 productCategoryVo.setUpdateTime(new Date());
                 productCategoryVo.setUpdateUserId(userVo.getUid().toString());
+                String level = productCategoryVo.getLevel();
+                String id = productCategoryVo.getId();
+                if(StringUtil.isNull(level) && !StringUtil.isNull(id)){
+                    level = this.getLevelById(id);
+                    productCategoryVo.setLevel(level);
+                }
                 num = productCategoryDao.updateProductCategory(productCategoryVo);
                 if (num > 0) {
                     jsonObject.put("code", "100000");
@@ -82,6 +96,20 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return null;
     }
 
+
+    /**
+     * 判断该节点是否有子节点
+     */
+    private Boolean isLeaf(String id){
+        List<ProductCategoryVo> list = productCategoryDao.getProductCategoryListByParentId(id);
+        if(StringUtil.isNull(list)){
+            return true;
+        }
+        return false;
+
+    }
+
+
     /**
      * 获取商品类别
      * @return
@@ -94,10 +122,29 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         for(int i = 0; i < list.size();i++){
             ProductCategoryVo productCategoryVo = (ProductCategoryVo) list.get(i);
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("id",productCategoryVo.getId());
+            String id = productCategoryVo.getId();
+            jsonObject.put("id",id);
             jsonObject.put("pId",productCategoryVo.getParentId());
             jsonObject.put("name",productCategoryVo.getName());
             jsonObject.put("status",productCategoryVo.getStatus());
+            /**
+             * 判断是否允许拖拽
+             */
+            if(this.isLeaf(id)){
+                jsonObject.put("drag",true);
+            }else {
+                jsonObject.put("drag",false);
+            }
+            /**
+             * 判断是否允许拖入
+             */
+            String level = this.getLevelById(id);
+            if("1".equals(level)){
+                jsonObject.put("drop",true);
+            }else {
+                jsonObject.put("drop",false);
+            }
+
             temp.add(jsonObject);
         }
         LOGGER.info(temp.toString());
@@ -305,6 +352,13 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return path;
     }
 
+    /**
+     * 根据 id 更新类型名称
+     * @param id
+     * @param name
+     * @param userVo
+     * @return
+     */
     @Override
     public Boolean updateProductCategoryNameById(String id, String name, UserVo userVo) {
         String updateUserId = userVo.getUid().toString();
@@ -314,18 +368,54 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return num > 0?true:false;
     }
 
+
+    /**
+     * 获取类型名称是否被占用
+     * @param id
+     * @param name
+     * @return
+     */
+    @Override
+    public int getCountProductCategoryByNameId(String id, String name) {
+        int num = productCategoryDao.getCountByName(name,id);
+        return num;
+    }
+
+    @Override
+    public int updateProductCategoryDrag(String dragId, String dropId, UserVo userVo) {
+
+        int num = 0;
+        ProductCategoryVo productCategoryVo = productCategoryDao.getProductCategoryById(dragId);
+        if(StringUtil.isNull(productCategoryVo)){
+            num = 0;
+        }else {
+            String level = this.getLevelById(dropId);
+            productCategoryVo.setLevel(String.valueOf(Integer.parseInt(level)+1));
+            productCategoryVo.setParentId(dropId);
+            num = productCategoryDao.updateProductCategory(productCategoryVo);
+        }
+
+        return num;
+    }
+
     /**
      * 获取当前id的级别
      */
     private String getLevelById(String id){
-        String level = "1";
+        String level = "0";
         if(StringUtil.isNull(id) || "0".equals(id)){
             return level;
         }
         String temp = productCategoryDao.getCategoryLevelById(id);
         if(!StringUtil.isNull(temp) && Tools.isNumber(temp)){
             level = temp;
+            return level;
+        }else{
+            int t = 1;
+            ProductCategoryVo productCategoryVo = productCategoryDao.getProductCategoryById(id);
+            level = String.valueOf(Integer.parseInt(this.getLevelById(productCategoryVo.getParentId()))+1);
+            return level;
         }
-        return level;
+
     }
 }

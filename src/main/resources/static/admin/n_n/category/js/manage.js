@@ -73,7 +73,7 @@ var setting = {
 
         onDragMove : null,//节点被拖拽过程中移动的事件回调函数
 
-        onDrop:onDrop,//节点拖拽操作结束的事件回调函数
+        onDrop:null,//节点拖拽操作结束的事件回调函数
 
         onExpand : onExpand ,//节点被展开的事件回调函数
 
@@ -240,27 +240,71 @@ function beforeDrag(treeId, treeNodes) {
 //用于捕获节点拖拽操作结束之前的事件回调函数，并且根据返回值确定是否允许此拖拽操作
 //默认值 null
 function beforeDrop(treeId, treeNodes, targetNode, moveType) {
-    return targetNode ? targetNode.drop !== false : true;
+    if(targetNode.drop){
+        //拖拽成功时，修改被拖拽节点的pid
+        var dragId = treeNodes[0].id;
+        var dropId = targetNode.id;
+        if(StringUtils.isEmpty(dropId) || StringUtils.isEmpty(dragId)){
+            setTimeout(function() {
+                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                zTree.cancelEditName();
+                layer.msg("节点名称不能为空");
+            }, 0);
+        }else {
+            $.ajax({
+                type:'POST',
+                url: '/admin/productCategory/drag',
+                data:{
+                    dragId:dragId,
+                    dropId:dropId
+                },
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if(data.code == "111111"){
+                        layer.msg("更新失败");
+                        setTimeout(function() {
+                            window.location.href=window.location.href;
+                        }, 1000);
+                    }
+                },
+            });
+        }
+        return true;
+    }else {
+        return false;
+    }
 }
 //用于捕获节点拖拽操作结束的事件回调函数  默认值： null
-function onDrop(event, treeId, treeNodes, targetNode,moveType) {
+function onDrop1(event, treeId, treeNodes, targetNode,moveType) {
     //拖拽成功时，修改被拖拽节点的pid
-    console.log(event)
-    console.log(treeId +'11111')
-    console.log(treeNodes )
-    console.log(treeNodes[0].parentCode)
-    console.log(targetNode)
-    console.log(moveType)
-    $.ajax({
-        type:'post',
-        url: '',
-        dataType: "text",
-        async: false,
-        success: function (data) {
-        },
-        error: function (msg) {
-        }
-    });
+    var dragId = treeNodes[0].id;
+    var dropId = targetNode.id;
+    if(StringUtils.isEmpty(dropId) || StringUtils.isEmpty(dragId)){
+        setTimeout(function() {
+            var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+            zTree.cancelEditName();
+            layer.msg("节点名称不能为空");
+        }, 0);
+    }else {
+        $.ajax({
+            type:'POST',
+            url: '/admin/productCategory/drag',
+            data:{
+                dragId:dragId,
+                dropId:dropId
+            },
+            success: function (data) {
+                data = JSON.parse(data);
+                if(data.code == "111111"){
+                    layer.msg("更新失败");
+                    setTimeout(function() {
+                        window.location.href=window.location.href;
+                    }, 1000);
+                }
+            },
+        });
+    }
+
 }
 //重命名之前执行的函数
 function beforeRename(treeId, treeNode, newName, isCancel) {
@@ -273,8 +317,30 @@ function beforeRename(treeId, treeNode, newName, isCancel) {
             layer.msg("节点名称不能为空");
         }, 0);
         return false;
-    }else if(treeNode.name.eq(newName)){
-        return false;
+    }else if(treeNode.name==newName){
+
+    }else{
+        var id = treeNode.id;
+        var name = newName;
+        $.ajax({
+            type:'POST',
+            url:'/admin/productCategory/updateNameById',
+            data:{
+                id:id,
+                name:name
+            },
+            success:function (data) {
+                data = JSON.parse(data);
+                if(data.code=="100000"){
+                    layer.msg(data.msg);
+                }else {
+                    layer.msg(data.msg);
+                    setTimeout(function() {
+                        window.location.href=window.location.href;
+                    }, 1000);
+                }
+            }
+        });
     }
     return true;
 }
@@ -292,7 +358,7 @@ function onRename(e, treeId, treeNode, isCancel) {
           name:name
         },
     });*/
-    layer.msg("sucess");
+    //layer.msg("sucess");
 }
 
 

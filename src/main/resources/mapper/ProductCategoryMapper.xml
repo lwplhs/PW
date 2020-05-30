@@ -170,7 +170,7 @@
     </select>
 
     <select id="getCountByName" parameterType="java.lang.String" resultType="java.lang.Integer">
-        select count(*) from product_category where name=#{name,jdbcType=VARCHAR} and is_delete != '1'
+        select count(*) from product_category where name=#{name,jdbcType=VARCHAR} and (is_delete != '1' or is_delete is null)
         <if test="id != null ">
             and id != #{id,jdbcType=VARCHAR}
         </if>
@@ -185,6 +185,6 @@
     </update>
 
     <select id="getProductCategoryListByParentId" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select * from product_category where parent_id=#{parentId,jdbcType=VARCHAR}
+        select * from product_category where parent_id=#{parentId,jdbcType=VARCHAR} and (is_delete!='1' or is_delete is null)
     </select>
 </mapper>

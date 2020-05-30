@@ -1,6 +1,7 @@
 package com.lwp.blog.utils.invalid.category.impl;
 
 import com.lwp.blog.dao.ProductCategoryDao;
+import com.lwp.blog.service.ProductCategoryService;
 import com.lwp.blog.utils.StringUtil;
 import com.lwp.blog.utils.invalid.category.IsRepeatName;
 
@@ -23,12 +24,12 @@ public class IsRepeatNameImpl implements ConstraintValidator<IsRepeatName,String
     }
 
     @Resource
-    private ProductCategoryDao productCategoryDao;
+    private ProductCategoryService productCategoryService;
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
         if(!StringUtil.isNull(s)){
-            int num = productCategoryDao.getCountByName(s,null);
+            int num = productCategoryService.getCountProductCategoryByNameId(null,s);
             if(num > 0){
                 return false;
             }

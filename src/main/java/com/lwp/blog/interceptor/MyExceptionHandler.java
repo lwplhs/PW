@@ -1,5 +1,6 @@
 package com.lwp.blog.interceptor;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.FieldError;
@@ -32,9 +33,11 @@ public class MyExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Object handleException(Exception e, HttpServletRequest request, HttpServletResponse response){
-
         LOGGER.error("请求：{}发生异常：{}", request.getRequestURI(), e);
-        return "";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("code","111111");
+        jsonObject.put("msg","请求异常");
+        return jsonObject.toString();
 
     }
 

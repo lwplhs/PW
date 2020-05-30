@@ -58,5 +58,24 @@ public interface ProductCategoryService {
      */
     String getAttachmentPathById(String aId);
 
+    /**
+     * 更新分类名称
+     * @param id
+     * @param name
+     * @param userVo
+     * @return
+     */
     Boolean updateProductCategoryNameById(String id,String name,UserVo userVo);
+
+
+    /**
+     * 根据分类名称，id查询数量
+     */
+    int getCountProductCategoryByNameId(String id,String name);
+
+
+    /**
+     * 分类拖拽
+     */
+    int updateProductCategoryDrag(String dragId,String dropId,UserVo userVo);
 }

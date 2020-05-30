@@ -1,6 +1,7 @@
 package com.lwp.blog.utils.invalid.category.impl;
 
 import com.lwp.blog.dao.ProductCategoryDao;
+import com.lwp.blog.service.ProductCategoryService;
 import com.lwp.blog.utils.StringUtil;
 import com.lwp.blog.utils.invalid.category.IsRepeatNmaeWithUpdate;
 import org.springframework.beans.BeanWrapper;
@@ -24,7 +25,7 @@ public class IsRepeatNameWithUpdateImpl implements ConstraintValidator<IsRepeatN
     private String vName;
 
     @Resource
-    private ProductCategoryDao productCategoryDao;
+    private ProductCategoryService productCategoryService;
 
     @Override
     public void initialize(IsRepeatNmaeWithUpdate constraintAnnotation) {
@@ -51,7 +52,7 @@ public class IsRepeatNameWithUpdateImpl implements ConstraintValidator<IsRepeatN
             constraintValidatorContext.buildConstraintViolationWithTemplate(message).addConstraintViolation();
             return false;
         }
-        int num = productCategoryDao.getCountByName(String.valueOf(name),String.valueOf(id));
+        int num = productCategoryService.getCountProductCategoryByNameId(String.valueOf(id),String.valueOf(name));
         if(num > 0){
             return false;
         }

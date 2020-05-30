@@ -1,5 +1,6 @@
 package com.lwp.blog.controller.admin;
 
+import com.alibaba.druid.sql.visitor.functions.Bin;
 import com.alibaba.fastjson.JSONObject;
 import com.lwp.blog.config.SysConfig;
 import com.lwp.blog.controller.BaseController;
@@ -10,6 +11,7 @@ import com.lwp.blog.service.ProductCategoryService;
 import com.lwp.blog.utils.StringUtil;
 import com.lwp.blog.utils.TaleUtils;
 import com.lwp.blog.utils.invalid.category.CategoryValidationGroups;
+import com.lwp.blog.utils.invalid.category.IsRepeatNmaeWithUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
+
 /**
  * Created with IntelliJ IDEA.
  *
@@ -33,6 +36,7 @@ import java.util.List;
  * @Date: 2020/05/22/17:05
  * @Description:
  */
+@Validated
 @Controller("productCategoryController")
 @RequestMapping(value = "/admin/productCategory")
 public class ProductCategoryController extends BaseController {
@@ -68,8 +72,7 @@ public class ProductCategoryController extends BaseController {
                                             HttpServletResponse response,
                                            @RequestParam(value = "parentId",defaultValue = "0") String parentId){
         String parentName="";
-        ProductCategoryVo productCategoryVo = new ProductCategoryVo();
-        productCategoryVo.setParentId(parentId);
+        ProductCategoryVo productCategoryVo =productCategoryService.getProductCategoryById(parentId,"1");
         parentName = productCategoryService.getCategoryParentName(parentId);
         model.addAttribute("category",productCategoryVo);
         model.addAttribute("parentName",parentName);
@@ -201,6 +204,7 @@ public class ProductCategoryController extends BaseController {
     public String updateProductCategoryStatusById(@RequestParam(value = "type") String type,
                                                   @RequestParam(value = "id") String id,
                                                   HttpServletRequest request){
+
         LOGGER.info("-------------------修改商品分类状态------------------");
         UserVo userVo = TaleUtils.getLoginUser(request);
         Boolean bool = productCategoryService.updateProductCategoryWithType(type,id,userVo);
@@ -216,15 +220,29 @@ public class ProductCategoryController extends BaseController {
     }
 
 
+    /**
+     * 更新分类名称
+     * @param id
+     * @param name
+     * @param request
+     * @return
+     */
     @PostMapping(value = "updateNameById")
     @ResponseBody
-    public String updateProductCategoryNameById(@RequestParam(value = "id") @NotBlank(message = "请刷新页面重试") String id,
-                                                @RequestParam(value = "name") @NotBlank(message = "名称不能为空") String name,
+    public String updateProductCategoryNameById(@NotBlank(message = "请刷新页面重试") @RequestParam(value = "id")  String id,
+                                                @NotBlank(message = "名称不能为空") @RequestParam(value = "name")  String name,
                                                 HttpServletRequest request){
+        JSONObject jsonObject = new JSONObject();
+        //校验用户名是否重复
+        int num = productCategoryService.getCountProductCategoryByNameId(id,name);
+        if(num > 0){
+            jsonObject.put("code","111111");
+            jsonObject.put("msg","分类名称已存在");
+            return jsonObject.toString();
+        }
         UserVo userVo = TaleUtils.getLoginUser(request);
         Boolean bool = productCategoryService.updateProductCategoryNameById(id,name,userVo);
 
-        JSONObject jsonObject = new JSONObject();
         if(bool){
             jsonObject.put("code","100000");
             jsonObject.put("msg","更新成功");
@@ -234,5 +252,30 @@ public class ProductCategoryController extends BaseController {
         }
         return jsonObject.toString();
     }
+    /**
+     * 分类拖拽
+     */
+    @PostMapping(value = "/drag")
+    @ResponseBody
+    public String updateProductCategoryDrag(@NotBlank(message = "请刷新后重试") @RequestParam(value = "dragId") String dragId,
+                                            @NotBlank(message = "请刷新后重试") @RequestParam(value = "dropId") String dropId,
+                                            HttpServletRequest request){
 
+        JSONObject jsonObject = new JSONObject();
+        UserVo userVo = TaleUtils.getLoginUser(request);
+        int num = 0;
+        try {
+            num = productCategoryService.updateProductCategoryDrag(dragId,dropId,userVo);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(num > 0){
+            jsonObject.put("code","100000");
+            jsonObject.put("msg","更新成功");
+        }else {
+            jsonObject.put("code","111111");
+            jsonObject.put("msg","更新失败,请刷新数据");
+        }
+        return jsonObject.toString();
+    }
 }
