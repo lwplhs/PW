@@ -259,9 +259,8 @@ function beforeDrop(treeId, treeNodes, targetNode, moveType) {
                     dropId:dropId
                 },
                 success: function (data) {
-                    data = JSON.parse(data);
-                    if(data.code == "111111"){
-                        layer.msg("更新失败");
+                    if(!data.success){
+                        layer.msg(data.msg || '更新失败');
                         setTimeout(function() {
                             window.location.href=window.location.href;
                         }, 1000);
@@ -294,9 +293,8 @@ function onDrop1(event, treeId, treeNodes, targetNode,moveType) {
                 dropId:dropId
             },
             success: function (data) {
-                data = JSON.parse(data);
-                if(data.code == "111111"){
-                    layer.msg("更新失败");
+                if(!data.success){
+                    layer.msg(data.msg || '更新失败');
                     setTimeout(function() {
                         window.location.href=window.location.href;
                     }, 1000);
@@ -330,11 +328,10 @@ function beforeRename(treeId, treeNode, newName, isCancel) {
                 name:name
             },
             success:function (data) {
-                data = JSON.parse(data);
-                if(data.code=="100000"){
+                if(data && data.success){
                     layer.msg(data.msg);
                 }else {
-                    layer.msg(data.msg);
+                    layer.msg(data.msg || '更新失败，请刷新页面后重试');
                     setTimeout(function() {
                         window.location.href=window.location.href;
                     }, 1000);
@@ -579,9 +576,8 @@ function updateDelete(id) {
             "type":"2"
         },
         success:function (data) {
-            data = JSON.parse(data);
-            layer.msg(data.msg);
-            if(data.code == '100000'){
+            layer.msg(data.msg || '删除失败，请刷新页面后重试');
+            if(data && data.success){
                 setTimeout(function () {
                     window.location.href = window.location.href;
                 },100);
@@ -620,9 +616,8 @@ function updateStatus(ids) {
             "type":"1"
         },
         success:function (data) {
-            data = JSON.parse(data);
-            layer.msg(data.msg);
-            if(data.code == '100000'){
+            layer.msg(data.msg || '更新失败，请刷新页面后重试');
+            if(data && data.success){
                 setTimeout(function () {
                     window.location.href = window.location.href;
                 },100);

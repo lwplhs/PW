@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lwp.blog.dao.UserVoDao">
   <resultMap id="BaseResultMap" type="com.lwp.blog.entity.Vo.UserVo">
-    <id column="uid" jdbcType="INTEGER" property="uid" />
+    <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="email" jdbcType="VARCHAR" property="email" />
@@ -72,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    uid, username, password, email, home_url, screen_name, created, activated, logged,
+    id, username, password, email, home_url, screen_name, created, activated, logged,
     group_name
   </sql>
   <select id="selectByExample" parameterType="com.lwp.blog.entity.Vo.UserVoExample" resultMap="BaseResultMap">
@@ -101,11 +101,11 @@
     select
     <include refid="Base_Column_List" />
     from t_users
-    where uid = #{uid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_users
-    where uid = #{uid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
   </delete>
   <delete id="deleteByExample" parameterType="com.lwp.blog.entity.Vo.UserVoExample">
     delete from t_users
@@ -113,12 +113,12 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.lwp.blog.entity.Vo.UserVo" useGeneratedKeys="true" keyProperty="uid">
-    insert into t_users (uid, username, password,
+  <insert id="insert" parameterType="com.lwp.blog.entity.Vo.UserVo" useGeneratedKeys="true" keyProperty="id">
+    insert into t_users (id, username, password,
       email, home_url, screen_name,
       created, activated, logged,
       group_name)
-    values (#{uid,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+    values (#{id,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
       #{email,jdbcType=VARCHAR}, #{homeUrl,jdbcType=VARCHAR}, #{screenName,jdbcType=VARCHAR},
       #{created,jdbcType=INTEGER}, #{activated,jdbcType=INTEGER}, #{logged,jdbcType=INTEGER},
       #{groupName,jdbcType=VARCHAR})
@@ -126,8 +126,8 @@
   <insert id="insertSelective" parameterType="com.lwp.blog.entity.Vo.UserVo" useGeneratedKeys="true" keyProperty="uid">
     insert into t_users
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="uid != null">
-        uid,
+      <if test="id != null">
+        id,
       </if>
       <if test="username != null">
         username,
@@ -158,8 +158,8 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="uid != null">
-        #{uid,jdbcType=INTEGER},
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
       </if>
       <if test="username != null">
         #{username,jdbcType=VARCHAR},
@@ -199,8 +199,8 @@
   <update id="updateByExampleSelective" parameterType="map">
     update t_users
     <set>
-      <if test="record.uid != null">
-        uid = #{record.uid,jdbcType=INTEGER},
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=VARCHAR},
       </if>
       <if test="record.username != null">
         username = #{record.username,jdbcType=VARCHAR},
@@ -236,7 +236,7 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update t_users
-    set uid = #{record.uid,jdbcType=INTEGER},
+    set id = #{record.id,jdbcType=VARCHAR},
       username = #{record.username,jdbcType=VARCHAR},
       password = #{record.password,jdbcType=VARCHAR},
       email = #{record.email,jdbcType=VARCHAR},
@@ -281,7 +281,7 @@
         group_name = #{groupName,jdbcType=VARCHAR},
       </if>
     </set>
-    where uid = #{uid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.lwp.blog.entity.Vo.UserVo">
     update t_users
@@ -294,6 +294,6 @@
       activated = #{activated,jdbcType=INTEGER},
       logged = #{logged,jdbcType=INTEGER},
       group_name = #{groupName,jdbcType=VARCHAR}
-    where uid = #{uid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

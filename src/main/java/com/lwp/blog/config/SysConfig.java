@@ -22,6 +22,8 @@ public class SysConfig {
 
     private String upload_error_path;
 
+    private String defaultCookie;
+
     public String getPersonal_url() {
         return personal_url;
     }
@@ -44,5 +46,13 @@ public class SysConfig {
 
     public void setUpload_error_path(String upload_error_path) {
         this.upload_error_path = upload_error_path;
+    }
+
+    public String getDefaultCookie() {
+        return defaultCookie;
+    }
+
+    public void setDefaultCookie(String defaultCookie) {
+        this.defaultCookie = defaultCookie;
     }
 }

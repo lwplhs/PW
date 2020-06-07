@@ -20,7 +20,7 @@ public interface UserVoDao {
 
     int deleteByExample(UserVoExample example);
 
-    int deleteByPrimaryKey(Integer uid);
+    int deleteByPrimaryKey(String id);
 
     int insert(UserVo record);
 

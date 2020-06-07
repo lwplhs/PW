@@ -4,6 +4,7 @@ import com.lwp.blog.utils.invalid.carousel.CarouselValidation;
 import com.lwp.blog.utils.invalid.carousel.IsNum;
 
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -13,7 +14,7 @@ import java.util.Date;
  * @Date: 2020/05/03/18:49
  * @Description:
  */
-public class CarouselVo {
+public class CarouselVo implements Serializable {
     @NotBlank(groups = {CarouselValidation.GroupCarouselEdit.class},message = "该轮播图不存在，请刷新页面重试")
     private String id;
 

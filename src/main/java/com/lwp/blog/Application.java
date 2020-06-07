@@ -1,5 +1,7 @@
 package com.lwp.blog;
 
+import com.lwp.blog.config.SysConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -22,9 +24,13 @@ public class Application implements ServletContextInitializer {
         SpringApplication.run(Application.class, args);
     }
 
+    @Autowired
+    private SysConfig sysConfig;
+
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
-        servletContext.getSessionCookieConfig().setName("MyWebSiteCookie");
+        String defaultCookie = sysConfig.getDefaultCookie();
+        servletContext.getSessionCookieConfig().setName(defaultCookie);
     }
 
     @Bean

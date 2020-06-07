@@ -11,7 +11,6 @@ import com.lwp.blog.utils.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -54,8 +53,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
                         productCategoryVo.setLevel(String.valueOf(Integer.parseInt(level)+1));
                     }
                 }
-                productCategoryVo.setCreateUserId(userVo.getUid().toString());
-                productCategoryVo.setUpdateUserId(userVo.getUid().toString());
+                productCategoryVo.setCreateUserId(userVo.getId().toString());
+                productCategoryVo.setUpdateUserId(userVo.getId().toString());
                 num = productCategoryDao.insertProductCategory(productCategoryVo);
                 if (num > 0) {
                     jsonObject.put("code", "100000");
@@ -66,7 +65,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
                 }
             } else {
                 productCategoryVo.setUpdateTime(new Date());
-                productCategoryVo.setUpdateUserId(userVo.getUid().toString());
+                productCategoryVo.setUpdateUserId(userVo.getId().toString());
                 String level = productCategoryVo.getLevel();
                 String id = productCategoryVo.getId();
                 if(StringUtil.isNull(level) && !StringUtil.isNull(id)){
@@ -190,7 +189,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             Map<String,Object> map = new HashMap<>();
             map.put("ids",temp);
             map.put("updateTime",new Date());
-            map.put("updateUserId",userVo.getUid());
+            map.put("updateUserId",userVo.getId());
             int count = productCategoryDao.updateProductCategoryWithStatus(map);
             if(count > 0){
                 for(int i = 0; i < temp.size();i++){
@@ -251,7 +250,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             Map<String,Object> map = new HashMap<>();
             map.put("ids",temp);
             map.put("updateTime",new Date());
-            map.put("updateUserId",userVo.getUid());
+            map.put("updateUserId",userVo.getId());
             int count = productCategoryDao.updateProductCategoryWithDelete(map);
             if(count > 0){
                 for(int i = 0; i < temp.size();i++){
@@ -361,7 +360,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
      */
     @Override
     public Boolean updateProductCategoryNameById(String id, String name, UserVo userVo) {
-        String updateUserId = userVo.getUid().toString();
+        String updateUserId = userVo.getId().toString();
         Date date = new Date();
         int num = productCategoryDao.updateCategoryNameById(name,id,updateUserId,date);
 

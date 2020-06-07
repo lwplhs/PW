@@ -10,7 +10,7 @@ import java.util.Date;
  * @Description:
  */
 public class LoginLogVo {
-    private Integer id;
+    private String id;
     private String userName;
     private Long loginTime;
     private String loginResult;
@@ -21,7 +21,8 @@ public class LoginLogVo {
 
     }
 
-    public LoginLogVo(String userName, String loginResult, String loginResultDetail, String loginUrl){
+    public LoginLogVo(String id,String userName, String loginResult, String loginResultDetail, String loginUrl){
+        this.id = id;
         this.userName = userName;
         this.loginResult = loginResult;
         this.loginResultDetail = loginResultDetail;
@@ -29,11 +30,11 @@ public class LoginLogVo {
         this.loginTime = new Date().getTime();
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

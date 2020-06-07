@@ -1,9 +1,7 @@
 package com.lwp.blog.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.lwp.blog.dao.AttachmentDao;
 import com.lwp.blog.dao.CarouselDao;
-import com.lwp.blog.entity.Vo.AttachmentVo;
 import com.lwp.blog.entity.Vo.CarouselVo;
 import com.lwp.blog.entity.Vo.UserVo;
 import com.lwp.blog.service.CarouselService;
@@ -50,40 +48,40 @@ public class CarouselServiceImpl implements CarouselService {
                 carouselVo.setCreateTime(new Date());
                 carouselVo.setUpdateTime(new Date());
                 carouselVo.setIsDelete("0");
-                carouselVo.setCreateUserId(userVo.getUid().toString());
-                carouselVo.setUpdateUserId(userVo.getUid().toString());
+                carouselVo.setCreateUserId(userVo.getId().toString());
+                carouselVo.setUpdateUserId(userVo.getId().toString());
                 if (StringUtil.isNull(carouselVo.getSort())) {
                     String sort = String.valueOf(carouselDao.getMaxSort());
                     carouselVo.setSort(sort);
                 }
                 num = carouselDao.insertCarousel(carouselVo);
                 if(num > 0){
-                    jsonObject.put("code","100000");
+                    jsonObject.put("code",1);
                     jsonObject.put("msg","添加成功");
                 }else {
-                    jsonObject.put("code","100001");
+                    jsonObject.put("code",100001);
                     jsonObject.put("msg","添加失败");
                 }
 
             } else {
                 carouselVo.setUpdateTime(new Date());
-                carouselVo.setUpdateUserId(userVo.getUid().toString());
+                carouselVo.setUpdateUserId(userVo.getId().toString());
                 if (StringUtil.isNull(carouselVo.getSort())) {
                     String sort = String.valueOf(carouselDao.getMaxSort());
                     carouselVo.setSort(sort);
                 }
                 num = carouselDao.updateCarousel(carouselVo);
                 if(num > 0){
-                    jsonObject.put("code","100000");
+                    jsonObject.put("code",1);
                     jsonObject.put("msg","修改成功");
                 }else {
-                    jsonObject.put("code","100002");
+                    jsonObject.put("code",100002);
                     jsonObject.put("msg","修改失败");
                 }
             }
         }catch (Exception e){
             e.printStackTrace();
-            jsonObject.put("code","100003");
+            jsonObject.put("code",100003);
             jsonObject.put("msg","出现错误，请刷新页面重试");
         }
         return jsonObject.toString();
@@ -183,7 +181,7 @@ public class CarouselServiceImpl implements CarouselService {
             Map<String,Object> map = new HashMap<>();
             map.put("ids",temp);
             map.put("updateTime",new Date());
-            map.put("updateUserId",userVo.getUid());
+            map.put("updateUserId",userVo.getId());
             int count = carouselDao.updateCarouselWithStatus(map);
             if(count > 0){
                 return true;
@@ -204,7 +202,7 @@ public class CarouselServiceImpl implements CarouselService {
             Map<String,Object> map = new HashMap<>();
             map.put("ids",temp);
             map.put("updateTime",new Date());
-            map.put("updateUserId",userVo.getUid());
+            map.put("updateUserId",userVo.getId());
             int count = carouselDao.updateCarouseWithDelete(map);
             if(count > 0){
                 return true;

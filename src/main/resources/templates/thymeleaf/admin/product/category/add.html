@@ -89,16 +89,14 @@
 			type:"POST",
 			data:jsondata,
 			url:"/admin/productCategory/saveCategory",
-			success: function(result){
-				console.log(result)
-				var data = JSON.parse(result);
-				if(data.code == "100000"){
+			success: function(data){
+				if(data && data.success){
 					layer.msg(data.msg);
 					setTimeout(function (){
 						parent.layer.close(index);
 					},500);
 				}else {
-					layer.alert(data.msg);
+					layer.alert(data.msg || "保存失败，请刷新后重试");
 				}
 			}
 

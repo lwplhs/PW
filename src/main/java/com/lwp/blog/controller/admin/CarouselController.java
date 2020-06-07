@@ -1,13 +1,14 @@
 package com.lwp.blog.controller.admin;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.lwp.blog.controller.BaseController;
+import com.lwp.blog.entity.Bo.RestResponseBo;
 import com.lwp.blog.entity.Vo.CarouselVo;
 import com.lwp.blog.entity.Vo.ContentVo;
 import com.lwp.blog.entity.Vo.UserVo;
 import com.lwp.blog.service.CarouselService;
+import com.lwp.blog.utils.InvalidUtil;
 import com.lwp.blog.utils.TaleUtils;
 import com.lwp.blog.utils.invalid.carousel.CarouselValidation;
 import org.slf4j.Logger;
@@ -49,24 +50,19 @@ public class CarouselController extends BaseController {
      */
     @PostMapping(value = "saveCarousel")
     @ResponseBody
-    public String SaveCarousel(HttpServletRequest request,
+    public RestResponseBo SaveCarousel(HttpServletRequest request,
                                HttpServletResponse response,
                                @Valid @ModelAttribute CarouselVo carouselVo,
                                BindingResult bindingResult){
-        JSONObject jsonObject = new JSONObject();
         if(bindingResult.hasErrors()){
-            String msg = bindingResult.getFieldError().getDefaultMessage();
-            jsonObject.put("code","111111");
-            jsonObject.put("msg",msg);
-            LOGGER.info(msg);
-            return jsonObject.toString();
+            return InvalidUtil.error(LOGGER,bindingResult);
         }
         LOGGER.info("-------------------参数校验成功------------------");
         LOGGER.info("-------------------开始保存首页轮播图------------------");
         UserVo userVo = TaleUtils.getLoginUser(request);
         String result = carouselService.saveCarousel(carouselVo,userVo);
         LOGGER.info("-------------------结束保存首页轮播图------------------");
-        return result;
+        return RestResponseBo.ok(result);
     }
 
     /**
@@ -79,25 +75,21 @@ public class CarouselController extends BaseController {
      */
     @PostMapping(value = "updateCarousel")
     @ResponseBody
-    public String UpdateCarousel(HttpServletRequest request,
+    public RestResponseBo UpdateCarousel(HttpServletRequest request,
                                HttpServletResponse response,
                                @Validated(CarouselValidation.GroupCarouselEdit.class) @ModelAttribute CarouselVo carouselVo,
                                BindingResult bindingResult){
-        JSONObject jsonObject = new JSONObject();
         if(bindingResult.hasErrors()){
-            String msg = bindingResult.getFieldError().getDefaultMessage();
-            jsonObject.put("code","111111");
-            jsonObject.put("msg",msg);
-            LOGGER.info(msg);
-            return jsonObject.toString();
+            return InvalidUtil.error(LOGGER,bindingResult);
         }
         LOGGER.info("-------------------参数校验成功------------------");
         LOGGER.info("-------------------开始更新首页轮播图------------------");
         UserVo userVo = TaleUtils.getLoginUser(request);
         String result = carouselService.saveCarousel(carouselVo,userVo);
         LOGGER.info("-------------------结束更新首页轮播图------------------");
-        return result;
+        return RestResponseBo.ok(result);
     }
+
 
     /**跳转到首页轮播图列表 -分页查询数据
      *
@@ -171,7 +163,6 @@ public class CarouselController extends BaseController {
         LOGGER.info("-------------------获取首页轮播图数据结束------------------");
         model.addAttribute("picList",list);
         model.addAttribute("total",page.getTotal());
-
         return this.render("/admin/carousel/carousel-list::list");
     }
 
@@ -183,20 +174,16 @@ public class CarouselController extends BaseController {
      */
     @PostMapping(value = "/updateCarouselStatus")
     @ResponseBody
-    public String updateCarouse(@RequestParam(value = "ids") String ids,
+    public RestResponseBo updateCarouse(@RequestParam(value = "ids") String ids,
                                 @RequestParam(value = "type") String type,
                                 HttpServletRequest request){
         LOGGER.info("-------------------修改轮播图数据------------------");
         UserVo userVo = TaleUtils.getLoginUser(request);
         Boolean bool = carouselService.updateCarousel(ids,type,userVo);
-        JSONObject jsonObject = new JSONObject();
         if(bool){
-            jsonObject.put("code","100000");
-            jsonObject.put("msg","更新成功");
+            return RestResponseBo.ok(1,"更新成功");
         }else {
-            jsonObject.put("code","111111");
-            jsonObject.put("msg","更新失败，请刷新数据！");
+            return RestResponseBo.fail(-1,"更新失败，请刷新数据");
         }
-        return jsonObject.toString();
     }
 }

@@ -2,8 +2,10 @@ package com.lwp.blog.controller.wx;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lwp.blog.config.SysConfig;
+import com.lwp.blog.entity.Bo.RestResponseBo;
 import com.lwp.blog.entity.Vo.CarouselVo;
 import com.lwp.blog.service.CarouselService;
+import com.lwp.blog.utils.RedisUtil;
 import com.lwp.blog.utils.StringUtil;
 import com.sun.tools.hat.internal.model.Root;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,5 +57,18 @@ public class WXCarouselController {
         Map map = new HashMap();
         map.put("imgUrls",list);
         return map;
+    }
+
+    @Resource
+    private RedisUtil redisUtil;
+
+    @GetMapping(value = "/redis")
+    @ResponseBody
+    public RestResponseBo setRedis(){
+        List<CarouselVo> list = carouselService.getListCarousel();
+        redisUtil.set("sf:list",list);
+
+        Object c = redisUtil.get("sf:list");
+        return RestResponseBo.ok(c,1,"success");
     }
 }

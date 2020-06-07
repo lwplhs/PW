@@ -92,9 +92,8 @@ function updateStatus(ids) {
             "type":"1"
         },
         success:function (data) {
-            data = JSON.parse(data);
             layer.msg(data.msg);
-            if(data.code == '100000'){
+            if(data && data.success){
                 setTimeout(function () {
                     loadData();
                 },100);
@@ -115,9 +114,8 @@ function updateDelete(ids) {
             "type":"2"
         },
         success:function (data) {
-            data = JSON.parse(data);
             layer.msg(data.msg);
-            if(data.code == '100000'){
+            if(data && data.success){
                 setTimeout(function () {
                     loadData();
                 },100);

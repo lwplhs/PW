@@ -91,7 +91,7 @@ public class WebUploadServiceImpl implements WebUploadService {
             attachmentVo.setSavePath(path);
             attachmentVo.setUrlPath(url);
             attachmentVo.setTime(new Date());
-            attachmentVo.setUserId(user.getUid().toString());
+            attachmentVo.setUserId(user.getId().toString());
             attachmentVo.setType(origin);
             attachmentVo.setSuffix(suffix);
             attachmentVo.setSize(size);

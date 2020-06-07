@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lwp.blog.dao.LoginLogDao">
     <resultMap id="BaseResult" type="com.lwp.blog.entity.Vo.LoginLogVo">
-        <id column="id" jdbcType="INTEGER" property="id"/>
+        <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="user_name" jdbcType="VARCHAR" property="userName"/>
         <result column="login_time" jdbcType="BIGINT" property="userTime"/>
         <result column="login_result" jdbcType="VARCHAR" property="loginResult"/>
@@ -33,7 +33,7 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
-                #{id,jdbcType=INTEGER},
+                #{id,jdbcType=VARCHAR},
             </if>
             <if test="userName != null">
                 #{userName,jdbcType=VARCHAR},

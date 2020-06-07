@@ -1,15 +1,19 @@
 package com.lwp.blog.controller.admin;
 
+import com.lwp.blog.config.SysConfig;
 import com.lwp.blog.controller.BaseController;
 import com.lwp.blog.entity.Bo.RestResponseBo;
+import com.lwp.blog.entity.Vo.CarouselVo;
 import com.lwp.blog.entity.Vo.LoginLogVo;
 import com.lwp.blog.entity.Vo.UserVo;
+import com.lwp.blog.service.CarouselService;
 import com.lwp.blog.service.LogService;
 import com.lwp.blog.service.UserService;
 import com.lwp.blog.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -38,6 +43,10 @@ public class IndexController extends BaseController {
     private UserService userService;
     @Resource
     private LogService logService;
+
+    @Resource
+    private RedisUtil redisUtil;
+
 
     @GetMapping(value = {"","/index"})
     public String index(HttpServletResponse response){
@@ -64,12 +73,14 @@ public class IndexController extends BaseController {
     public RestResponseBo doLogin(@RequestParam String username,
                                   @RequestParam String password,
                                   @RequestParam (required = false) String remeber_me,
+                                  @CookieValue("${website.defaultCookie}") String cookie,
                                   HttpServletRequest request,
                                   HttpServletResponse response){
+
         HttpSession session = request.getSession();
-        Integer error_count = StringUtil.isNull(session.getAttribute("login_error_count")) ? 0 : Integer.parseInt(String.valueOf(session.getAttribute("login_error_count")));
+        Integer error_count = StringUtil.isNull(redisUtil.get("login:e:c:"+cookie))?0:Integer.parseInt(redisUtil.get("login:e:c:"+cookie).toString());
         if(null != error_count && error_count >=3){
-            LoginLogVo login_logVo = new LoginLogVo(username,"0","登录失败次数超过3次，请10分钟后尝试", IPKit.getIpAddrByRequest(request));
+            LoginLogVo login_logVo = new LoginLogVo(UUID.createID(),username,"0","登录失败次数超过3次，请10分钟后尝试", IPKit.getIpAddrByRequest(request));
             logService.insertLoginLog(login_logVo);
             return RestResponseBo.fail("您输入的密码已经错误超过3次，请10分钟后尝试");
         }else {
@@ -77,35 +88,29 @@ public class IndexController extends BaseController {
                 UserVo user = userService.login(username,password);
                 session.setAttribute(WebConst.LOGIN_SESSION_KEY,user);
                 if(StringUtils.isNotBlank(remeber_me)){
-                    TaleUtils.setCookie(response,user.getUid());
+                    TaleUtils.setCookie(response,user.getId());
                 }
-                session.setAttribute("login_error_count","0");
-                session.setMaxInactiveInterval(10*60);
-                LoginLogVo login_logVo = new LoginLogVo(username,"1","登录成功",IPKit.getIpAddrByRequest(request));
+                redisUtil.set("login:e:c:"+cookie,0,60*10);
+                LoginLogVo login_logVo = new LoginLogVo(UUID.createID(),username,"1","登录成功",IPKit.getIpAddrByRequest(request));
                 logService.insertLoginLog(login_logVo);
             }catch (Exception e){
                 error_count = null == error_count ? 1 :error_count +1;
                 if(error_count > 3){
-                    LoginLogVo login_logVo = new LoginLogVo(username,"0","登录失败次数超过3次，请10分钟后尝试", IPKit.getIpAddrByRequest(request));
+                    LoginLogVo login_logVo = new LoginLogVo(UUID.createID(),username,"0","登录失败次数超过3次，请10分钟后尝试", IPKit.getIpAddrByRequest(request));
                     logService.insertLoginLog(login_logVo);
                     return RestResponseBo.fail("您输入密码已经错误超过三次，请10分钟后尝试");
                 }
-                session.setAttribute("login_error_count",error_count);
-                session.setMaxInactiveInterval(10*60);
+                redisUtil.set("login:e:c:"+cookie,error_count,60*10);
                 String msg = "登录失败";
                 if(e instanceof TipException){
                     msg = e.getMessage();
                 }
                 LOGGER.error(msg,e);
-                LoginLogVo login_logVo = new LoginLogVo(username,"0","登录失败,登录失败次数:"+String.valueOf(error_count), IPKit.getIpAddrByRequest(request));
+                LoginLogVo login_logVo = new LoginLogVo(UUID.createID(),username,"0","登录失败,登录失败次数:"+String.valueOf(error_count), IPKit.getIpAddrByRequest(request));
                 logService.insertLoginLog(login_logVo);
                 return RestResponseBo.fail(msg);
             }
         }
-
-
-
-
         return RestResponseBo.ok();
     }
 

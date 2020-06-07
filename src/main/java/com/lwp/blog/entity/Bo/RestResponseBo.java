@@ -1,5 +1,8 @@
 package com.lwp.blog.entity.Bo;
 
+
+import com.alibaba.fastjson.JSONObject;
+
 /**
  * Created with IntelliJ IDEA.
  *
@@ -19,12 +22,13 @@ public class RestResponseBo<T> {
     private boolean success;
 
     /**
-     * 错误信息
+     * 状态信息
      */
     private String msg;
 
     /**
-     * 状态码
+     * 状态码 -1 错误
+     * 1 成功
      */
     private int code = -1;
 
@@ -54,6 +58,13 @@ public class RestResponseBo<T> {
         this.payload = payload;
         this.code = code;
     }
+    public RestResponseBo(boolean success,T payload,String msg, int code){
+        this.timestamp = System.currentTimeMillis()/1000;
+        this.success = success;
+        this.payload = payload;
+        this.msg = msg;
+        this.code = code;
+    }
 
     public RestResponseBo(boolean success,String msg){
         this.timestamp = System.currentTimeMillis();
@@ -63,6 +74,7 @@ public class RestResponseBo<T> {
 
     public RestResponseBo(boolean success, String msg, int code){
         this.timestamp = System.currentTimeMillis();
+        this.success = success;
         this.msg = msg;
         this.code = code;
     }
@@ -110,6 +122,19 @@ public class RestResponseBo<T> {
     public static RestResponseBo ok(){
         return new RestResponseBo(true);
     }
+    public static RestResponseBo ok(String result){
+        int c = -1;
+        String m = "请求失败";
+        try{
+            JSONObject jsonObject = JSONObject.parseObject(result);
+            c = jsonObject.getInteger("code");
+            m = jsonObject.getString("msg");
+            return new RestResponseBo(true,m,c);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new RestResponseBo(false,m,c);
+        }
+    }
 
     public static <T> RestResponseBo ok(T payload){
         return new RestResponseBo(true,payload);
@@ -119,8 +144,29 @@ public class RestResponseBo<T> {
         return new RestResponseBo(true,null,code);
     }
 
+    public static <T> RestResponseBo ok(int code,String msg){
+        return new RestResponseBo(true,msg,code);
+    }
+
+    public static <T> RestResponseBo ok(Object code,Object msg){
+        String m = "请求失败";
+        int c = -1;
+        try {
+            m = msg.toString();
+            c = Integer.parseInt(code.toString());
+            return new RestResponseBo(true,m,c);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new RestResponseBo(false,m,c);
+        }
+    }
+
     public static <T> RestResponseBo ok(T payload,int code){
         return new RestResponseBo(true,payload,code);
+    }
+
+    public static <T> RestResponseBo ok(T payload,int code,String msg){
+        return new RestResponseBo(true,payload,msg,code);
     }
 
     public static RestResponseBo fail(){

@@ -1,17 +1,15 @@
 package com.lwp.blog.controller.admin;
 
-import com.alibaba.druid.sql.visitor.functions.Bin;
 import com.alibaba.fastjson.JSONObject;
-import com.lwp.blog.config.SysConfig;
 import com.lwp.blog.controller.BaseController;
-import com.lwp.blog.dao.ProductCategoryDao;
+import com.lwp.blog.entity.Bo.RestResponseBo;
 import com.lwp.blog.entity.Vo.ProductCategoryVo;
 import com.lwp.blog.entity.Vo.UserVo;
 import com.lwp.blog.service.ProductCategoryService;
+import com.lwp.blog.utils.InvalidUtil;
 import com.lwp.blog.utils.StringUtil;
 import com.lwp.blog.utils.TaleUtils;
 import com.lwp.blog.utils.invalid.category.CategoryValidationGroups;
-import com.lwp.blog.utils.invalid.category.IsRepeatNmaeWithUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
@@ -144,53 +141,54 @@ public class ProductCategoryController extends BaseController {
         return this.render("/admin/product/category/list");
     }
 
+    /**
+     * 新增类别
+     * @param request
+     * @param response
+     * @param productCategoryVo
+     * @param bindingResult
+     * @return
+     */
     @PostMapping(value = "/saveCategory")
     @ResponseBody
-    public String saveProductCategory(HttpServletRequest request,
-                                      HttpServletResponse response,
-                                      @Validated(CategoryValidationGroups.GroupCategoryAdd.class) @ModelAttribute ProductCategoryVo productCategoryVo,
-                                      BindingResult bindingResult){
-        JSONObject jsonObject = new JSONObject();
-        String msg = "";
+    public RestResponseBo saveProductCategory(HttpServletRequest request,
+                                              HttpServletResponse response,
+                                              @Validated(CategoryValidationGroups.GroupCategoryAdd.class) @ModelAttribute ProductCategoryVo productCategoryVo,
+                                              BindingResult bindingResult){
         if(bindingResult.hasErrors()){
-            for(ObjectError error : bindingResult.getAllErrors()) {
-                LOGGER.error(error.getDefaultMessage());
-            }
-            msg = (bindingResult.getAllErrors().get(0)).getDefaultMessage();
-            jsonObject.put("code","111111");
-            jsonObject.put("msg",msg);;
-            return jsonObject.toString();
+            return InvalidUtil.error(LOGGER,bindingResult);
         }
         LOGGER.info("-------------------参数校验成功------------------");
         LOGGER.info("-------------------开始保存商品类别------------------");
         UserVo userVo = TaleUtils.getLoginUser(request);
         String result = productCategoryService.saveProductCategory(productCategoryVo,userVo);
         LOGGER.info("-------------------结束保存商品类别------------------");
-        return result;
+        return RestResponseBo.ok(result);
     }
+
+    /**
+     * 更新类别
+     * @param request
+     * @param response
+     * @param productCategoryVo
+     * @param bindingResult
+     * @return
+     */
     @PostMapping(value = "/updateCategory")
     @ResponseBody
-    public String updateProductCategory(HttpServletRequest request,
+    public RestResponseBo updateProductCategory(HttpServletRequest request,
                                       HttpServletResponse response,
                                       @Validated(CategoryValidationGroups.GroupCategoryEdit.class) @ModelAttribute ProductCategoryVo productCategoryVo,
                                       BindingResult bindingResult){
-        JSONObject jsonObject = new JSONObject();
-        String msg = "";
         if(bindingResult.hasErrors()){
-            for(ObjectError error : bindingResult.getAllErrors()) {
-                LOGGER.error(error.getDefaultMessage());
-            }
-            msg = (bindingResult.getAllErrors().get(0)).getDefaultMessage();
-            jsonObject.put("code","111111");
-            jsonObject.put("msg",msg);
-            return jsonObject.toString();
+            return InvalidUtil.error(LOGGER,bindingResult);
         }
         LOGGER.info("-------------------参数校验成功------------------");
         LOGGER.info("-------------------开始保存商品类别------------------");
         UserVo userVo = TaleUtils.getLoginUser(request);
         String result = productCategoryService.saveProductCategory(productCategoryVo,userVo);
         LOGGER.info("-------------------结束保存商品类别------------------");
-        return result;
+        return RestResponseBo.ok(result);
     }
 
     /**
@@ -201,22 +199,19 @@ public class ProductCategoryController extends BaseController {
      */
     @PostMapping(value = "updateProductCategoryStatusById")
     @ResponseBody
-    public String updateProductCategoryStatusById(@RequestParam(value = "type") String type,
+    public RestResponseBo updateProductCategoryStatusById(@RequestParam(value = "type") String type,
                                                   @RequestParam(value = "id") String id,
                                                   HttpServletRequest request){
 
-        LOGGER.info("-------------------修改商品分类状态------------------");
+        LOGGER.info("-------------------修改商品分类状态开始------------------");
         UserVo userVo = TaleUtils.getLoginUser(request);
         Boolean bool = productCategoryService.updateProductCategoryWithType(type,id,userVo);
-        JSONObject jsonObject = new JSONObject();
+        LOGGER.info("-------------------修改商品分类状态结束------------------");
         if(bool){
-            jsonObject.put("code","100000");
-            jsonObject.put("msg","更新成功");
+            return RestResponseBo.ok(1,"更新成功");
         }else {
-            jsonObject.put("code","111111");
-            jsonObject.put("msg","更新失败，请刷新数据！");
+            return RestResponseBo.fail(-1,"更新失败，请刷新数据!");
         }
-        return jsonObject.toString();
     }
 
 
@@ -229,39 +224,32 @@ public class ProductCategoryController extends BaseController {
      */
     @PostMapping(value = "updateNameById")
     @ResponseBody
-    public String updateProductCategoryNameById(@NotBlank(message = "请刷新页面重试") @RequestParam(value = "id")  String id,
+    public RestResponseBo updateProductCategoryNameById(@NotBlank(message = "请刷新页面重试") @RequestParam(value = "id")  String id,
                                                 @NotBlank(message = "名称不能为空") @RequestParam(value = "name")  String name,
                                                 HttpServletRequest request){
-        JSONObject jsonObject = new JSONObject();
         //校验用户名是否重复
         int num = productCategoryService.getCountProductCategoryByNameId(id,name);
         if(num > 0){
-            jsonObject.put("code","111111");
-            jsonObject.put("msg","分类名称已存在");
-            return jsonObject.toString();
+            return RestResponseBo.fail(-1,"分类名称已存在");
         }
         UserVo userVo = TaleUtils.getLoginUser(request);
         Boolean bool = productCategoryService.updateProductCategoryNameById(id,name,userVo);
 
         if(bool){
-            jsonObject.put("code","100000");
-            jsonObject.put("msg","更新成功");
+            return RestResponseBo.ok(1,"更新成功");
         }else {
-            jsonObject.put("code","111111");
-            jsonObject.put("msg","更新失败，请刷新数据！");
+            return RestResponseBo.fail(-1,"更新失败，请刷新数据！");
         }
-        return jsonObject.toString();
     }
     /**
      * 分类拖拽
      */
     @PostMapping(value = "/drag")
     @ResponseBody
-    public String updateProductCategoryDrag(@NotBlank(message = "请刷新后重试") @RequestParam(value = "dragId") String dragId,
+    public RestResponseBo updateProductCategoryDrag(@NotBlank(message = "请刷新后重试") @RequestParam(value = "dragId") String dragId,
                                             @NotBlank(message = "请刷新后重试") @RequestParam(value = "dropId") String dropId,
                                             HttpServletRequest request){
 
-        JSONObject jsonObject = new JSONObject();
         UserVo userVo = TaleUtils.getLoginUser(request);
         int num = 0;
         try {
@@ -270,12 +258,9 @@ public class ProductCategoryController extends BaseController {
             e.printStackTrace();
         }
         if(num > 0){
-            jsonObject.put("code","100000");
-            jsonObject.put("msg","更新成功");
+            return RestResponseBo.ok(1,"更新成功");
         }else {
-            jsonObject.put("code","111111");
-            jsonObject.put("msg","更新失败,请刷新数据");
+            return RestResponseBo.fail(-1,"更新失败,请刷新页面后重试");
         }
-        return jsonObject.toString();
     }
 }

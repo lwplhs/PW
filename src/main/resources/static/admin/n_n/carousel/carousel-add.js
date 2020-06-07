@@ -7,16 +7,15 @@ function carousel_save_submit(){
         type:"POST",
         data:jsondata,
         url:"/admin/carousel/saveCarousel",
-        success: function(result){
-            var data = JSON.parse(result);
+        success: function(data){
             console.log(data.code)
-            if(data.code == "100000"){
+            if(data && data.success){
                 layer.msg(data.msg);
                 setTimeout(function (){
                     parent.layer.close(index);
                 },500);
             }else {
-                layer.alert(data.msg);
+                layer.alert(data.msg || "请求失败，请刷新后重试");
             }
         }
 

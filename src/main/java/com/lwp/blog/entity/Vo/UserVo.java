@@ -13,7 +13,7 @@ public class UserVo implements Serializable {
     /**
      * user表主键
      */
-    private Integer uid;
+    private String id;
     /**
      * 用户名称
      */
@@ -62,12 +62,12 @@ public class UserVo implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-    public Integer getUid() {
-        return uid;
+    public String getId() {
+        return id;
     }
 
-    public void setUid(Integer uid) {
-        this.uid = uid;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUsername() {
