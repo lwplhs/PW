@@ -33,9 +33,10 @@ public class MyExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Object handleException(Exception e, HttpServletRequest request, HttpServletResponse response){
+        e.printStackTrace();
         LOGGER.error("请求：{}发生异常：{}", request.getRequestURI(), e);
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("code","111111");
+        jsonObject.put("code",-1);
         jsonObject.put("msg","请求异常");
         return jsonObject.toString();
 

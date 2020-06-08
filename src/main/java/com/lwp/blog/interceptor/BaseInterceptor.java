@@ -1,6 +1,7 @@
 package com.lwp.blog.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
+import com.lwp.blog.config.SysConfig;
 import com.lwp.blog.entity.Vo.UserVo;
 import com.lwp.blog.service.UserService;
 import com.lwp.blog.service.impl.UserServiceImpl;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
@@ -30,6 +32,12 @@ public class BaseInterceptor implements HandlerInterceptor {
     private MapCache cache = MapCache.single();
 
     @Resource
+    private RedisUtil redisUtil;
+
+    @Resource
+    private SysConfig sysConfig;
+
+    @Resource
     private Commons commons;
 
 
@@ -44,22 +52,40 @@ public class BaseInterceptor implements HandlerInterceptor {
         if(uri.startsWith(contextPath+"/404")){
             response.sendRedirect(request.getContextPath() +"/getPage/404.html");
         }
-        UserVo user = TaleUtils.getLoginUser(request);
-        if(null == user){
-            Integer uid = TaleUtils.getCookieUid(request);
-            if(null != uid){
-                user = userService.queryUserById(uid);
-                request.getSession().setAttribute(WebConst.LOGIN_SESSION_KEY,user);
+        request.getSession();
+        if(uri.startsWith(contextPath + "/admin") && !uri.startsWith(contextPath +"/admin/login")){
+            String defaultCookie = sysConfig.getDefaultCookie();
+            String loginUserKey = sysConfig.getLoginUser();
+            Cookie cookie = TaleUtils.cookieRaw(defaultCookie, request);
+            if(!StringUtil.isNull(cookie)) {
+                String cookieValue = cookie.getValue();
+                Object obj = redisUtil.get(loginUserKey + cookieValue);
+                UserVo user = (UserVo) obj;
+                if (null == user) {
+                    Integer uid = TaleUtils.getCookieUid(request);
+                    if (null != uid) {
+                        user = userService.queryUserById(uid);
+                        redisUtil.set(loginUserKey + cookieValue, user, 60 * 30);
+                        //request.getSession().setAttribute(WebConst.LOGIN_SESSION_KEY,user);
+                    }
+                }
+                if (null == user) {
+                    //response.sendRedirect(request.getContextPath() +"/admin/login");
+                    String url = request.getContextPath() + "/admin/login";
+                    response.setCharacterEncoding("utf-8");
+                    response.setContentType("text/html; charset=utf-8");
+                    PrintWriter out = response.getWriter();
+                    this.toLogin(out, url);
+                    return false;
+                }
+            }else {
+                String url = request.getContextPath() + "/admin/login";
+                response.setCharacterEncoding("utf-8");
+                response.setContentType("text/html; charset=utf-8");
+                PrintWriter out = response.getWriter();
+                this.toLogin(out, url);
+                return false;
             }
-        }
-        if(uri.startsWith(contextPath + "/admin") && !uri.startsWith(contextPath +"/admin/login") && null == user){
-            //response.sendRedirect(request.getContextPath() +"/admin/login");
-            String url = request.getContextPath() +"/admin/login";
-            response.setCharacterEncoding("utf-8");
-            response.setContentType("text/html; charset=utf-8");
-            PrintWriter out = response.getWriter();
-            this.toLogin(out,url);
-            return false;
         }
         //设置get请求的token
         if(request.getMethod().equals("GET")){
@@ -69,6 +95,7 @@ public class BaseInterceptor implements HandlerInterceptor {
             request.setAttribute("_csrf_token", csrf_token);
         }
         return true;
+
 
     }
     public boolean isAjaxRequest(HttpServletRequest request){

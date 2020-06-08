@@ -1,6 +1,8 @@
 package com.lwp.blog.utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -15,15 +17,12 @@ import java.util.concurrent.TimeUnit;
  * @Date: 2020/06/06/14:22
  * @Description:
  */
-public class RedisUtil {
+@Component
+public final class RedisUtil {
+
+    @Autowired
     private RedisTemplate<String,Object> redisTemplate;
 
-    public void setRedisTemplate(RedisTemplate<String,Object> redisTemplate){
-        this.redisTemplate = redisTemplate;
-    }
-    public RedisUtil(RedisTemplate<String,Object> redisTemplate){
-        this.redisTemplate = redisTemplate;
-    }
     //=============================common============================
     /**
      * 指定缓存失效时间
@@ -90,6 +89,13 @@ public class RedisUtil {
     public Object get(String key){
         return key==null?null:redisTemplate.opsForValue().get(key);
     }
+
+/*    public <T> T get(String key,Class<T> clazz){
+        T temp = null;
+        Object result = this.get(key);
+        temp = (T)result;
+        return temp;
+    }*/
 
     /**
      * 普通缓存放入

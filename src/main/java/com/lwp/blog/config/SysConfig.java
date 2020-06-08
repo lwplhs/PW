@@ -24,6 +24,10 @@ public class SysConfig {
 
     private String defaultCookie;
 
+    private String loginErrorCount;
+
+    private String loginUser;
+
     public String getPersonal_url() {
         return personal_url;
     }
@@ -54,5 +58,21 @@ public class SysConfig {
 
     public void setDefaultCookie(String defaultCookie) {
         this.defaultCookie = defaultCookie;
+    }
+
+    public String getLoginErrorCount() {
+        return loginErrorCount;
+    }
+
+    public void setLoginErrorCount(String loginErrorCount) {
+        this.loginErrorCount = loginErrorCount;
+    }
+
+    public String getLoginUser() {
+        return loginUser;
+    }
+
+    public void setLoginUser(String loginUser) {
+        this.loginUser = loginUser;
     }
 }

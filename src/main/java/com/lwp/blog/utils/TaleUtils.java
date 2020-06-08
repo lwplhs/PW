@@ -184,7 +184,7 @@ public class TaleUtils {
      * @param request 请求
      * @return cookie
      */
-    private static Cookie cookieRaw(String name, HttpServletRequest request) {
+    public static Cookie cookieRaw(String name, HttpServletRequest request) {
         javax.servlet.http.Cookie[] servletCookies = request.getCookies();
         if (servletCookies == null) {
             return null;
