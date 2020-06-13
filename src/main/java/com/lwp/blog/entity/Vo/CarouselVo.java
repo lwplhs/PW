@@ -15,6 +15,7 @@ import java.util.Date;
  * @Description:
  */
 public class CarouselVo implements Serializable {
+    private static final long serialVersionUID = -2633127082759488043L;
     @NotBlank(groups = {CarouselValidation.GroupCarouselEdit.class},message = "该轮播图不存在，请刷新页面重试")
     private String id;
 

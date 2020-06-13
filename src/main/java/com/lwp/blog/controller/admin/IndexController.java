@@ -75,14 +75,13 @@ public class IndexController extends BaseController {
     @ResponseBody
     public RestResponseBo doLogin(@RequestParam String username,
                                   @RequestParam String password,
-                                  @RequestParam (required = false) String remeber_me,
+                                  @RequestParam (required = false) String rememberMe,
                                   @CookieValue("${website.defaultCookie}") String cookie,
                                   HttpServletRequest request,
                                   HttpServletResponse response){
 
         String loginErrorCountKey = sysConfig.getLoginErrorCount();
         String loginUserKey = sysConfig.getLoginUser();
-        HttpSession session = request.getSession();
         Integer error_count = StringUtil.isNull(redisUtil.get(loginErrorCountKey+cookie))?0:Integer.parseInt(redisUtil.get("login:e:c:"+cookie).toString());
         if(null != error_count && error_count >=3){
             LoginLogVo login_logVo = new LoginLogVo(UUID.createID(),username,"0","登录失败次数超过3次，请10分钟后尝试", IPKit.getIpAddrByRequest(request));
@@ -91,14 +90,14 @@ public class IndexController extends BaseController {
         }else {
             try {
                 UserVo user = userService.login(username,password);
-                //session.setAttribute(WebConst.LOGIN_SESSION_KEY,user);
                 redisUtil.set(loginUserKey+cookie,user,60*30);
-                if(StringUtils.isNotBlank(remeber_me)){
+                if(StringUtils.isNotBlank(rememberMe)){
                     TaleUtils.setCookie(response,user.getId());
                 }
                 redisUtil.set(loginErrorCountKey+cookie,0,60*10);
                 LoginLogVo login_logVo = new LoginLogVo(UUID.createID(),username,"1","登录成功",IPKit.getIpAddrByRequest(request));
                 logService.insertLoginLog(login_logVo);
+                LOGGER.info("用户： "+username+"登录成功");
             }catch (Exception e){
                 error_count = null == error_count ? 1 :error_count +1;
                 if(error_count > 3){
@@ -119,5 +118,20 @@ public class IndexController extends BaseController {
         }
         return RestResponseBo.ok();
     }
-
+    @PostMapping(value = "/logout")
+    @ResponseBody
+    public RestResponseBo logout(@CookieValue("${website.defaultCookie}") String cookie,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response){
+        String loginUserKey = sysConfig.getLoginUser();
+        try {
+            UserVo userVo = TaleUtils.getLoginUserByRedis(request);
+            redisUtil.del(loginUserKey+cookie);
+            LOGGER.info("用户: "+userVo.getUsername()+"退出系统");
+            return RestResponseBo.ok();
+        }catch (Exception e){
+            e.printStackTrace();
+            return RestResponseBo.fail();
+        }
+    }
 }

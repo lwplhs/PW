@@ -15,6 +15,7 @@
         <result column="width" jdbcType="VARCHAR" property="width"/>
         <result column="height" jdbcType="VARCHAR" property="height"/>
     </resultMap>
+    <cache eviction="LRU" flushInterval="10800000"  size="512" readOnly="true"/>
     <insert id="insertAttachment" parameterType="com.lwp.blog.entity.Vo.AttachmentVo">
         insert into attachment
         <trim prefix="(" suffix=")" suffixOverrides=",">

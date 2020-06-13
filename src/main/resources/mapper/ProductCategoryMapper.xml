@@ -15,6 +15,7 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId"/>
     </resultMap>
+    <cache eviction="LRU" flushInterval="10800000"  size="512" readOnly="true"/>
     <insert id="insertProductCategory" parameterType="com.lwp.blog.entity.Vo.ProductCategoryVo" keyProperty="id" useGeneratedKeys="true">
         insert into product_category
             <trim prefix="(" suffix=")" suffixOverrides=",">

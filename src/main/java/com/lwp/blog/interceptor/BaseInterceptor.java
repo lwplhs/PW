@@ -54,31 +54,22 @@ public class BaseInterceptor implements HandlerInterceptor {
         }
         request.getSession();
         if(uri.startsWith(contextPath + "/admin") && !uri.startsWith(contextPath +"/admin/login")){
-            String defaultCookie = sysConfig.getDefaultCookie();
-            String loginUserKey = sysConfig.getLoginUser();
-            Cookie cookie = TaleUtils.cookieRaw(defaultCookie, request);
-            if(!StringUtil.isNull(cookie)) {
-                String cookieValue = cookie.getValue();
-                Object obj = redisUtil.get(loginUserKey + cookieValue);
-                UserVo user = (UserVo) obj;
-                if (null == user) {
-                    Integer uid = TaleUtils.getCookieUid(request);
-                    if (null != uid) {
-                        user = userService.queryUserById(uid);
+            UserVo user = TaleUtils.getLoginUser(request);
+            if (null == user) {
+                Integer uid = TaleUtils.getCookieUid(request);
+                if (null != uid) {
+                    user = userService.queryUserById(uid);
+                    String defaultCookie = sysConfig.getDefaultCookie();
+                    String loginUserKey = sysConfig.getLoginUser();
+                    Cookie cookie = TaleUtils.cookieRaw(defaultCookie, request);
+                    if(null != cookie) {
+                        String cookieValue = cookie.getValue();
                         redisUtil.set(loginUserKey + cookieValue, user, 60 * 30);
-                        //request.getSession().setAttribute(WebConst.LOGIN_SESSION_KEY,user);
                     }
                 }
-                if (null == user) {
-                    //response.sendRedirect(request.getContextPath() +"/admin/login");
-                    String url = request.getContextPath() + "/admin/login";
-                    response.setCharacterEncoding("utf-8");
-                    response.setContentType("text/html; charset=utf-8");
-                    PrintWriter out = response.getWriter();
-                    this.toLogin(out, url);
-                    return false;
-                }
-            }else {
+            }
+            if (null == user) {
+                //response.sendRedirect(request.getContextPath() +"/admin/login");
                 String url = request.getContextPath() + "/admin/login";
                 response.setCharacterEncoding("utf-8");
                 response.setContentType("text/html; charset=utf-8");

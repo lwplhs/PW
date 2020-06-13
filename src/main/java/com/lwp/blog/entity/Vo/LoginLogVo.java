@@ -1,5 +1,6 @@
 package com.lwp.blog.entity.Vo;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +10,8 @@ import java.util.Date;
  * @Date: 2020/03/27/16:39
  * @Description:
  */
-public class LoginLogVo {
+public class LoginLogVo implements Serializable {
+    private static final long serialVersionUID = 1697896466587644878L;
     private String id;
     private String userName;
     private Long loginTime;

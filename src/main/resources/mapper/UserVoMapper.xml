@@ -13,6 +13,7 @@
     <result column="logged" jdbcType="INTEGER" property="logged" />
     <result column="group_name" jdbcType="VARCHAR" property="groupName" />
   </resultMap>
+  <cache eviction="LRU" flushInterval="10800000"  size="512" readOnly="true"/>
   <sql id="Example_Where_Clause">
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">

@@ -10,6 +10,7 @@ import java.io.Serializable;
  * @Description:
  */
 public class ContentVo implements Serializable {
+    private static final long serialVersionUID = 7953206568849642057L;
     /**
      * post表主键
      */
@@ -90,7 +91,6 @@ public class ContentVo implements Serializable {
      */
     private String content;
 
-    private static final long serialVersionUID = 1L;
 
     public String getCid() {
         return cid;

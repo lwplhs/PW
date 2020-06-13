@@ -10,6 +10,7 @@ import java.io.Serializable;
  * @Description:
  */
 public class UserVo implements Serializable {
+    private static final long serialVersionUID = 3473468325832031889L;
     /**
      * user表主键
      */
@@ -59,7 +60,6 @@ public class UserVo implements Serializable {
      */
     private String groupName;
 
-    private static final long serialVersionUID = 1L;
 
 
     public String getId() {

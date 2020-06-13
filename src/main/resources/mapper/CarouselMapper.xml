@@ -18,6 +18,7 @@
         <result column="sort" jdbcType="VARCHAR" property="sort"/>
         <result column="attachment_id" jdbcType="VARCHAR" property="attachmentId"/>
     </resultMap>
+    <cache eviction="LRU" flushInterval="10800000"  size="512" readOnly="true"/>
     <sql id="selectResultList">
         id,name,detail,(select a.url_path from attachment a where a.id = c.attachment_id) path,url,status,is_delete,type,sid,sort,attachment_id
     </sql>

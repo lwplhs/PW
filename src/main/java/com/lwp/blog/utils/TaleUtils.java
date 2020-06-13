@@ -2,6 +2,7 @@ package com.lwp.blog.utils;
 
 import com.lwp.blog.config.SysConfig;
 import com.lwp.blog.entity.Vo.UserVo;
+import org.apache.catalina.User;
 import org.apache.commons.lang3.StringUtils;
 import org.commonmark.Extension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
@@ -39,9 +40,16 @@ public class TaleUtils {
 
     private static SysConfig sysConfig;
 
+    private static RedisUtil redisUtil;
+
     @Autowired
     public void setSysConfig(SysConfig sysConfig){
         TaleUtils.sysConfig = sysConfig;
+    }
+
+    @Autowired
+    public void setRedisUtil(RedisUtil redisUtil){
+        TaleUtils.redisUtil = redisUtil;
     }
 
     /**
@@ -150,13 +158,30 @@ public class TaleUtils {
      */
     public static UserVo getLoginUser(HttpServletRequest request) {
         HttpSession session = request.getSession();
+        UserVo userVo = null;
         if (null == session) {
-            return null;
+            userVo = TaleUtils.getLoginUserByRedis(request);
+        }else {
+            userVo = (UserVo) session.getAttribute(WebConst.LOGIN_SESSION_KEY);
+            if(StringUtil.isNull(userVo)){
+                userVo = TaleUtils.getLoginUserByRedis(request);
+            }
         }
-        return (UserVo) session.getAttribute(WebConst.LOGIN_SESSION_KEY);
+        return userVo;
     }
 
-
+    public static UserVo getLoginUserByRedis(HttpServletRequest request){
+        String defaultCookie = sysConfig.getDefaultCookie();
+        String loginUserKey = sysConfig.getLoginUser();
+        UserVo userVo = null;
+        Cookie cookie = TaleUtils.cookieRaw(defaultCookie, request);
+        if(cookie != null ) {
+            String cookieValue = cookie.getValue();
+            Object obj = redisUtil.get(loginUserKey + cookieValue);
+            userVo = (UserVo) obj;
+        }
+        return userVo;
+    }
     /**
      * 获取cookie中的用户id
      *

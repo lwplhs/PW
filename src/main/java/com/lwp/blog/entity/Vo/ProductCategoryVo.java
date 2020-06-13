@@ -5,6 +5,7 @@ import com.lwp.blog.utils.invalid.category.CategoryValidationGroups;
 import com.lwp.blog.utils.invalid.category.IsRepeatNmaeWithUpdate;
 
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -15,7 +16,8 @@ import java.util.Date;
  * @Description:
  */
 @IsRepeatNmaeWithUpdate(vId = "id",vName = "name",groups = {CategoryValidationGroups.GroupCategoryEdit.class},message = "商品分类名称已存在")
-public class ProductCategoryVo {
+public class ProductCategoryVo implements Serializable {
+    private static final long serialVersionUID = 5632727231999551491L;
     private String id;
 
 

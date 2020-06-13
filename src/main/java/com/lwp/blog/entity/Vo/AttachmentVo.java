@@ -1,5 +1,6 @@
 package com.lwp.blog.entity.Vo;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +10,9 @@ import java.util.Date;
  * @Date: 2020/05/08/14:34
  * @Description:
  */
-public class AttachmentVo {
+public class AttachmentVo implements Serializable {
+
+    private static final long serialVersionUID = 4816344247979913250L;
     private String id;
     private String saveName;
     private String oldName;

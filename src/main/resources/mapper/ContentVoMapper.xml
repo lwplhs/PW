@@ -21,6 +21,7 @@
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.lwp.blog.entity.Vo.ContentVo">
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
+  <cache eviction="LRU" flushInterval="10800000"  size="512" readOnly="true"/>
   <select id="listContentVo" resultMap="BaseResultMap">
         select * from t_contents
   </select>

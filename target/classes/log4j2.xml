@@ -33,6 +33,9 @@
         <logger name="org.apache.http" level="INFO"/>
         <!-- Spring -->
         <logger name="org.springframework" level="INFO"/>
+        <logger name="com.zaxxer.hikari.pool.HikariPool" level="INFO"/>
+        <logger name="io.lettuce.core" level="INFO"/>
+        <logger name="freemarker.cache" level="INFO"/>
         <!-- mybatis loggers -->
         <logger name="com.ibatis" level="INFO"/>
         <logger name="com.ibatis.common.jdbc.SimpleDataSource" level="INFO"/>

@@ -360,7 +360,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
      */
     @Override
     public Boolean updateProductCategoryNameById(String id, String name, UserVo userVo) {
-        String updateUserId = userVo.getId().toString();
+        String updateUserId = userVo.getId();
         Date date = new Date();
         int num = productCategoryDao.updateCategoryNameById(name,id,updateUserId,date);
 

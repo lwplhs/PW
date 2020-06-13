@@ -31,6 +31,12 @@ public class Application implements ServletContextInitializer {
     public void onStartup(ServletContext servletContext) throws ServletException {
         String defaultCookie = sysConfig.getDefaultCookie();
         servletContext.getSessionCookieConfig().setName(defaultCookie);
+        try {
+            throw new Exception();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Bean

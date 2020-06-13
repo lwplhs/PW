@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class OptionVo implements Serializable {
 
+    private static final long serialVersionUID = -6792475875630006547L;
     /**
      * 配置名称
      */
@@ -24,7 +25,6 @@ public class OptionVo implements Serializable {
      */
     private String GUID;
 
-    private static  final long serialVersionUID = 1L;
 
     public void setName(String name) {
         this.name = name;
