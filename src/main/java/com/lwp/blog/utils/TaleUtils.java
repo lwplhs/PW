@@ -3,6 +3,7 @@ package com.lwp.blog.utils;
 import com.lwp.blog.config.SysConfig;
 import com.lwp.blog.entity.Vo.UserVo;
 import org.apache.catalina.User;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.commonmark.Extension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.Cipher;
 import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -23,8 +25,11 @@ import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.awt.*;
 import java.io.*;
+import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
 import java.text.Normalizer;
 import java.util.*;
 import java.util.List;
@@ -454,8 +459,8 @@ public class TaleUtils {
         }
         int lastIndex = path.lastIndexOf("/") + 1;
         path = path.substring(0, lastIndex);
-        File file = new File("");
-        return file.getAbsolutePath() + "/";
+        File file = new File(path);
+        return file.getAbsolutePath() + "\\";
     }
 
     /**

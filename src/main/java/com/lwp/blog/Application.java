@@ -1,6 +1,7 @@
 package com.lwp.blog;
 
 import com.lwp.blog.config.SysConfig;
+import com.lwp.blog.utils.TaleUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,11 +32,6 @@ public class Application implements ServletContextInitializer {
     public void onStartup(ServletContext servletContext) throws ServletException {
         String defaultCookie = sysConfig.getDefaultCookie();
         servletContext.getSessionCookieConfig().setName(defaultCookie);
-        try {
-            throw new Exception();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
 
     }
 

@@ -28,6 +28,8 @@ public class SysConfig {
 
     private String loginUser;
 
+    private String pubKey;
+
     public String getPersonal_url() {
         return personal_url;
     }
@@ -74,5 +76,13 @@ public class SysConfig {
 
     public void setLoginUser(String loginUser) {
         this.loginUser = loginUser;
+    }
+
+    public String getPubKey() {
+        return pubKey;
+    }
+
+    public void setPubKey(String pubKey) {
+        this.pubKey = pubKey;
     }
 }
