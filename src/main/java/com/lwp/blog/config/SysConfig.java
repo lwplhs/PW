@@ -30,6 +30,16 @@ public class SysConfig {
 
     private String pubKey;
 
+    private String userSession;
+
+    public String getUserSession() {
+        return userSession;
+    }
+
+    public void setUserSession(String userSession) {
+        this.userSession = userSession;
+    }
+
     public String getPersonal_url() {
         return personal_url;
     }

@@ -53,19 +53,16 @@ public class BaseInterceptor implements HandlerInterceptor {
             response.sendRedirect(request.getContextPath() +"/getPage/404.html");
         }
         request.getSession();
+        UserVo user = TaleUtils.getLoginUser(request);
         if(uri.startsWith(contextPath + "/admin") && !uri.startsWith(contextPath +"/admin/login")){
-            UserVo user = TaleUtils.getLoginUser(request);
+            if(StringUtil.isNotNull(user)){
+                UserRedisUtil.insertOrUpdateUserSession(request,user);
+            }
             if (null == user) {
                 String uid = TaleUtils.getCookieUid(request);
                 if (null != uid) {
                     user = userService.queryUserById(uid);
-                    String defaultCookie = sysConfig.getDefaultCookie();
-                    String loginUserKey = sysConfig.getLoginUser();
-                    Cookie cookie = TaleUtils.cookieRaw(defaultCookie, request);
-                    if(null != cookie) {
-                        String cookieValue = cookie.getValue();
-                        redisUtil.set(loginUserKey + cookieValue, user, 60 * 30);
-                    }
+                    UserRedisUtil.insertOrUpdateUserSession(request,user);
                 }
             }
             if (null == user) {
@@ -78,16 +75,25 @@ public class BaseInterceptor implements HandlerInterceptor {
                 return false;
             }
         }
-        //设置get请求的token
-        if(request.getMethod().equals("GET")){
-            String csrf_token = UUID.UU64();
-            // 默认存储30分钟
-            cache.hset(Types.CSRF_TOKEN.getType(), csrf_token, uri, 30 * 60);
-            request.setAttribute("_csrf_token", csrf_token);
+        if(uri.startsWith(contextPath + "/admin") && uri.startsWith(contextPath +"/admin/login")){
+            if (null == user) {
+                String uid = TaleUtils.getCookieUid(request);
+                if (null != uid) {
+                    user = userService.queryUserById(uid);
+                    UserRedisUtil.insertOrUpdateUserSession(request,user);
+                }
+            }
+            if (null != user) {
+                UserRedisUtil.insertOrUpdateUserSession(request,user);
+                String url = request.getContextPath() + "/admin/index";
+                response.setCharacterEncoding("utf-8");
+                response.setContentType("text/html; charset=utf-8");
+                PrintWriter out = response.getWriter();
+                this.toLogin(out, url);
+                return false;
+            }
         }
         return true;
-
-
     }
     public boolean isAjaxRequest(HttpServletRequest request){
         String header = request.getHeader("X-Requested-With");

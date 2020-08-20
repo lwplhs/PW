@@ -76,13 +76,9 @@ public class IndexController extends BaseController {
     public RestResponseBo doLogin(@RequestParam String username,
                                   @RequestParam String password,
                                   @RequestParam (required = false) String rememberMe,
-                                  @CookieValue("${website.defaultCookie}") String cookie,
                                   HttpServletRequest request,
                                   HttpServletResponse response){
-
-        String loginErrorCountKey = sysConfig.getLoginErrorCount();
-        String loginUserKey = sysConfig.getLoginUser();
-        Integer error_count = StringUtil.isNull(redisUtil.get(loginErrorCountKey+cookie))?0:Integer.parseInt(redisUtil.get("login:e:c:"+cookie).toString());
+        Integer error_count = UserRedisUtil.getErrorCount(request);
         if(null != error_count && error_count >=3){
             LoginLogVo login_logVo = new LoginLogVo(UUID.createID(),username,"0","登录失败次数超过3次，请10分钟后尝试", IPKit.getIpAddrByRequest(request));
             logService.insertLoginLog(login_logVo);
@@ -90,11 +86,11 @@ public class IndexController extends BaseController {
         }else {
             try {
                 UserVo user = userService.login(username,password);
-                redisUtil.set(loginUserKey+cookie,user,60*30);
+                UserRedisUtil.insertOrUpdateUserSession(request,user);
                 if(StringUtils.isNotBlank(rememberMe)){
                     TaleUtils.setCookie(response,user.getId());
                 }
-                redisUtil.set(loginErrorCountKey+cookie,0,60*10);
+                UserRedisUtil.insertErrorCount(request,error_count);
                 LoginLogVo login_logVo = new LoginLogVo(UUID.createID(),username,"1","登录成功",IPKit.getIpAddrByRequest(request));
                 logService.insertLoginLog(login_logVo);
                 LOGGER.info("用户： "+username+"登录成功");
@@ -105,7 +101,7 @@ public class IndexController extends BaseController {
                     logService.insertLoginLog(login_logVo);
                     return RestResponseBo.fail("您输入密码已经错误超过三次，请10分钟后尝试");
                 }
-                redisUtil.set(loginErrorCountKey+cookie,error_count,60*10);
+                UserRedisUtil.insertErrorCount(request,error_count);
                 String msg = "登录失败";
                 if(e instanceof TipException){
                     msg = e.getMessage();
@@ -126,7 +122,7 @@ public class IndexController extends BaseController {
         String loginUserKey = sysConfig.getLoginUser();
         try {
             UserVo userVo = TaleUtils.getLoginUserByRedis(request);
-            redisUtil.del(loginUserKey+cookie);
+            UserRedisUtil.delUserSession(request);
             LOGGER.info("用户: "+userVo.getUsername()+"退出系统");
             return RestResponseBo.ok();
         }catch (Exception e){

@@ -65,6 +65,9 @@ public class StringUtil {
         }
         return false;
     }
+    public static boolean isNotNull(Object obj){
+        return !isNull(obj);
+    }
 
     public static String replace(String str, String target, String replaceStr) {
         int start = -1;
