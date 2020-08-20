@@ -56,7 +56,7 @@ public class BaseInterceptor implements HandlerInterceptor {
         if(uri.startsWith(contextPath + "/admin") && !uri.startsWith(contextPath +"/admin/login")){
             UserVo user = TaleUtils.getLoginUser(request);
             if (null == user) {
-                Integer uid = TaleUtils.getCookieUid(request);
+                String uid = TaleUtils.getCookieUid(request);
                 if (null != uid) {
                     user = userService.queryUserById(uid);
                     String defaultCookie = sysConfig.getDefaultCookie();

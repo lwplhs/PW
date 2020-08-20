@@ -30,6 +30,12 @@ public interface CarouselDao {
     List<CarouselVo> getListCarousel();
 
     /**
+     * 获取未删除的轮播图的总数
+     * @return
+     */
+    String getTotalCount();
+
+    /**
      * 获取启用的轮播图
      * @return
      */

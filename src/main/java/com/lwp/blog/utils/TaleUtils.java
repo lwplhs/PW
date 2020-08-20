@@ -193,13 +193,13 @@ public class TaleUtils {
      * @param request
      * @return
      */
-    public static Integer getCookieUid(HttpServletRequest request) {
+    public static String getCookieUid(HttpServletRequest request) {
         if (null != request) {
             Cookie cookie = cookieRaw(WebConst.USER_IN_COOKIE, request);
             if (cookie != null && cookie.getValue() != null) {
                 try {
                     String uid = Tools.deAes(cookie.getValue(), WebConst.AES_SALT);
-                    return StringUtils.isNotBlank(uid) && Tools.isNumber(uid) ? Integer.valueOf(uid) : null;
+                    return StringUtils.isNotBlank(uid) ? uid : null;
                 } catch (Exception e) {
                 }
             }

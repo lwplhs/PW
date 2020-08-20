@@ -117,7 +117,14 @@ function updateDelete(ids) {
             layer.msg(data.msg);
             if(data && data.success){
                 setTimeout(function () {
-                    loadData();
+                    //重新定义 页数
+                    //获取当前页数
+                    total = data.payload;
+                    //判断当 前页面 是否存在
+                    if(Math.ceil(total/limit) < page){
+                        page = Math.ceil(total/limit);
+                    }
+                    getPage();
                 },100);
             }
         }
@@ -137,8 +144,6 @@ function loadData() {
             "limit":limit,
         },
         success: function (data) {
-            //console.log(data);
-
             $("#list").html(data);
             NProgress.done();
             var imgM = imgManger;
@@ -146,7 +151,6 @@ function loadData() {
             setTimeout(function () {
                 getMenu();
             },200);
-
         }
     });
 }
@@ -155,32 +159,40 @@ function loadData() {
  * */
 function getPage() {
     loadData();  //加载数据
-    total=$("#total").val();
-    /*    var imgM = imgManger;
-        imgM.init();*/
-    layui.use('laypage', function(){
-        var laypage = layui.laypage;
-        //执行一个laypage实例
-        laypage.render({
-            elem: 'laypage' //注意，这里的 test1 是 ID，不用加 # 号
-            ,count: total, //数据总数，从服务端得到
-            limit:limit,   //每页条数设置
-            jump: function(obj, first){
-                //obj包含了当前分页的所有参数，比如：
-                //console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
-                //console.log(obj.limit); //得到每页显示的条数
-                page=obj.curr;  //改变当前页码
-                limit=obj.limit;
-                total = $("#total").val();
-                //首次不执行
-                if(!first){
-                    loadData();  //加载数据
-                    //初始化数据
+    setTimeout(function () {
+        total=$("#total").val();
+        /*    var imgM = imgManger;
+            imgM.init();*/
+        layui.use('laypage', function(){
+            var laypage = layui.laypage;
+
+
+            //执行一个laypage实例
+            laypage.render({
+                elem: 'laypage' //注意，这里的 test1 是 ID，不用加 # 号
+                ,count: total, //数据总数，从服务端得到
+                limit:limit,   //每页条数设置
+                curr:page,
+                layout: ['count', 'prev', 'page', 'next', 'limit', 'skip'],
+                jump: function(obj, first){
+                    //obj包含了当前分页的所有参数，比如：
+                    //console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                    //console.log(obj.limit); //得到每页显示的条数
+                    //首次不执行
+                    if(!first){
+                        page=obj.curr;  //改变当前页码
+                        limit=obj.limit;
+                        total = $("#total").val();
+                        loadData();  //加载数据
+                        //初始化数据
+                    }
+                    /*                imgM.init();*/
                 }
-                /*                imgM.init();*/
-            }
+            });
         });
-    });
+    },300);
+
+
 }
 
 /**
@@ -265,7 +277,9 @@ function picture_add(title,url){
         title: title,
         content: url,
         end: function () {
-            loadData();
+            //重新定义 页数 到首页
+            page = 1;
+            getPage();
         }
     });
 }

@@ -26,8 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,6 +42,10 @@ public class ValidSn {
     private Logger LOOGER = LoggerFactory.getLogger(ValidSn.class);
     public final static String UTF8 = "utf-8";
     private static final String KEY_ALGORITHM = "RSA";
+    /** *//**
+     * RSA最大解密密文大小
+     */
+    private static final int MAX_DECRYPT_BLOCK = 128;
     private String formatString(String source) {
         if (source == null) {
             return null;
@@ -85,16 +88,38 @@ public class ValidSn {
     private String decryptByPublicKey(String data, String publicKey) {
         try {
             publicKey = formatString(publicKey);
-            byte[] kb = org.apache.commons.codec.binary.Base64.decodeBase64(publicKey.getBytes(UTF8));
+            byte[] kb = Base64.decodeBase64(publicKey.getBytes(UTF8));
             X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(kb);
             KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
             PublicKey key = keyFactory.generatePublic(x509EncodedKeySpec);
             Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+            //Cipher cipher = Cipher.getInstance(RSA_PADDING_KEY);
             cipher.init(Cipher.DECRYPT_MODE, key);
             byte[] b = data.getBytes(UTF8);
-            byte[] decrypt = cipher.doFinal(Base64.decodeBase64(b));
+            byte[] encryptedData = Base64.decodeBase64(b);
+            int inputLen = encryptedData.length;
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            int offSet = 0;
+            byte[] cashe;
+            int i = 0;
+            //对数据分段加密
+            while (inputLen - offSet > 0){
+                if(inputLen - offSet > MAX_DECRYPT_BLOCK){
+                    cashe = cipher.doFinal(encryptedData,offSet,MAX_DECRYPT_BLOCK);
+                }else {
+                    cashe = cipher.doFinal(encryptedData,offSet,inputLen - offSet);
+                }
+                out.write(cashe,0,cashe.length);
+                i++;
+                offSet = i * MAX_DECRYPT_BLOCK;
+            }
+            //cipher.doFinal(Base64.decodeBase64(b))
+            //Base64.decodeBase64(b)
+            byte[] decrypt = out.toByteArray();
+            out.close();
             return new String(decrypt, UTF8);
         } catch (Exception e) {
+            //logger.error("Failed to decryptByPublicKey data.", e);
             throw new RuntimeException();
         }
     }
@@ -105,27 +130,70 @@ public class ValidSn {
         String pubKey = sysConfig.getPubKey();
         String path = this.getUploadFilePath();
         try {
-            String data = this.readFileContent(path);
-            String s = this.decryptByPublicKey(data,pubKey);
-            JSONObject jsonObject = JSONObject.parseObject(s);
-            System.out.println(jsonObject);
-            String mac = jsonObject.getString("mac");
-            String ex = jsonObject.getString("ex");
-            String name = jsonObject.getString("name");
-            String concurrent = jsonObject.getString("concurrent");
-            Map<String,String> map = UniqueUtil.getAllSn();
-            //本机mac地址
-            String localMac = map.get("mac");
-            if(!MD5encode(localMac).equals(mac)){
+            String data="";
+            String s = "";
+            JSONObject jsonObject;
+            try {
+                data = this.readFileContent(path);
+                s = this.decryptByPublicKey(data, pubKey);
+                jsonObject = JSONObject.parseObject(s);
+            }catch (Exception e){
+                throw  new Exception();
+            }
+            Boolean isMac = true;
+            try{
+                isMac = StringUtil.isNull(jsonObject.getBoolean("isMac"))?true:jsonObject.getBoolean("isMac");
+            }catch (Exception e){
+                isMac = true;
+            }
+            String mac = "";
+            String ex = "";
+            String name = "";
+            String concurrent = "";
+            String code = "";
+            try {
+                mac = jsonObject.getString("mac");
+                ex = jsonObject.getString("ex");
+                name = jsonObject.getString("name");
+                concurrent = jsonObject.getString("concurrent");
+                code = jsonObject.getString("code");
+            }catch (Exception e){
                 throw new Exception();
             }
-            Date date=null;
-            Date nowDate = new Date();
-            SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            date=formatter.parse(ex);
-            LOOGER.info("到期时间为："+ex);
-            if(nowDate.after(date)){
-                LOOGER.error("授权文件已到期！");
+            if(!StringUtil.isNull(name)){
+                LOOGER.info("用户名称："+name);
+            }
+            if(!StringUtil.isNull(code)){
+                LOOGER.info("用户编码："+code);
+            }
+            if(StringUtil.isNull(isMac) || isMac) {
+                List<String> macList = this.getMac();
+                Boolean bool = false;
+                if (!StringUtil.isNull(macList) && macList.size() > 0 && !StringUtil.isNull(mac)) {
+                    for (int i = 0; i < macList.size() && !bool; i++) {
+                        String localMac = macList.get(i);
+                        if (MD5encode(localMac.toLowerCase()).equals(mac)) {
+                            bool = true;
+                        }
+                    }
+                }
+                if (!bool) {
+                    LOOGER.error("授权文件mac地址校验错误");
+                    throw new Exception();
+                }
+            }
+            //本机mac地址
+            try {
+                Date date = null;
+                Date nowDate = new Date();
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                date = formatter.parse(ex);
+                LOOGER.info("到期时间为：" + ex);
+                if (nowDate.after(date)) {
+                    LOOGER.error("授权文件已到期！");
+                    throw new Exception();
+                }
+            }catch (Exception e){
                 throw new Exception();
             }
             if(StringUtil.isNull(concurrent)){
@@ -133,6 +201,7 @@ public class ValidSn {
             }else {
                 LOOGER.info("并发许可:" + concurrent);
             }
+            LOOGER.info("授权文件检查成功");
         }catch (Exception e){
             LOOGER.error("授权文件校验失败！请联系获取最新授权文件");
             throw new RuntimeException();
@@ -163,7 +232,7 @@ public class ValidSn {
      * @param source 数据源
      * @return 加密字符串
      */
-    public static String MD5encode(String source) {
+    private static String MD5encode(String source) {
         if (StringUtils.isBlank(source)) {
             return null;
         }
@@ -182,6 +251,44 @@ public class ValidSn {
             hexString.append(hex);
         }
         return hexString.toString();
+    }
+
+    /**
+     * 获取本机mac地址
+     * @return
+     */
+    private static List getMac(){
+        List<String> list = new ArrayList();
+        try {
+            Enumeration enumeration = NetworkInterface.getNetworkInterfaces();
+            while (enumeration.hasMoreElements()) {
+                StringBuffer stringBuffer = new StringBuffer();
+                NetworkInterface networkInterface = (NetworkInterface) enumeration.nextElement();
+                if (networkInterface != null) {
+                    byte[] bytes = networkInterface.getHardwareAddress();
+                    if (bytes != null) {
+                        for (int i = 0; i < bytes.length; i++) {
+                            if (i != 0) {
+                                stringBuffer.append("-");
+                            }
+                            int tmp = bytes[i] & 0xff; // 字节转换为整数
+                            String str = Integer.toHexString(tmp);
+                            if (str.length() == 1) {
+                                stringBuffer.append("0" + str);
+                            } else {
+                                stringBuffer.append(str);
+                            }
+                        }
+                        String mac = stringBuffer.toString().toUpperCase();
+                        list.add(mac);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+
     }
 
 }

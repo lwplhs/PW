@@ -91,24 +91,31 @@ public class CarouselController extends BaseController {
     }
 
 
-    /**跳转到首页轮播图列表 -分页查询数据
+    /**跳转到首页轮播图列表 -不查询数据
      *
-     * @param model
-     * @param pageNum
-     * @param limit
      * @return
      */
     @GetMapping(value = "/carousel-list")
-    public String toPagePictureList(Model model,
-                                     @RequestParam(value="pageNum", defaultValue = "1") int pageNum,
-                                     @RequestParam(value = "limit",defaultValue = "10") int limit){
+    public String toPagePictureList(){
 
-        Page<ContentVo> page = PageHelper.startPage(pageNum,limit);
-        List<CarouselVo> list = carouselService.getListCarousel();
+        //Page<ContentVo> page = PageHelper.startPage(pageNum,limit);
+        //List<CarouselVo> list = carouselService.getListCarousel();
 
-        model.addAttribute("picList",list);
-        model.addAttribute("total",page.getTotal());
+        //model.addAttribute("picList",list);
+        //model.addAttribute("total",page.getTotal());
         return this.render("/admin/carousel/carousel-list");
+    }
+
+    /**
+     * 获取 轮播图 总数
+     * @return
+     */
+    @ResponseBody
+    @GetMapping(value = "/getTotalCount")
+    public String getTotalCount(){
+        String totalCount = carouselService.getTotalCount();
+
+        return totalCount;
     }
 
     /**
@@ -181,9 +188,11 @@ public class CarouselController extends BaseController {
         UserVo userVo = TaleUtils.getLoginUser(request);
         Boolean bool = carouselService.updateCarousel(ids,type,userVo);
         if(bool){
-            return RestResponseBo.ok(1,"更新成功");
+            String totalCount = carouselService.getTotalCount();
+            return RestResponseBo.ok(totalCount,1,"更新成功");
         }else {
             return RestResponseBo.fail(-1,"更新失败，请刷新数据");
         }
     }
+
 }

@@ -14,7 +14,7 @@ input[type=text], input[type=password] {
     font-size: 13px;
     min-height: 32px;
     margin: 0;
-    padding: 7px 8px;
+    /*padding: 7px 8px;*/
     outline: none;
     color: #333;
     background-color: #fff;

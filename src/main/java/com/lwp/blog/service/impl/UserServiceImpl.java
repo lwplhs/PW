@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserVo queryUserById(Integer uid) {
+    public UserVo queryUserById(String uid) {
         return null;
     }
 

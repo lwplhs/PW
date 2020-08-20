@@ -28,7 +28,7 @@ public interface UserService {
      * @param uid
      * @return
      */
-    UserVo queryUserById(Integer uid);
+    UserVo queryUserById(String uid);
 
     /**
      * 用户登录

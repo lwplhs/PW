@@ -108,6 +108,18 @@ public class CarouselServiceImpl implements CarouselService {
     }
 
     /**
+     * 获取首页轮播图 未删除
+     * @return
+     */
+    @Override
+    public String getTotalCount() {
+
+        String count = carouselDao.getTotalCount();
+
+        return count;
+    }
+
+    /**
      * 获取首页轮播 -已启用未删除
      * @return
      */

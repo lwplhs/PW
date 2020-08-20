@@ -31,6 +31,7 @@ public class ArticleController extends BaseController {
     @Resource
     private ArticleService articleService;
 
+
     @GetMapping(value = "/article-list")
     public String getArticle(Model model,
                             @RequestParam(value="pageNum",defaultValue = "1") int pageNum,

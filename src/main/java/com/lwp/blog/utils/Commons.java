@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -339,5 +340,6 @@ public final class Commons {
         map.put("twitter", WebConst.initConfig.get(prefix + "twitter"));
         return map;
     }
+
 
 }

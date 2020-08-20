@@ -21,6 +21,8 @@ public interface CarouselService {
 
     List<CarouselVo> getListCarousel();
 
+    String getTotalCount();
+
     List<CarouselVo> getListCarouselByStatus();
 
     CarouselVo getCarouselById(String id);
