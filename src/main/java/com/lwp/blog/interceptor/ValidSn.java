@@ -3,6 +3,7 @@ package com.lwp.blog.interceptor;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.lwp.blog.config.SysConfig;
+import com.lwp.blog.utils.MacUtil;
 import com.lwp.blog.utils.StringUtil;
 import com.lwp.blog.utils.TaleUtils;
 import com.lwp.blog.utils.UniqueUtil;
@@ -214,17 +215,15 @@ public class ValidSn {
      * @return
      */
     private String getUploadFilePath() {
-        String path = TaleUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        path = path.substring(1, path.length());
-        try {
-            path = java.net.URLDecoder.decode(path, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        String path = System.getProperty("user.dir");
+        path = path.replaceAll("\\\\","/");
+        if(path.endsWith("/")) {
+            int lastIndex = path.lastIndexOf("/") + 1;
+            path = path.substring(0, lastIndex);
         }
-        int lastIndex = path.lastIndexOf("/") + 1;
-        path = path.substring(0, lastIndex);
+        path = path+"/config/sn";
         File file = new File(path);
-        return file.getAbsolutePath() + "\\"+"sn";
+        return file.getAbsolutePath();
     }
     /**
      * md5加密
@@ -260,7 +259,7 @@ public class ValidSn {
     private static List getMac(){
         List<String> list = new ArrayList();
         try {
-            Enumeration enumeration = NetworkInterface.getNetworkInterfaces();
+            /*Enumeration enumeration = NetworkInterface.getNetworkInterfaces();
             while (enumeration.hasMoreElements()) {
                 StringBuffer stringBuffer = new StringBuffer();
                 NetworkInterface networkInterface = (NetworkInterface) enumeration.nextElement();
@@ -283,7 +282,8 @@ public class ValidSn {
                         list.add(mac);
                     }
                 }
-            }
+            }*/
+            list = MacUtil.getMacAddress();
         } catch (Exception e) {
             e.printStackTrace();
         }
