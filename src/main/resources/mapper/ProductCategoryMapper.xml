@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lwp.blog.dao.ProductCategoryDao">
-    <resultMap id="BaseResultMap" type="com.lwp.blog.entity.Vo.ProductCategoryVo">
+<mapper namespace="com.lwp.website.dao.ProductCategoryDao">
+    <resultMap id="BaseResultMap" type="com.lwp.website.entity.Vo.ProductCategoryVo">
         <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="name" jdbcType="VARCHAR" property="name"></result>
         <result column="parent_id" jdbcType="VARCHAR" property="parentId"></result>
@@ -16,7 +16,7 @@
         <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId"/>
     </resultMap>
     <cache eviction="LRU" flushInterval="10800000"  size="512" readOnly="true"/>
-    <insert id="insertProductCategory" parameterType="com.lwp.blog.entity.Vo.ProductCategoryVo" keyProperty="id" useGeneratedKeys="true">
+    <insert id="insertProductCategory" parameterType="com.lwp.website.entity.Vo.ProductCategoryVo" keyProperty="id" useGeneratedKeys="true">
         insert into product_category
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 <if test="id != null">
@@ -56,7 +56,7 @@
                     update_user_id,
                 </if>
             </trim>
-            <trim prefix="value (" suffix=")" suffixOverrides=",">
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">
                     #{id,jdbcType=VARCHAR},
                 </if>
@@ -96,7 +96,7 @@
             </trim>
     </insert>
 
-    <update id="updateProductCategory" parameterType="com.lwp.blog.entity.Vo.ProductCategoryVo">
+    <update id="updateProductCategory" parameterType="com.lwp.website.entity.Vo.ProductCategoryVo">
         update product_category
             <set>
                 <if test="name != null">

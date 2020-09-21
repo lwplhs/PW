@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lwp.blog.dao.OptionVoDao">
-    <resultMap id="BaseResultMap" type="com.lwp.blog.entity.Vo.OptionVo">
+<mapper namespace="com.lwp.website.dao.OptionVoDao">
+    <resultMap id="BaseResultMap" type="com.lwp.website.entity.Vo.OptionVo">
         <id column="name" jdbcType="VARCHAR" property="name"></id>
     </resultMap>
 
