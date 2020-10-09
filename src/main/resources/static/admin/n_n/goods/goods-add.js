@@ -6,7 +6,7 @@ function goods_save_submit(){
     $.ajax({
         type:"POST",
         data:jsondata,
-        url:"/admin/carousel/updateCarousel",
+        url:"/admin/goods/saveGoods",
         success: function(data){
             console.log(data.code)
             if(data && data.success){
@@ -220,11 +220,11 @@ $(function(){
             server: '/admin/webUpload/upload?origin=1',
             // runtimeOrder: 'flash',
 
-            accept: {
-                title:'Images',
-                extensions:'gif,jpg,jpeg,bmp,png',
-                mimeTypes:'image/*'
-            },
+             accept: {
+                 title:'Images',
+                 extensions:'gif,jpg,jpeg,bmp,png',
+                 mimeTypes:'image/*'
+             },
 
             // 禁掉全局的拖拽功能。这样不会出现图片拖进页面的时候，把图片打开。
             disableGlobalDnd: true,
@@ -650,50 +650,6 @@ $(function(){
 
         $upload.addClass( 'state-' + state );
         updateTotalProgress();
-        //编辑页面初始化
-        var getFileBlob = function (url, cb) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", url);
-            xhr.responseType = "blob";
-            xhr.addEventListener('load', function() {
-                cb(xhr.response);
-            });
-            xhr.send();
-        };
-
-        var blobToFile = function (blob, name) {
-            blob.lastModifiedDate = new Date();
-            blob.name = name;
-            return blob;
-        };
-
-        var getFileObject = function(filePathOrUrl, cb) {
-            getFileBlob(filePathOrUrl, function (blob) {
-                cb(blobToFile(blob, 'test.jpg'));
-            });
-        };
-        setTimeout(function(){
-            var id = $("#id").val();
-            if(id ){
-                //获取当前网址，如： http://localhost:8090/jobservice/service/meun.jsp
-                var curWwwPath=window.document.location.href;
-                //获取主机地址之后的目录，如： jobservice/service/menu.jsp
-                var pathName=window.document.location.pathname;
-                var pos=curWwwPath.indexOf(pathName);
-                //获取主机地址，如： http://localhost:8090
-                var localhostPaht=curWwwPath.substring(0,pos);
-
-                var path = $("#path").val();
-                localhostPaht = localhostPaht+path;
-                //console.log(localhostPaht);
-                getFileObject(localhostPaht, function (fileObject) {
-                    var wuFile = new WebUploader.Lib.File(WebUploader.guid('rt_'),fileObject);
-                    var file = new WebUploader.File(wuFile);
-                    file.setStatus('complete');
-                    uploader.addFiles(file);
-                });
-            }
-        }, 100);
     });
 
 })( jQuery );

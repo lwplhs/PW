@@ -1,6 +1,8 @@
 package com.lwp.website.config;
 
+import com.lwp.website.entity.Bo.Sn;
 import com.lwp.website.shiro.KickoutSessionControlFilter;
+import com.lwp.website.shiro.LoginFilter;
 import com.lwp.website.shiro.MyRedisManager;
 import com.lwp.website.shiro.MyShiroRealm;
 import org.apache.shiro.mgt.SecurityManager;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.Resource;
 import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -33,6 +36,9 @@ import java.util.Map;
  */
 @Configuration
 public class ShiroConfig {
+
+    @Resource
+    private Sn sn;
 
     @Bean
     public Cookie cookieDAO() {
@@ -190,8 +196,8 @@ public class ShiroConfig {
         //设置SecurityManager
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         // 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
-        //访问的是后端url的地址，这里要写base 服务的公用登录接口。
-        shiroFilterFactoryBean.setLoginUrl("/admin/login");
+        //访问的是后端url的地址，这里要写base 服务的公用登录接口。 使用toLogin进行拦截，跳转到/admin/login
+        shiroFilterFactoryBean.setLoginUrl("/toLogin");
         // 登录成功后要跳转的链接；现在应该没用
         //shiroFilterFactoryBean.setSuccessUrl("/index");
 
@@ -202,7 +208,9 @@ public class ShiroConfig {
         LinkedHashMap<String, Filter> filtersMap = new LinkedHashMap<>();
         //限制同一帐号同时在线的个数
         filtersMap.put("kickout", kickoutSessionControlFilter());
+        filtersMap.put("toLogin",loginFilter());
         shiroFilterFactoryBean.setFilters(filtersMap);
+
 
         // 拦截器.
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
@@ -210,6 +218,10 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/login", "anon");
         filterChainDefinitionMap.put("/media/**", "anon");
+        //对 /admin/login 不进行拦截
+        filterChainDefinitionMap.put("/admin/login","anon");
+        //对/toLogin进行拦截
+        filterChainDefinitionMap.put("/toLogin","toLogin,authc");
         //logout是shiro提供的过滤器
         //filterChainDefinitionMap.put("/logout", "logout");
         filterChainDefinitionMap.put("/index","anon");
@@ -242,7 +254,6 @@ public class ShiroConfig {
      * @return
      */
     @Bean(name = "kickoutSessionControlFilter")
-
     public KickoutSessionControlFilter kickoutSessionControlFilter(){
         KickoutSessionControlFilter kickoutSessionControlFilter = new KickoutSessionControlFilter();
         //用于根据会话ID，获取会话进行踢出操作的；
@@ -256,9 +267,16 @@ public class ShiroConfig {
         //同一个用户最大的会话数，默认1；比如2的意思是同一个用户允许最多同时两个人登录；
         kickoutSessionControlFilter.setMaxSession(1);
         //被踢出后重定向到的地址；
-        kickoutSessionControlFilter.setKickoutUrl("/login");
+        kickoutSessionControlFilter.setKickoutUrl("/toLogin");
         return kickoutSessionControlFilter;
     }
+
+    @Bean(name = "loginFilter")
+    public LoginFilter loginFilter(){
+        LoginFilter loginFilter = new LoginFilter();
+        return loginFilter;
+    }
+
     /***
      * 授权所用配置
      *

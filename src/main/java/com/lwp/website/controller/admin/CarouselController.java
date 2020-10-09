@@ -91,18 +91,12 @@ public class CarouselController extends BaseController {
     }
 
 
-    /**跳转到首页轮播图列表 -不查询数据
+    /**跳转到首页轮播图列表 -不查询数据 只查询总数 为0的话不显示分页 显示无数据图片
      *
      * @return
      */
     @GetMapping(value = "/carousel-list")
     public String toPagePictureList(){
-
-        //Page<ContentVo> page = PageHelper.startPage(pageNum,limit);
-        //List<CarouselVo> list = carouselService.getListCarousel();
-
-        //model.addAttribute("picList",list);
-        //model.addAttribute("total",page.getTotal());
         return this.render("/admin/carousel/carousel-list");
     }
 
@@ -165,7 +159,7 @@ public class CarouselController extends BaseController {
                               @RequestParam(value="pageNum",defaultValue = "1") int pageNum,
                               @RequestParam(value = "limit",defaultValue = "10") int limit){
         LOGGER.info("-------------------获取首页轮播图数据 第"+pageNum+"页，"+limit+"条数据------------------");
-        Page<ContentVo> page = PageHelper.startPage(pageNum,limit);
+        Page<CarouselVo> page = PageHelper.startPage(pageNum,limit);
         List<CarouselVo> list = carouselService.getListCarousel();
         LOGGER.info("-------------------获取首页轮播图数据结束------------------");
         model.addAttribute("picList",list);

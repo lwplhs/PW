@@ -1,5 +1,5 @@
 <!--carousel-add页面业务相关的自定义脚本-->
-function goods_save_submit(){
+function carousel_save_submit(){
     var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
     var jsondata = $("#form-carousel-add").serialize();
     //console.log(jsondata);

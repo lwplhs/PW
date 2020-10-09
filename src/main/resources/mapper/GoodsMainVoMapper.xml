@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lwp.website.dao.GoodsMainVoDao">
+
+    <resultMap id="BaseResultMap" type="com.lwp.website.entity.Vo.GoodsMainVo">
+        <id column="id" jdbcType="VARCHAR" property="id"></id>
+        <result column="name" jdbcType="VARCHAR" property="name"></result>
+        <result column="big_type" jdbcType="VARCHAR" property="bigType"></result>
+        <result column="small_type" jdbcType="VARCHAR" property="smallType"></result>
+        <result column="status" jdbcType="VARCHAR" property="status"></result>
+    </resultMap>
+    <cache eviction="LRU" flushInterval="10800000"  size="512" readOnly="true"/>
+
+
+    <insert id="insert" parameterType="com.lwp.website.entity.Vo.GoodsMainVo" keyProperty="id" useGeneratedKeys="true">
+        insert into goods_main
+        <trim prefix="(" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="bigType != null">
+                big_type,
+            </if>
+            <if test="smallType != null">
+                small_type,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="bigType != null">
+                #{bigType,jdbcType=VARCHAR},
+            </if>
+            <if test="smallType != null">
+                #{smallType,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <select id="getList" resultMap="BaseResultMap">
+        select * from goods_main where status is not null and status != '2'
+    </select>
+</mapper>

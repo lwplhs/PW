@@ -12,7 +12,7 @@ var total;
  * */
 function getMenu() {
     $(".thumbnail").each(function () {
-        $(this).contextMenu('carouselMenu',{
+        $(this).contextMenu('goodsMenu',{
             /* menuStyle: {
                  border: '2px solid #000'
              }, //菜单项样式
@@ -31,19 +31,19 @@ function getMenu() {
             bindings: {
                 'updateStatus': function(t) {
                     /*alert('Trigger was ' + t.id + '\nAction was item_1');*/
-                    var id = $(t).find("input[name='carousel-id']").val();
+                    var id = $(t).find("input[name='goods-id']").val();
                     updateStatus(id);
                 },
                 'updateDelete': function(t) {
-                    var id = $(t).find("input[name='carousel-id']").val();
+                    var id = $(t).find("input[name='goods-id']").val();
                     updateDelete(id);
                 },
-                'viewCarousel': function(t) {
-                    var id = $(t).find("input[name='carousel-id']").val();
+                'viewGoods': function(t) {
+                    var id = $(t).find("input[name='goods-id']").val();
                     viewCarousel(id);
                 },
-                'editCarousel': function(t) {
-                    var id = $(t).find("input[name='carousel-id']").val();
+                'editGoods': function(t) {
+                    var id = $(t).find("input[name='goods-id']").val();
                     editCarousel(id);
 
                 }
@@ -61,7 +61,7 @@ function viewCarousel(id) {
         /*shadeClose: true,*/
         maxmin: true, //开启最大化最小化按钮
         area: ['600px', '500px'],
-        content:"/admin/carousel/carousel-view?id="+id
+        content:"/admin/goods/goods-view?id="+id
     });
 }
 /**
@@ -74,7 +74,7 @@ function editCarousel(id) {
         /*shadeClose: true,*/
         maxmin: true, //开启最大化最小化按钮
         area: ['600px', '500px'],
-        content:"/admin/carousel/carousel-edit?id="+id,
+        content:"/admin/goods/goods-edit?id="+id,
         end: function () {
             loadData();
         }
@@ -92,7 +92,6 @@ function updateStatus(ids) {
             "type":"1"
         },
         success:function (data) {
-            $("#reflush").html(data);
             layer.msg(data.msg);
             if(data && data.success){
                 setTimeout(function () {
@@ -109,13 +108,12 @@ function updateStatus(ids) {
 function updateDelete(ids) {
     $.ajax({
         type:"POST",
-        url:"/admin/carousel/updateCarouselStatus",
+        url:"/admin/goods/updateGoodsStatus",
         data:{
             "ids":ids,
             "type":"2"
         },
         success:function (data) {
-            $("#reflush").html(data);
             layer.msg(data.msg);
             if(data && data.success){
                 setTimeout(function () {
@@ -140,7 +138,7 @@ function loadData() {
     NProgress.start();
     $.ajax({
         type: "POST",
-        url: "/admin/carousel/getCarousel",
+        url: "/admin/goods/getGoods",
         data:{
             "pageNum":page,
             "limit":limit,

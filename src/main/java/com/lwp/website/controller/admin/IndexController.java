@@ -94,6 +94,9 @@ public class IndexController extends BaseController {
 
     @GetMapping(value = "login")
     public String login(){
+        if(null != SecurityUtils.getSubject().getPrincipal()){
+            return "/admin/index";
+        }
         return "/admin/login";
     }
 

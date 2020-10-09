@@ -4,6 +4,7 @@ import com.lwp.website.config.SysConfig;
 import com.lwp.website.entity.Vo.UserVo;
 import com.lwp.website.exception.TipException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.commonmark.Extension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
 import org.commonmark.node.Node;
@@ -156,10 +157,9 @@ public class TaleUtils {
     /**
      *
      * 返回当前登录用户
-     *  现不使用了 使用Shiro进行管理
+     *  现使用Shiro进行管理 将数据从shiro中获取
      * @return
      */
-    @Deprecated
     public static UserVo getLoginUser(HttpServletRequest request) {
         HttpSession session = request.getSession();
         UserVo userVo = null;
@@ -170,6 +170,9 @@ public class TaleUtils {
             if(StringUtil.isNull(userVo)){
                 userVo = TaleUtils.getLoginUserByRedis(request);
             }
+        }
+        if(null == userVo){
+           userVo = (UserVo) SecurityUtils.getSubject().getPrincipal();
         }
         return userVo;
     }
