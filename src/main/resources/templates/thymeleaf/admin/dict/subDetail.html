@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:with="title='后台管理',active='home'">
+<header th:replace="/admin/header::headerFragment(${title},${active})"></header>
+<body>
+    <table class="table table-border table-bordered table-bg mt-20">
+        <thead>
+            <tr>
+                <th scope="col">数据值</th>
+                <th scope="col">数据描述</th>
+                <th scope="col">启用</th>
+                <th scope="col">排序</th>
+                <th scope="col">父类别</th>
+            </tr>
+        </thead>
+        <tbody id="list">
+        </tbody>
+    </table>
+    <div th:replace="/admin/footer::footer_dict-subDetail"></div>
+    <div th:hidden="hidden" id="reflush"></div>
+</body>
+</html>

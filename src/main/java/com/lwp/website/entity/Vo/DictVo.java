@@ -1,6 +1,9 @@
 package com.lwp.website.entity.Vo;
-
+import com.lwp.website.utils.invalid.dict.IsRepeatName;
 import org.springframework.stereotype.Repository;
+
+import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,17 +13,24 @@ import org.springframework.stereotype.Repository;
  * @Description:
  */
 @Repository
-public class DictVo {
+@IsRepeatName(vId = "id",vName = "name",vLastId = "lastId",message = "数据字典分类名称已存在")
+public class DictVo implements Serializable {
+
+    private static final long serialVersionUID = 5632727231999551491L;
 
     private String id;
 
+    @NotBlank(message = "数据字典名称不能为空")
     private String name;
 
+    @NotBlank(message = "数据字典描述不能为空")
     private String describe;
 
     private String fullName;
 
     private String series;
+
+    private String lastId;
 
     private String lastName;
 
@@ -70,6 +80,14 @@ public class DictVo {
 
     public void setSeries(String series) {
         this.series = series;
+    }
+
+    public String getLastId() {
+        return lastId;
+    }
+
+    public void setLastId(String lastId) {
+        this.lastId = lastId;
     }
 
     public String getLastName() {

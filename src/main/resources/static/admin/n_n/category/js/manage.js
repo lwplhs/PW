@@ -498,7 +498,7 @@ function hideRMenu() {
     if (rMenu) rMenu.css({"visibility": "hidden"}); //设置右键菜单不可见
     $("body").unbind("mousedown", onBodyMouseDown);
     menuId.val("");
-    var list=["#add","#view","#edit","#delete"];
+    var list=["#add","#view","#update","#edit","#delete"];
     for(var i=0;i<list.length;i++){
         $(list[i]).hide();
     }

@@ -29,7 +29,7 @@ import java.util.Map;
  */
 public class ComboImpl extends AbstractElementTagProcessor {
 
-    //标签名 select 这个玩意就是 自定义标签的 ： select， 应该是可以定义多个标签
+    //标签名 select 这个玩意就是 自定义标签的 ： combo， 应该是可以定义多个标签
     private static final String TAG_NAME = "combo";
     private static final int PRECEDENCE = 1000;//优先级
 

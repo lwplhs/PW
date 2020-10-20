@@ -1,5 +1,11 @@
 package com.lwp.website.utils;
 
+import com.lwp.website.entity.Vo.DictVo;
+import com.lwp.website.service.DictService;
+import com.lwp.website.service.impl.DictServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,14 +18,25 @@ import java.util.Map;
  * @Date: 2020/09/28/16:46
  * @Description:
  */
+@Component
 public class DictUtil {
 
+    private static DictService dictService;
+
+    @Autowired
+    public void setDictService(DictService dictService){
+        DictUtil.dictService = dictService;
+    }
+
     public static List<Map<String,Object>> getDictByType(String dictType){
+
+        List<DictVo> dictVoList = dictService.getListByName(dictType);
         List<Map<String,Object>> list = new ArrayList();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < dictVoList.size(); i++) {
             Map<String,Object> map = new HashMap<>();
-            map.put("key",i);
-            map.put("value",i);
+            DictVo dictVo = dictVoList.get(i);
+            map.put("key",dictVo.getName());
+            map.put("value",dictVo.getDescribe());
             list.add(map);
         }
         return list;

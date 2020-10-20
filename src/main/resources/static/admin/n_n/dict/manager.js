@@ -39,11 +39,11 @@ var setting = {
 
         beforeDBClick : null, //zTree上鼠标双击之前的事件回调函数,并且根据返回值确定触发onDBClick事件回调函数
 
-        beforeDrag : beforeDrag , //节点被拖拽之前的时间回调函数,并且根据返回值确定是否允许开启拖拽操作
+        beforeDrag : null , //节点被拖拽之前的时间回调函数,并且根据返回值确定是否允许开启拖拽操作
 
         beforeDragOpen : null , //拖拽节点移动到折叠状态的父节点后,即将自动展开该父节点之前的事件回调函数,并且根据返回值确定是否允许自动展开操作
 
-        beforeDrop : beforeDrop ,//节点拖拽操作结束之前的时间回调函数,并且根据返回值确定是否允许此拖拽操作
+        beforeDrop : null ,//节点拖拽操作结束之前的时间回调函数,并且根据返回值确定是否允许此拖拽操作
 
         beforeEditName:null,//节点编辑按钮的click事件,并且根据返回值确定是否允许进入名称编辑 状态
 
@@ -55,7 +55,7 @@ var setting = {
 
         beforeRemove:null,//节点被删除之前的事件回调函数,并且根据返回值确定是否允许删除操作
 
-        beforeRename:beforeRename,//节点编辑名称结束（input失去焦点或按下Enter键）之后,更新节点名称数据之前的事件回调函数,并且根据返回值确定是否允许更改名称的操作
+        beforeRename:null,//节点编辑名称结束（input失去焦点或按下Enter键）之后,更新节点名称数据之前的事件回调函数,并且根据返回值确定是否允许更改名称的操作
 
         beforeRightClick:null,//zTree上鼠标右键点击之前的事件回调函数,并且根据返回值确定触发onRightClick事件回调函数
 
@@ -65,7 +65,7 @@ var setting = {
 
         onCheck : null , //CheckBox/radio 被勾选或取消勾选的事件回调函数
 
-        onClick : null,//节点被点击的事件回调函数
+        onClick : onClick,//节点被点击的事件回调函数
 
         onCollapse:onCollapse,//节点被折叠的事件回调函数
 
@@ -135,7 +135,9 @@ var setting = {
 
             url:"",  //ztree节点数据保存节点链接的目标URL的属性名称
 
-            status:""
+            status:"",//状态
+
+            series:""
 
         },
 
@@ -191,7 +193,7 @@ var setting = {
 
         showRemoveBtn:false,//设置是否显示删除按钮
 
-        showRenameBtn:true,//设置是否显示编辑名称按钮
+        showRenameBtn:false,//设置是否显示编辑名称按钮
 
     },
 
@@ -228,138 +230,9 @@ var setting = {
 }
 var className = "dark";
 
-//在拖拽之前
-function beforeDrag(treeId, treeNodes) {
-    for (var i=0,l=treeNodes.length; i<l; i++) {
-        if (treeNodes[i].drag === false) {
-            return false;
-        }
-    }
-    return true;
-}
-//用于捕获节点拖拽操作结束之前的事件回调函数，并且根据返回值确定是否允许此拖拽操作
-//默认值 null
-function beforeDrop(treeId, treeNodes, targetNode, moveType) {
-    if(targetNode.drop){
-        //拖拽成功时，修改被拖拽节点的pid
-        var dragId = treeNodes[0].id;
-        var dropId = targetNode.id;
-        if(StringUtils.isEmpty(dropId) || StringUtils.isEmpty(dragId)){
-            setTimeout(function() {
-                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-                zTree.cancelEditName();
-                layer.msg("节点名称不能为空");
-            }, 0);
-        }else {
-            $.ajax({
-                type:'POST',
-                url: '/admin/productCategory/drag',
-                data:{
-                    dragId:dragId,
-                    dropId:dropId
-                },
-                success: function (data) {
-                    if(!data.success){
-                        layer.msg(data.msg || '更新失败');
-                        setTimeout(function() {
-                            window.location.href=window.location.href;
-                        }, 1000);
-                    }
-                },
-            });
-        }
-        return true;
-    }else {
-        return false;
-    }
-}
-//用于捕获节点拖拽操作结束的事件回调函数  默认值： null
-function onDrop1(event, treeId, treeNodes, targetNode,moveType) {
-    //拖拽成功时，修改被拖拽节点的pid
-    var dragId = treeNodes[0].id;
-    var dropId = targetNode.id;
-    if(StringUtils.isEmpty(dropId) || StringUtils.isEmpty(dragId)){
-        setTimeout(function() {
-            var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-            zTree.cancelEditName();
-            layer.msg("节点名称不能为空");
-        }, 0);
-    }else {
-        $.ajax({
-            type:'POST',
-            url: '/admin/productCategory/drag',
-            data:{
-                dragId:dragId,
-                dropId:dropId
-            },
-            success: function (data) {
-                if(!data.success){
-                    layer.msg(data.msg || '更新失败');
-                    setTimeout(function() {
-                        window.location.href=window.location.href;
-                    }, 1000);
-                }
-            },
-        });
-    }
-
-}
-//重命名之前执行的函数
-function beforeRename(treeId, treeNode, newName, isCancel) {
-    className = (className === "dark" ? "":"dark");
-    //showLog((isCancel ? "<span style='color:red'>":"") + "[ beforeRename ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.orgName + (isCancel ? "</span>":""));
-    if (newName.length == 0) {
-        setTimeout(function() {
-            var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-            zTree.cancelEditName();
-            layer.msg("节点名称不能为空");
-        }, 0);
-        return false;
-    }else if(treeNode.name==newName){
-
-    }else{
-        var id = treeNode.id;
-        var name = newName;
-        $.ajax({
-            type:'POST',
-            url:'/admin/productCategory/updateNameById',
-            data:{
-                id:id,
-                name:name
-            },
-            success:function (data) {
-                if(data && data.success){
-                    layer.msg(data.msg);
-                }else {
-                    layer.msg(data.msg || '更新失败，请刷新页面后重试');
-                    setTimeout(function() {
-                        window.location.href=window.location.href;
-                    }, 1000);
-                }
-            }
-        });
-    }
-    return true;
-}
-//重命名是执行的函数
-function onRename(e, treeId, treeNode, isCancel) {
-    console.log(e);
-    console.log(isCancel);
-    console.log(treeNode);
-    console.log(treeId);
-/*    $.ajax({
-        type:'POST',
-        url:'/admin/productCategory/updateNameById',
-        data:{
-          id:id,
-          name:name
-        },
-    });*/
-    //layer.msg("sucess");
-}
-
-
 var newCount = 1;
+var cookie_tree = "dateType_tree";
+var cookie_node = "select_node";
 //添加
 function addHoverDom(treeId, treeNode) {
     var sObj = $("#" + treeNode.tId + "_span");
@@ -382,7 +255,7 @@ function addHoverDom(treeId, treeNode) {
  * @param treeNode
  */
 function onExpand(event, treeId, treeNode) {
-    var cookie = $.cookie("z_tree" + window.location);
+    var cookie = $.cookie(cookie_tree + window.location);
     var z_tree = new Array();
     if (cookie) {
         z_tree = JSON.parse(cookie);
@@ -390,11 +263,11 @@ function onExpand(event, treeId, treeNode) {
     if ($.inArray(treeNode.id, z_tree) < 0) {
         z_tree.push(treeNode.id);
     }
-    $.cookie("z_tree" + window.location, JSON.stringify(z_tree))
+    $.cookie(cookie_tree + window.location, JSON.stringify(z_tree))
 }
 
 function onCollapse(event, treeId, treeNode) {
-    var cookie = $.cookie("z_tree" + window.location);
+    var cookie = $.cookie(cookie_tree + window.location);
     var z_tree = new Array();
     if (cookie) {
         z_tree = JSON.parse(cookie);
@@ -405,7 +278,7 @@ function onCollapse(event, treeId, treeNode) {
         index = $.inArray(treeNode.children[i].id, z_tree);
         if (index > -1) z_tree.splice(index, 1);
     }
-    $.cookie("z_tree" + window.location, JSON.stringify(z_tree));
+    $.cookie(cookie_tree + window.location, JSON.stringify(z_tree));
 }
 
 /**
@@ -420,10 +293,10 @@ $(document).ready(function() {
         url: "/admin/dict/getData",
         success: function (data) {
             if (data && data.success) {
-                data = JSON.parse(data);
+                data = data.payload;//JSON.parse(data.payload);
                 $.fn.zTree.init($("#treeDemo"), setting, data);
                 var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
-                var cookie = $.cookie("z_tree" + window.location);
+                var cookie = $.cookie(cookie_tree + window.location);
                 if (cookie) {
                     z_tree = JSON.parse(cookie);
                     for (var i = 0; i < z_tree.length; i++) {
@@ -431,24 +304,45 @@ $(document).ready(function() {
                         treeObj.expandNode(node, true, false);
                     }
                 }
+                treeObj.expandAll(true);
+                var cookieNode = $.cookie(cookie_node+window.location);
+                if(cookieNode){
+                    var node = treeObj.getNodeByParam("id", cookieNode);
+                    treeObj.selectNode(node,true);
+                    getData(cookieNode)
+                }else {
+                    getData("0");
+                }
+            }else {
+                $("#reflush").html(data);
             }
         }
     });
+/*    //更新iframe的内容
+    setTimeout(function () {
+        var cookieNode = $.cookie(cookie_node+window.location);
+        if(cookieNode){
+
+        }else {
+
+        }
+    },200);*/
+
     //zTreeObj.expandAll(true);    //true 节点全部展开、false节点收缩
 });
 
 /**
  * 添加类别
  */
-function category_add(parentid,title,url) {
+function dict_add(id,title,url) {
     layer.open({
         type: 2,
-        /*shadeClose: true,*/
-        fixed: false, //不固定
+        shadeClose: false,
+        fixed: true, //不固定
         maxmin: false, //开启最大化最小化按钮
-        area: ['600px', '500px'],
+        area: ['500px', '420px'],
         title: title,
-        content: url+"?parentId="+parentid,
+        content: url+"?id="+id,
         end: function () {
             window.location.href = window.location.href;
         }
@@ -461,11 +355,74 @@ function category_add(parentid,title,url) {
 function setFontCss(treeId, treeNode) {
     var status = treeNode.status;
 
-    return status != "1" ? {color:"red"} : {};
+    return status != "0" ? {color:"red"} : {};
 }
 
 var rMenu = $("#rMenu");
 var menuId = $("#menuId");
+
+/**
+ * 左键点击事件
+ */
+function onClick(event,treeId,treeNode) {
+    if(treeNode){
+        var cookie = $.cookie(cookie_node+window.location);
+        $.cookie(cookie_node + window.location, treeNode.id);
+        var id = treeNode.id;
+        getData(id);
+    }
+}
+function getData(id) {
+    var url = "/admin/dict/getSubData";
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data:{
+            id:id
+        },
+        success: function (data) {
+            if(data && data.success){
+                var html = "";
+                var data = data.payload;
+                for(var i = 0;i<data.length;i++){
+                    var dictVo = data[i];
+                    var id = dictVo.id;
+                    var name = dictVo.name;
+                    var describe = dictVo.describe;
+                    var status = dictVo.status;
+                    var sort = dictVo.sort;
+                    var lastName = dictVo.lastName;
+                    html+="<tr ondblclick=\"trDbClick('"+id+"')\">";
+                    html+="<td>"+name+"</td>";
+                    html+="<td>"+describe+"</td>";
+                    if("0" == status){
+                        html+="<td>"+"<input type=\"checkbox\" id=\"status\" lay-skin=\"primary\" onclick='return false;' checked='true' />"+"</td>";
+                    }else {
+                        html+="<td>"+"<input type=\"checkbox\" id=\"status\" lay-skin=\"primary\" onclick='return false;' />"+"</td>";
+                    }
+                    html+="<td>"+sort+"</td>";
+                    html+="<td>"+lastName+"</td>";
+                    html+="</tr>"
+                }
+                var topWin = window.document.getElementById("detail").contentWindow;
+                topWin.document.getElementById("list").innerHTML=html;
+            }else {
+                $("#reflush").html(data);
+            }
+        }
+    });
+}
+
+function chooseData(id) {
+    var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+    treeObj.cancelSelectedNode();
+    var node = treeObj.getNodeByParam("id", id);
+    treeObj.selectNode(node, true);
+    var cookie = $.cookie(cookie_node+window.location);
+    $.cookie(cookie_node + window.location, id);
+    getData(id);
+}
+
 /**
  * 加载菜单
  **/
@@ -476,10 +433,10 @@ function OnRightClick(event,treeId,treeNode) {
         var id = treeNode.id;
         var pid = treeNode.pId;
         menuId.val(id);
-        if(treeNode.level == 0){
-            var list=["#add","#view","#edit","#delete","#update"];
+        if(treeNode.series == '0'){
+            var list=["#add"];
         }else {
-            var list=["#view","#edit","#delete","#update"];
+            var list=["#view","#edit","#add"];
         }
 
         showRMenu(list, event.clientX, event.clientY);
@@ -508,7 +465,7 @@ function onBodyMouseDown(event){
     if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length>0)) {
         rMenu.css({"visibility" : "hidden"});
         menuId.val("");
-        var list=["#add","#view","#edit","#delete"];
+        var list=["#add","#view","#edit","#update","#delete"];
         for(var i=0;i<list.length;i++){
             $(list[i]).hide();
         }
@@ -520,7 +477,7 @@ function onBodyMouseDown(event){
  **/
 function menu_add(){
     var id = menuId.val();
-    category_add(id,"新增二级类别","/admin/productCategory/productCategory-add");
+    dict_add(id,"数据字典编辑","/admin/dict/add");
     hideRMenu();
 }
 
@@ -529,18 +486,7 @@ function menu_add(){
  */
 function menu_edit() {
     var id = menuId.val();
-    layer.open({
-        type: 2,
-        /*shadeClose: true,*/
-        fixed: false, //不固定
-        maxmin: false, //开启最大化最小化按钮
-        area: ['600px', '500px'],
-        title: "修改商品类别",
-        content:"/admin/productCategory/productCategory-edit?id="+id,
-        end: function () {
-            window.location.href = window.location.href;
-        }
-    });
+    dict_add(id,"数据字典编辑","/admin/dict/edit");
     hideRMenu();
 }
 
@@ -549,18 +495,7 @@ function menu_edit() {
  */
 function menu_view() {
     var id = menuId.val();
-    layer.open({
-        type: 2,
-        /*shadeClose: true,*/
-        fixed: false, //不固定
-        maxmin: false, //开启最大化最小化按钮
-        area: ['600px', '500px'],
-        title: "查看商品类别",
-        content:"/admin/productCategory/productCategory-view?id="+id,
-        end: function () {
-            //window.location.href = window.location.href;
-        }
-    });
+    dict_add(id,"数据字典编辑","/admin/dict/view");
     hideRMenu();
 }
 
