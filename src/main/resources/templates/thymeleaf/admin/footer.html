@@ -46,6 +46,8 @@
 <div th:fragment="footer_common">
     <!--jquery-->
     <script type="text/javascript" th:src="@{/static/admin/n_n/jquery/1.9.1/jquery.min.js}"></script>
+    <!--$.tale-->
+    <script th:src="@{/static/admin/js/base.js}"></script>
     <!--layui-->
     <script type="text/javascript" th:src="@{/static/admin/n_n/layui/2.5.6/layui.all.js}"></script>
     <script type="text/javascript" th:src="@{/static/admin/n_n/layui/2.5.6/layui.js}"></script>
@@ -79,11 +81,13 @@
     <script type="text/javascript" th:src="@{/static/admin/n_n/zTree/v3/js/jquery.ztree.exedit-3.5.js}"></script>
     <!--cookie-->
     <script type="text/javascript" th:src="@{/static/admin/n_n/jquery.cookie.1.4.1/jquery.cookie.js}"></script>
-
+    <!--nicescroll-->
+    <script type="text/javascript" th:src="@{/static/admin/n_n/jquery.nicescroll/jquery.nicescroll.js}"></script>
+    <!---plug-->
+    <script type="text/javascript" th:src="@{/static/admin/n_n/plug/js/plug.js}"></script>
 </div>
 <div th:fragment="footer_index">
     <div th:replace="/admin/footer::footer_common"></div>
-    <div th:replace="/admin/footer::footer-np"></div>
 </div>
 <div th:fragment="footer_article-list">
     <!--请在下方写此页面业务相关的脚本-->
@@ -184,7 +188,7 @@
 </div>>
 
 <div th:fragment="footer_dict-subDetail">
-    <div th:replace="/admin/footer::footer_common"></div>
+    <div th:replace="/admin/footer::footer_common"/>
     <script type="text/javascript" th:src="@{/static/admin/n_n/dict/subDetail.js}"></script>
 </div>
 </html>

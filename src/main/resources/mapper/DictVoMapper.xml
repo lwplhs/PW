@@ -156,4 +156,16 @@
     <select id="getDictByName" resultMap="BaseResultMap" parameterType="java.lang.String">
         select * from sort_infor where name = #{name,jdbcType=VARCHAR} and status != '2'
     </select>
+
+    <update id="updateDictWithStatusById" parameterType="java.lang.String">
+        update sort_infor set status =(case when status = '1' then '0' else '1' end) where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateDictStatusById" parameterType="java.lang.String">
+        update sort_infor set status=#{status,jdbcType=VARCHAR} where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateDictStatusByLastId" parameterType="java.lang.String">
+        update sort_infor set status=#{status,jdbcType=VARCHAR} where last_id=#{lastId,jdbcType=VARCHAR}
+    </update>
 </mapper>

@@ -208,4 +208,27 @@ public class DictController extends BaseController {
         return RestResponseBo.ok(series,1,"获取数据字典成功");
     }
 
+    /**
+     * 根据id更新 状态 1 启用 ，停用 2 删除
+     * @param type
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "updateDictStatusById")
+    @ResponseBody
+    public RestResponseBo updateDictStatusById(@RequestParam(value = "type") String type,
+                                                          @RequestParam(value = "id") String id,
+                                                          HttpServletRequest request){
+
+        LOGGER.info("-------------------修改商品分类状态开始------------------");
+        UserVo userVo = TaleUtils.getLoginUser(request);
+        Boolean bool = dictService.updateDictWithType(type,id,userVo);
+        LOGGER.info("-------------------修改商品分类状态结束------------------");
+        if(bool){
+            return RestResponseBo.ok(1,"更新成功");
+        }else {
+            return RestResponseBo.fail(-1,"更新失败，请刷新数据!");
+        }
+    }
+
 }

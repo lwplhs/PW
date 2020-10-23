@@ -31,4 +31,6 @@ public interface DictService {
     String getSeriesById(String id);
 
     List getListByName(String name);
+
+    Boolean updateDictWithType(String type,String id,UserVo userVo);
 }

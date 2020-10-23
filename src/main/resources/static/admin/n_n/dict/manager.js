@@ -436,7 +436,7 @@ function OnRightClick(event,treeId,treeNode) {
         if(treeNode.series == '0'){
             var list=["#add"];
         }else {
-            var list=["#view","#edit","#add"];
+            var list=["#view","#edit","#add","#update","#delete"];
         }
 
         showRMenu(list, event.clientX, event.clientY);
@@ -499,27 +499,6 @@ function menu_view() {
     hideRMenu();
 }
 
-/**
- * 删除
- * */
-function updateDelete(id) {
-    $.ajax({
-        type:"POST",
-        url:"/admin/productCategory/updateProductCategoryStatusById",
-        data:{
-            "id":id,
-            "type":"2"
-        },
-        success:function (data) {
-            layer.msg(data.msg || '删除失败，请刷新页面后重试');
-            if(data && data.success){
-                setTimeout(function () {
-                    window.location.href = window.location.href;
-                },100);
-            }
-        }
-    });
-}
 function menu_delete() {
     var id = menuId.val();
     if(!StringUtils.isEmpty(id)){
@@ -527,7 +506,7 @@ function menu_delete() {
             btn:['确定','取消'],
             btn1:function (index, layero) {
                 layer.close(index);
-                updateDelete(id);
+                updateStatus(id,2);
             },
             btn2:function (index, layero) {
                 layer.close(index);
@@ -540,15 +519,17 @@ function menu_delete() {
 }
 
 /**
- * 启用/停用
+ * 启用/停用/删除
+ * type 1:启用/停用
+ *      2：删除
  * */
-function updateStatus(ids) {
+function updateStatus(ids,type) {
     $.ajax({
         type:"POST",
-        url:"/admin/productCategory/updateProductCategoryStatusById",
+        url:"/admin/dict/updateDictStatusById",
         data:{
             "id":ids,
-            "type":"1"
+            "type":type
         },
         success:function (data) {
             layer.msg(data.msg || '更新失败，请刷新页面后重试');
@@ -571,7 +552,7 @@ function menu_update(){
             btn:['确定','取消'],
             btn1:function (index, layero) {
                 layer.close(index);
-                updateStatus(id);
+                updateStatus(id,1);
             },
             btn2:function (index, layero) {
                 layer.close(index);

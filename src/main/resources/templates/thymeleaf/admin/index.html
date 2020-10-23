@@ -2,13 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:with="title='后台管理',active='home'">
 <header th:replace="/admin/header::headerFragment(${title},${active})"></header>
 <body>
-<header class="navbar-wrapper">
+<!--<header class="navbar-wrapper">
     <div class="navbar navbar-fixed-top">
         <div class="container-fluid cl"> <a class="logo navbar-logo f-l mr-10 hidden-xs" th:href="@{/admin/index}"><img th:src="@{/static/admin/images/logo.png}" class="logo navbar-slogan f-l mr-10 hidden-xs"></a>
 
-            <!--<span class="logo navbar-slogan f-l mr-10 hidden-xs">v3.1</span>-->
+            &lt;!&ndash;<span class="logo navbar-slogan f-l mr-10 hidden-xs">v3.1</span>&ndash;&gt;
             <a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
-<!--            <nav class="nav navbar-nav">
+&lt;!&ndash;            <nav class="nav navbar-nav">
                 <ul class="cl">
                     <li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe600;</i> 新增 <i class="Hui-iconfont">&#xe6d5;</i></a>
                         <ul class="dropDown-menu menu radius box-shadow">
@@ -23,7 +23,7 @@
                     <li class="navbar-levelone"><a href="javascript:;">手机</a></li>&ndash;&gt;
                     </li>
                 </ul>
-            </nav>-->
+            </nav>&ndash;&gt;
             <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
                 <ul class="cl">
                     <li>超级管理员</li>
@@ -50,8 +50,22 @@
             </nav>
         </div>
     </div>
-</header>
+</header>-->
+<div class="float-menu" th:fragment="plug">
+    <div class="plus">
+        <div class="cross"></div>
+    </div>
+    <div class="menu-list">
+        <a href="javascript:;" onClick="myselfinfo()" class="link-msg">消息<span id="float-cart">6</span></a>
+        <a href="javascript:;" onClick="myselfinfo()" class="link-my">个人信息</a>
+        <a href="#" class="link-change">切换账户</a>
+        <a href="#" onclick="logout()" class="link-exit">退出</a>
+    </div>
+</div>
 <aside class="Hui-aside">
+    <div class="content-left-head" style="height: 35px; display: block;">
+        <img id="logo-img"  th:src="@{/static/admin/images/logo.png}" style="height: 35px;padding-left: 20%">
+    </div>
     <div class="menu_dropdown bk_2">
         <dl id="menu-article">
             <dt><i class="Hui-iconfont">&#xe616;</i> 文章管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
@@ -83,9 +97,9 @@
             <dt><i class="Hui-iconfont">&#xe620;</i> 产品管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="/admin/productCategory/manage" data-title="分类管理" href="javascript:void(0)">分类管理</a></li>
+                    <li><a data-href="/admin/productCategory/manager" data-title="分类管理" href="javascript:void(0)">分类管理</a></li>
                     <li><a data-href="product-brand.html" data-title="品牌管理" href="javascript:void(0)">品牌管理</a></li>
-                    <li><a data-href="/admin/goods/manage" data-title="商品管理" href="javascript:void(0)">商品管理</a></li>
+                    <li><a data-href="/admin/goods/manager" data-title="商品管理" href="javascript:void(0)">商品管理</a></li>
                 </ul>
             </dd>
         </dl>
@@ -133,6 +147,20 @@
                     <li><a data-href="charts-5.html" data-title="饼状图" href="javascript:void(0)">饼状图</a></li>
                     <li><a data-href="charts-6.html" data-title="3D柱状图" href="javascript:void(0)">3D柱状图</a></li>
                     <li><a data-href="charts-7.html" data-title="3D饼状图" href="javascript:void(0)">3D饼状图</a></li>
+                    <li><a data-href="charts-1.html" data-title="折线图" href="javascript:void(0)">折线图</a></li>
+                    <li><a data-href="charts-2.html" data-title="时间轴折线图" href="javascript:void(0)">时间轴折线图</a></li>
+                    <li><a data-href="charts-3.html" data-title="区域图" href="javascript:void(0)">区域图</a></li>
+                    <li><a data-href="charts-4.html" data-title="柱状图" href="javascript:void(0)">柱状图</a></li>
+                    <li><a data-href="charts-5.html" data-title="饼状图" href="javascript:void(0)">饼状图</a></li>
+                    <li><a data-href="charts-6.html" data-title="3D柱状图" href="javascript:void(0)">3D柱状图</a></li>
+                    <li><a data-href="charts-7.html" data-title="3D饼状图" href="javascript:void(0)">3D饼状图</a></li>
+                    <li><a data-href="charts-1.html" data-title="折线图" href="javascript:void(0)">折线图</a></li>
+                    <li><a data-href="charts-2.html" data-title="时间轴折线图" href="javascript:void(0)">时间轴折线图</a></li>
+                    <li><a data-href="charts-3.html" data-title="区域图" href="javascript:void(0)">区域图</a></li>
+                    <li><a data-href="charts-4.html" data-title="柱状图" href="javascript:void(0)">柱状图</a></li>
+                    <li><a data-href="charts-5.html" data-title="饼状图" href="javascript:void(0)">饼状图</a></li>
+                    <li><a data-href="charts-6.html" data-title="3D柱状图" href="javascript:void(0)">3D柱状图</a></li>
+                    <li><a data-href="charts-7.html" data-title="3D饼状图" href="javascript:void(0)">3D饼状图</a></li>
                 </ul>
             </dd>
         </dl>
@@ -145,39 +173,6 @@
                     <li><a data-href="/admin/dict/manager" data-title="数据字典" href="javascript:void(0)">数据字典</a></li>
                     <li><a data-href="system-shielding.html" data-title="屏蔽词" href="javascript:void(0)">屏蔽词</a></li>
                     <li><a data-href="system-log.html" data-title="系统日志" href="javascript:void(0)">系统日志</a></li>
-                </ul>
-            </dd>
-        </dl>
-    </div>
-
-    <div class="menu_dropdown bk_2" style="display:none">
-        <dl id="menu-aaaaa">
-            <dt><i class="Hui-iconfont">&#xe616;</i> 二级导航1<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-            <dd>
-                <ul>
-                    <li><a data-href="article-list.html" data-title="资讯管理" href="javascript:void(0)">三级导航</a></li>
-                </ul>
-            </dd>
-        </dl>
-    </div>
-
-    <div class="menu_dropdown bk_2" style="display:none">
-        <dl id="menu-bbbbb">
-            <dt><i class="Hui-iconfont">&#xe616;</i> 二级导航2<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-            <dd>
-                <ul>
-                    <li><a data-href="article-list.html" data-title="资讯管理" href="javascript:void(0)">三级导航</a></li>
-                </ul>
-            </dd>
-        </dl>
-    </div>
-
-    <div class="menu_dropdown bk_2" style="display:none">
-        <dl id="menu-ccccc">
-            <dt><i class="Hui-iconfont">&#xe616;</i> 二级导航3<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-            <dd>
-                <ul>
-                    <li><a data-href="article-list.html" data-title="资讯管理" href="javascript:void(0)">三级导航</a></li>
                 </ul>
             </dd>
         </dl>
@@ -199,7 +194,7 @@
     <div id="iframe_box" class="Hui-article">
         <div class="show_iframe">
             <div style="display:none" class="loading"></div>
-            <iframe scrolling="yes" frameborder="0" src="/admin/getPage/main.html"></iframe>
+            <iframe scrolling="auto" frameborder="0" src="/admin/getPage/main.html"></iframe>
         </div>
     </div>
 </section>
@@ -215,6 +210,20 @@
 <div th:replace="/admin/footer::footer_index"></div>
 <!--_footer 作为公共模版分离出去-->
 <script src="/static/admin/js/base.js"></script>
+<script>
+    $(".Hui-aside").niceScroll({
+        cursorcolor: "rgba(217,138,151,0.02)",   //滚动条颜色
+        cursoropacitymax: 0.1, //滚动条透明度
+        touchbehavior: false,
+        cursorwidth:"2px",
+        cursorborder:"0",
+        cursorborderradius:"2px"
+
+    });
+    $(".menu_dropdown").resize(function () {
+        $(".Hui-aside").getNiceScroll().resize();
+    });
+</script>
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript">
     $(function(){

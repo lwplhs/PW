@@ -47,4 +47,16 @@ public interface DictVoDao {
     DictVo getDictByName(String name);
 
 
+    int updateDictWithStatusById(String id);
+
+    /**
+     * 根据 id 进行删除  0 启用 1 未启用 2 删除
+     * @return
+     */
+    int updateDictStatusById(String id,String status);
+
+    int updateDictStatusByLastId(String lastId,String status);
+
+
+
 }

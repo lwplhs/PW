@@ -37,7 +37,7 @@ public class GoodsController extends BaseController {
     @Resource
     private GoodsService goodsService;
 
-    @GetMapping(value = "/manage")
+    @GetMapping(value = "/manager")
     public String manager(){
         return this.render("/admin/product/goods/goods-list");
     }

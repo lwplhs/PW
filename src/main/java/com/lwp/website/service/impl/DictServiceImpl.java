@@ -6,6 +6,7 @@ import com.lwp.website.dao.DictVoDao;
 import com.lwp.website.entity.Vo.DictVo;
 import com.lwp.website.entity.Vo.UserVo;
 import com.lwp.website.service.DictService;
+import com.lwp.website.utils.StringUtil;
 import com.lwp.website.utils.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -234,5 +234,43 @@ public class DictServiceImpl implements DictService {
             list = dictVoDao.getSubData(id);
         }
         return list;
+    }
+
+    @Override
+    public Boolean updateDictWithType(String type, String id, UserVo userVo) {
+        switch (type){
+            case "1":
+                return updateStatus(id,userVo);
+            case "2":
+                return updateDelete(id,userVo);
+        }
+        return false;
+    }
+
+    /**
+     * 修改状态 启用/未启用
+     * @param id
+     * @param userVo
+     * @return
+     */
+    private Boolean updateStatus(String id,UserVo userVo){
+
+        //修改 id的状态
+        int num = dictVoDao.updateDictWithStatusById(id);
+        if(num > 0){
+            return true;
+        }
+        return false;
+    }
+
+    @Transactional
+    public Boolean updateDelete(String id,UserVo userVo){
+        //删除 id
+        int num = dictVoDao.updateDictStatusById(id,"2");
+        if(num > 0){
+            dictVoDao.updateDictStatusByLastId(id,"2");
+            return true;
+        }
+        return false;
     }
 }

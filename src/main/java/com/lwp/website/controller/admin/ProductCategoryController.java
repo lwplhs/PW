@@ -41,9 +41,9 @@ public class ProductCategoryController extends BaseController {
     @Resource
     private ProductCategoryService productCategoryService;
 
-    @GetMapping(value = "/manage")
+    @GetMapping(value = "/manager")
     public String toPageProductCategoryManage(Model model){
-        return this.render("/admin/product/category/manage");
+        return this.render("/admin/product/category/manager");
     }
 
     @PostMapping(value ="/getData")
